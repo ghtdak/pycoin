@@ -7,9 +7,12 @@ import unittest
 from pycoin.block import Block
 from pycoin.serialize import b2h_rev
 
+
 class BlockTest(unittest.TestCase):
+
     def test_block(self):
-        expected_checksum = '0000000000089F7910F6755C10EA2795EC368A29B435D80770AD78493A6FECF1'.lower()
+        expected_checksum = '0000000000089F7910F6755C10EA2795EC368A29B435D80770AD78493A6FECF1'.lower(
+        )
 
         block_data = binascii.unhexlify('010000007480150B299A16BBCE5CCDB1D1BBC65CFC5893B01E6619107C55200000000000790'\
         '0A2B203D24C69710AB6A94BEB937E1B1ADD64C2327E268D8C3E5F8B41DBED8796974CED66471B204C3247030'\
@@ -45,8 +48,10 @@ class BlockTest(unittest.TestCase):
 
         block.check_merkle_hash()
 
+
 def main():
     unittest.main()
+
 
 if __name__ == "__main__":
     main()

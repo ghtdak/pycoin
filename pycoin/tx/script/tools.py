@@ -1,8 +1,8 @@
-
 import binascii
 import io
 
 from .opcodes import OPCODE_TO_INT, INT_TO_OPCODE
+
 
 def get_opcode(script, pc):
     opcode = script[pc]
@@ -15,14 +15,15 @@ def get_opcode(script, pc):
             size = as_bignum(script[pc])
             pc += 1
         elif opcode == OPCODE_TO_INT["OP_PUSHDATA2"]:
-            size = as_bignum(script[pc:pc+2])
+            size = as_bignum(script[pc:pc + 2])
             pc += 2
         elif opcode == OPCODE_TO_INT["OP_PUSHDATA4"]:
-            size = as_bignum(script[pc:pc+4])
+            size = as_bignum(script[pc:pc + 4])
             pc += 4
-        data = script[pc:pc+size]
+        data = script[pc:pc + size]
         pc += size
     return opcode, data, pc
+
 
 def compile(s):
     f = io.BytesIO()
@@ -35,6 +36,7 @@ def compile(s):
             f.write(bytes([len(t)]))
             f.write(t)
     return f.getvalue()
+
 
 def disassemble(script):
     opcodes = []

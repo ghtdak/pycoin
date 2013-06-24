@@ -1,7 +1,8 @@
-
 import struct
 
+
 class Streamer(object):
+
     def __init__(self):
         self.parse_lookup = {}
         self.stream_lookup = {}
@@ -24,7 +25,7 @@ class Streamer(object):
                 end = fmt.find("]", i)
                 if end < 0:
                     raise ValueError("no closing ] character")
-                subfmt = fmt[i+1:end]
+                subfmt = fmt[i + 1:end]
                 count = self.array_count_parse_f(f)
                 array = []
                 for j in range(count):

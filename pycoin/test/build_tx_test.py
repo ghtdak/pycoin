@@ -12,7 +12,8 @@ from pycoin.encoding import public_pair_to_sec, public_pair_to_bitcoin_address, 
 from pycoin.tx import Tx
 
 # block 80971
-block_80971_cs = h2b('00000000001126456C67A1F5F0FF0268F53B4F22E0531DC70C7B69746AF69DAC')
+block_80971_cs = h2b(
+    '00000000001126456C67A1F5F0FF0268F53B4F22E0531DC70C7B69746AF69DAC')
 block_80971_data = h2b('01000000950A1631FB9FAC411DFB173487B9E18018B7C6F7147E78C06258410000000000A881352F97F14B'\
 'F191B54915AE124E051B8FE6C3922C5082B34EAD503000FC34D891974CED66471B4016850A040100'\
 '0000010000000000000000000000000000000000000000000000000000000000000000FFFFFFFF080'\
@@ -33,7 +34,7 @@ block_80971_data = h2b('01000000950A1631FB9FAC411DFB173487B9E18018B7C6F7147E78C0
 '1BEF5C9225CB9FE3DEF929423FA36AAD9980B9D6F8F3070001ACF3A5FB389A69F000000004A493046022100F'\
 'B23B1E2F2FB8B96E04D220D385346290A9349F89BBBC5C225D5A56D931F8A8E022100F298EB28294B90C1BAF'\
 '319DAB713E7CA721AAADD8FCC15F849DE7B0A6CF5412101FFFFFFFF0100F2052A010000001976A9146DDEA80'\
-'71439951115469D0D2E2B80ECBCDD48DB88AC00000000');
+'71439951115469D0D2E2B80ECBCDD48DB88AC00000000')
 
 block_80971 = Block.parse(io.BytesIO(block_80971_data))
 
@@ -41,18 +42,23 @@ COINBASE_PUB_KEY_FROM_80971 = h2b("04cb6b6b4eadc96c7d08b21b29d0ada5f29f9378978ca
     "f5abd59889bac704925942dd77a2116d10e0274cad944c71d3d1a670570")
 COINBASE_BYTES_FROM_80971 = h2b("04ed66471b02c301")
 
+
 class BuildTxTest(unittest.TestCase):
 
     def test_standard_tx_out(self):
         coin_value = 10
         recipient_bc_address = '1BcJRKjiwYQ3f37FQSpTYM7AfnXurMjezu'
-        tx_out = Tx.standard_tx([], [(coin_value, recipient_bc_address)]).txs_out[0]
+        tx_out = Tx.standard_tx([],
+                                [(coin_value, recipient_bc_address)]).txs_out[0]
         s = str(tx_out)
-        self.assertEqual('TxOut<1E-7 "OP_DUP OP_HASH160 745e5b81fd30ca1e90311b012badabaa4411ae1a OP_EQUALVERIFY OP_CHECKSIG">', s)
+        self.assertEqual(
+            'TxOut<1E-7 "OP_DUP OP_HASH160 745e5b81fd30ca1e90311b012badabaa4411ae1a OP_EQUALVERIFY OP_CHECKSIG">',
+            s)
 
     def test_coinbase_tx(self):
         coinbase_bytes = h2b("04ed66471b02c301")
-        tx = Tx.coinbase_tx(COINBASE_PUB_KEY_FROM_80971, int(50 * 1e8), COINBASE_BYTES_FROM_80971)
+        tx = Tx.coinbase_tx(COINBASE_PUB_KEY_FROM_80971, int(50 * 1e8),
+                            COINBASE_BYTES_FROM_80971)
         s = io.BytesIO()
         tx.stream(s)
         tx1 = s.getvalue()
@@ -64,47 +70,64 @@ class BuildTxTest(unittest.TestCase):
     def test_build_spends(self):
         # create a coinbase Tx where we know the public & private key
 
-        exponent = wif_to_secret_exponent("5JMys7YfK72cRVTrbwkq5paxU7vgkMypB55KyXEtN5uSnjV7K8Y")
+        exponent = wif_to_secret_exponent(
+            "5JMys7YfK72cRVTrbwkq5paxU7vgkMypB55KyXEtN5uSnjV7K8Y")
         compressed = False
 
-        public_key_sec = public_pair_to_sec(ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1, exponent), compressed=compressed)
+        public_key_sec = public_pair_to_sec(
+            ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1,
+                                                  exponent),
+            compressed=compressed)
 
-        the_coinbase_tx = Tx.coinbase_tx(public_key_sec, int(50 * 1e8), COINBASE_BYTES_FROM_80971)
+        the_coinbase_tx = Tx.coinbase_tx(public_key_sec, int(50 * 1e8),
+                                         COINBASE_BYTES_FROM_80971)
 
         # now create a Tx that spends the coinbase
 
         compressed = False
 
-        exponent_2 = int("137f3276686959c82b454eea6eefc9ab1b9e45bd4636fb9320262e114e321da1", 16)
+        exponent_2 = int(
+            "137f3276686959c82b454eea6eefc9ab1b9e45bd4636fb9320262e114e321da1",
+            16)
         bitcoin_address_2 = public_pair_to_bitcoin_address(
-                ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1, exponent_2),
-                compressed=compressed)
+            ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1,
+                                                  exponent_2),
+            compressed=compressed)
 
-        self.assertEqual("12WivmEn8AUth6x6U8HuJuXHaJzDw3gHNZ", bitcoin_address_2)
+        self.assertEqual("12WivmEn8AUth6x6U8HuJuXHaJzDw3gHNZ",
+                         bitcoin_address_2)
 
         TX_DB = dict((tx.hash(), tx) for tx in [the_coinbase_tx])
 
         coins_from = [(the_coinbase_tx.hash(), 0)]
         coins_to = [(int(50 * 1e8), bitcoin_address_2)]
-        coinbase_spend_tx = Tx.standard_tx(coins_from, coins_to, TX_DB, [exponent])
+        coinbase_spend_tx = Tx.standard_tx(coins_from, coins_to, TX_DB,
+                                           [exponent])
         coinbase_spend_tx.validate(TX_DB)
 
         ## now try to respend from priv_key_2 to priv_key_3
 
         compressed = True
 
-        exponent_3 = int("f8d39b8ecd0e1b6fee5a340519f239097569d7a403a50bb14fb2f04eff8db0ff", 16)
+        exponent_3 = int(
+            "f8d39b8ecd0e1b6fee5a340519f239097569d7a403a50bb14fb2f04eff8db0ff",
+            16)
         bitcoin_address_3 = public_pair_to_bitcoin_address(
-                ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1, exponent_3),
-                compressed=compressed)
+            ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1,
+                                                  exponent_3),
+            compressed=compressed)
 
-        self.assertEqual("13zzEHPCH2WUZJzANymow3ZrxcZ8iFBrY5", bitcoin_address_3)
+        self.assertEqual("13zzEHPCH2WUZJzANymow3ZrxcZ8iFBrY5",
+                         bitcoin_address_3)
 
         TX_DB = dict((tx.hash(), tx) for tx in [coinbase_spend_tx])
 
-        spend_tx = Tx.standard_tx([(coinbase_spend_tx.hash(), 0)], [(int(50 * 1e8), bitcoin_address_3)], TX_DB, [exponent_2])
+        spend_tx = Tx.standard_tx([(coinbase_spend_tx.hash(), 0)],
+                                  [(int(50 * 1e8), bitcoin_address_3)], TX_DB,
+                                  [exponent_2])
 
         spend_tx.validate(TX_DB)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,3 @@
-
 import binascii
 import logging
 import io
@@ -23,6 +22,7 @@ TEMPLATES = [
     tools.compile("OP_DUP OP_HASH160 OP_PUBKEYHASH OP_EQUALVERIFY OP_CHECKSIG"),
 ]
 
+
 def match_script_to_templates(script_public_key):
     script1 = script_public_key
     for script2 in TEMPLATES:
@@ -39,14 +39,16 @@ def match_script_to_templates(script_public_key):
                     break
                 r.append((opcode2, data1))
             elif opcode2 == opcodes.OP_PUBKEYHASH:
-                if len(data1) != 160/8:
+                if len(data1) != 160 / 8:
                     break
                 r.append((opcode2, data1))
             elif (opcode1, data1) != (opcode2, data2):
                 break
     return None
 
-def solver(script_public_key, hash, n_hash_type, secret_exponent_key_for_public_pair_lookup, public_key_for_hash):
+
+def solver(script_public_key, hash, n_hash_type,
+           secret_exponent_key_for_public_pair_lookup, public_key_for_hash):
     # n_hash_type => 1
 
     opcode_value_list = match_script_to_templates(script_public_key)
@@ -63,14 +65,17 @@ def solver(script_public_key, hash, n_hash_type, secret_exponent_key_for_public_
         else:
             public_pair, compressed = public_key_for_hash(v)
         if hash != 0:
-            secret_exponent = secret_exponent_key_for_public_pair_lookup(public_pair)
-            r,s = ecdsa.sign(ecdsa.generator_secp256k1, secret_exponent, hash)
+            secret_exponent = secret_exponent_key_for_public_pair_lookup(
+                public_pair)
+            r, s = ecdsa.sign(ecdsa.generator_secp256k1, secret_exponent, hash)
             sig = sigencode_der(r, s) + bytes([n_hash_type])
             ba += tools.compile(binascii.hexlify(sig).decode("utf8"))
             if opcode == opcodes.OP_PUBKEYHASH:
-                ba += tools.compile(binascii.hexlify(public_pair_to_sec(public_pair, compressed=compressed)))
+                ba += tools.compile(binascii.hexlify(public_pair_to_sec(
+                    public_pair, compressed=compressed)))
 
     return bytes(ba)
+
 
 def signature_hash(script, tx_to, n_in, hash_type):
     if n_in >= len(tx_to.txs_in):
@@ -124,7 +129,14 @@ def signature_hash(script, tx_to, n_in, hash_type):
     v = double_sha256(s.getvalue())
     return int.from_bytes(v, byteorder="big")
 
-def sign_signature(tx_from, tx_to, n_in, secret_exponent_key_for_public_pair_lookup, public_key_for_hash, hash_type=SIGHASH_ALL, script_prereq=b''):
+
+def sign_signature(tx_from,
+                   tx_to,
+                   n_in,
+                   secret_exponent_key_for_public_pair_lookup,
+                   public_key_for_hash,
+                   hash_type=SIGHASH_ALL,
+                   script_prereq=b''):
     # tx_from : the Tx where that has a TxOut assigned to this public key
     # tx_to : the Tx that's being newly formed. All but the script is set.
     # n_in: index
@@ -134,19 +146,23 @@ def sign_signature(tx_from, tx_to, n_in, secret_exponent_key_for_public_pair_loo
 
     # Leave out the signature from the hash, since a signature can't sign itself.
     # The checksig op will also drop the signatures from its hash.
-    the_hash = signature_hash(script_prereq + tx_out.script, tx_to, n_in, hash_type)
+    the_hash = signature_hash(script_prereq + tx_out.script, tx_to, n_in,
+                              hash_type)
 
-    new_script = solver(tx_out.script, the_hash, hash_type, secret_exponent_key_for_public_pair_lookup, public_key_for_hash)
+    new_script = solver(tx_out.script, the_hash, hash_type,
+                        secret_exponent_key_for_public_pair_lookup,
+                        public_key_for_hash)
     if not new_script:
         return False
     return script_prereq + new_script + tx_in.script
+
 
 def delete_subscript(script, subscript):
     new_script = bytearray()
     pc = 0
     size = len(subscript)
     while pc < len(script):
-        if script[pc:pc+size] == subscript:
+        if script[pc:pc + size] == subscript:
             pc += size
             continue
         opcode, data, pc = tools.get_opcode(script, pc)
@@ -154,12 +170,15 @@ def delete_subscript(script, subscript):
         new_script += data
     return bytes(new_script)
 
-def verify_script_signature(script, tx_to, n_in, public_key_blob, sig_blob, subscript, hash_type):
+
+def verify_script_signature(script, tx_to, n_in, public_key_blob, sig_blob,
+                            subscript, hash_type):
     if sig_blob[-1] != 1:
         raise ScriptError("unknown signature type %d" % sig_blob[-1])
     sig_pair = sigdecode_der(sig_blob[:-1])
     # drop the signature, since there's no way for a signature to sign itself
-    subscript = delete_subscript(subscript, tools.compile(binascii.hexlify(sig_blob).decode("utf8")))
+    subscript = delete_subscript(
+        subscript, tools.compile(binascii.hexlify(sig_blob).decode("utf8")))
     if hash_type == 0:
         hash_type = sig_blob[-1]
     elif hash_type != sig_blob[-1]:
@@ -169,8 +188,10 @@ def verify_script_signature(script, tx_to, n_in, public_key_blob, sig_blob, subs
     v = ecdsa.verify(ecdsa.generator_secp256k1, public_pair, the_hash, sig_pair)
     return v
 
+
 def sigencode_der(r, s):
     return der.encode_sequence(der.encode_integer(r), der.encode_integer(s))
+
 
 def sigdecode_der(sig_der):
     rs_strings, empty = der.remove_sequence(sig_der)

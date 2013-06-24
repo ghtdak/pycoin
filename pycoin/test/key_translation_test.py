@@ -6,53 +6,78 @@ import unittest
 from pycoin.ecdsa import public_pair_for_secret_exponent, generator_secp256k1
 
 from pycoin.encoding import bitcoin_address_to_ripemd160_sha_sec, is_sec_compressed, public_pair_to_sec, secret_exponent_to_wif, public_pair_to_bitcoin_address, wif_to_tuple_of_secret_exponent_compressed, public_pair_from_sec, public_pair_to_ripemd160_sha_sec
-
 """
 http://sourceforge.net/mailarchive/forum.php?thread_name=CAPg%2BsBhDFCjAn1tRRQhaudtqwsh4vcVbxzm%2BAA2OuFxN71fwUA%40mail.gmail.com&forum_name=bitcoin-development
 """
 
+
 class BuildTxTest(unittest.TestCase):
 
     def test_translation(self):
-        def do_test(exp_hex, wif, c_wif, public_pair_sec, c_public_pair_sec, address_b58, c_address_b58):
+
+        def do_test(exp_hex, wif, c_wif, public_pair_sec, c_public_pair_sec,
+                    address_b58, c_address_b58):
             secret_exponent = int(exp_hex, 16)
             sec = binascii.unhexlify(public_pair_sec)
             c_sec = binascii.unhexlify(c_public_pair_sec)
 
-            self.assertEqual(secret_exponent_to_wif(secret_exponent, compressed=False), wif)
-            self.assertEqual(secret_exponent_to_wif(secret_exponent, compressed=True), c_wif)
+            self.assertEqual(
+                secret_exponent_to_wif(secret_exponent,
+                                       compressed=False),
+                wif)
+            self.assertEqual(
+                secret_exponent_to_wif(secret_exponent,
+                                       compressed=True),
+                c_wif)
 
-            exponent, compressed = wif_to_tuple_of_secret_exponent_compressed(wif)
+            exponent, compressed = wif_to_tuple_of_secret_exponent_compressed(
+                wif)
             self.assertEqual(exponent, secret_exponent)
             self.assertFalse(compressed)
 
-            exponent, compressed = wif_to_tuple_of_secret_exponent_compressed(c_wif)
+            exponent, compressed = wif_to_tuple_of_secret_exponent_compressed(
+                c_wif)
             self.assertEqual(exponent, secret_exponent)
             self.assertTrue(compressed)
 
-            public_pair = public_pair_for_secret_exponent(generator_secp256k1, secret_exponent)
+            public_pair = public_pair_for_secret_exponent(generator_secp256k1,
+                                                          secret_exponent)
 
             pk_public_pair = public_pair_from_sec(sec)
             compressed = is_sec_compressed(sec)
             self.assertEqual(pk_public_pair, public_pair)
             self.assertFalse(is_sec_compressed(sec))
-            self.assertEqual(public_pair_to_sec(pk_public_pair, compressed=False), sec)
+            self.assertEqual(
+                public_pair_to_sec(pk_public_pair,
+                                   compressed=False),
+                sec)
 
             pk_public_pair = public_pair_from_sec(c_sec)
             compressed = is_sec_compressed(c_sec)
             self.assertEqual(pk_public_pair, public_pair)
             self.assertTrue(compressed)
-            self.assertEqual(public_pair_to_sec(pk_public_pair, compressed=True), c_sec)
+            self.assertEqual(
+                public_pair_to_sec(pk_public_pair,
+                                   compressed=True),
+                c_sec)
 
-            bca = public_pair_to_bitcoin_address(pk_public_pair, compressed=True)
+            bca = public_pair_to_bitcoin_address(pk_public_pair,
+                                                 compressed=True)
             self.assertEqual(bca, c_address_b58)
 
-            self.assertEqual(bitcoin_address_to_ripemd160_sha_sec(c_address_b58), public_pair_to_ripemd160_sha_sec(pk_public_pair, compressed=True))
+            self.assertEqual(
+                bitcoin_address_to_ripemd160_sha_sec(c_address_b58),
+                public_pair_to_ripemd160_sha_sec(pk_public_pair,
+                                                 compressed=True))
 
-            bca = public_pair_to_bitcoin_address(pk_public_pair, compressed=False)
+            bca = public_pair_to_bitcoin_address(pk_public_pair,
+                                                 compressed=False)
             self.assertEqual(bca, address_b58)
 
-            self.assertEqual(bitcoin_address_to_ripemd160_sha_sec(address_b58), public_pair_to_ripemd160_sha_sec(pk_public_pair, compressed=False))
+            self.assertEqual(
+                bitcoin_address_to_ripemd160_sha_sec(address_b58),
+                public_pair_to_ripemd160_sha_sec(pk_public_pair,
+                                                 compressed=False))
 
 
         do_test("1111111111111111111111111111111111111111111111111111111111111111",
@@ -82,6 +107,6 @@ class BuildTxTest(unittest.TestCase):
                 "1PM35qz2uwCDzcUJtiqDSudAaaLrWRw41L",
                 "19ck9VKC6KjGxR9LJg4DNMRc45qFrJguvV")
 
+
 if __name__ == '__main__':
     unittest.main()
-
