@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
+import binascii
 import io
 import unittest
 
 from pycoin.block import Block
-from pycoin.serialize import h2b
 
 from pycoin import ecdsa
 from pycoin.encoding import public_pair_to_sec, public_pair_to_bitcoin_address, wif_to_secret_exponent
 
 from pycoin.tx import Tx
+
+h2b = binascii.unhexlify
 
 # block 80971
 block_80971_cs = h2b(
