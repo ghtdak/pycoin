@@ -50,7 +50,7 @@ class Tx(object):
     @classmethod
     def coinbase_tx(class_, public_key_sec, coin_value, coinbase_bytes=b''):
         """Create a special "first in block" transaction that includes the bonus for mining and transaction fees."""
-        tx_in = TxInGeneration(previous_hash=bytes([0] * 32),
+        tx_in = TxInGeneration(previous_hash=(b'\0' * 32),
                                previous_index=(1 << 32) - 1,
                                script=coinbase_bytes)
         COINBASE_SCRIPT_OUT = "%s OP_CHECKSIG"
@@ -119,6 +119,12 @@ class Tx(object):
         lock_timestamp, = parse_struct("L", f)
         return self(version, txs_in, txs_out, lock_timestamp)
 
+    def clone(self):
+        """Return a copy."""
+        s = io.BytesIO()
+        self.stream(s)
+        return self.parse(io.BytesIO(s.getvalue()))
+
     def __init__(self, version, txs_in, txs_out, lock_timestamp=0):
         self.version = version
         self.txs_in = txs_in
@@ -135,10 +141,12 @@ class Tx(object):
             t.stream(f)
         stream_struct("L", f, self.lock_timestamp)
 
-    def hash(self):
+    def hash(self, hash_type=None):
         """Return the hash for this Tx object."""
         s = io.BytesIO()
         self.stream(s)
+        if hash_type:
+            stream_struct("L", s, hash_type)
         return double_sha256(s.getvalue())
 
     def id(self):

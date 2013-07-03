@@ -48,24 +48,30 @@ from . import ecdsa
 
 from .encoding import public_pair_to_sec, public_pair_from_sec,\
     secret_exponent_to_wif, public_pair_to_bitcoin_address,\
+    from_bytes_32, to_bytes_32,\
     public_pair_to_ripemd160_sha256_sec, EncodingError
 
 from .encoding import a2b_hashed_base58, b2a_hashed_base58
 
-PRIVATE_TEST__VERSION_LOOKUP = {
-    (True, False): binascii.unhexlify("0488ADE4"),
-    (False, False): binascii.unhexlify("0488B21E"),
-    (True, True): binascii.unhexlify("04358394"),
-    (False, True): binascii.unhexlify("043587CF"),
-}
+PRIVATE_TEST_VERSION = [
+    (True, False, "0488ADE4"),
+    (False, False, "0488B21E"),
+    (True, True, "04358394"),
+    (False, True, "043587CF"),
+]
 
-# generate reverse lookup
-
-VERSION__PRIVATE_TEST_LOOKUP = dict(
-    (v, k) for k, v in PRIVATE_TEST__VERSION_LOOKUP.items())
+# generate lookup and reverse lookup
+PRIVATE_TEST__VERSION_LOOKUP = dict(((p, t), binascii.unhexlify(v))
+                                    for p, t, v in PRIVATE_TEST_VERSION)
+VERSION__PRIVATE_TEST_LOOKUP = dict((int(v, 16), (p, t))
+                                    for p, t, v in PRIVATE_TEST_VERSION)
 
 
 class PublicPrivateMismatchError(Exception):
+    pass
+
+
+class InvalidKeyGeneratedError(Exception):
     pass
 
 
@@ -90,18 +96,19 @@ class Wallet(object):
     def from_wallet_key(class_, b58_str):
         """Generate a Wallet from a base58 string in a standard way."""
         data = a2b_hashed_base58(b58_str)
-        is_private, is_test = VERSION__PRIVATE_TEST_LOOKUP.get(data[:4])
+        is_private, is_test = VERSION__PRIVATE_TEST_LOOKUP.get(struct.unpack(
+            ">L", data[:4])[0])
         parent_fingerprint, child_number = struct.unpack(">4sL", data[5:13])
 
         d = dict(is_private=is_private,
                  is_test=is_test,
                  chain_code=data[13:45],
-                 depth=data[4],
+                 depth=ord(data[4:5]),
                  parent_fingerprint=parent_fingerprint,
                  child_number=child_number)
 
         if is_private:
-            if data[45] != 0:
+            if data[45:46] != b'\0':
                 raise EncodingError("private key encoded wrong")
             d["secret_exponent_bytes"] = data[46:]
         else:
@@ -114,7 +121,7 @@ class Wallet(object):
                  is_test,
                  chain_code,
                  depth=0,
-                 parent_fingerprint=bytes([0] * 4),
+                 parent_fingerprint=b'\0\0\0\0',
                  child_number=0,
                  secret_exponent_bytes=None,
                  public_pair=None):
@@ -132,19 +139,27 @@ class Wallet(object):
             if len(secret_exponent_bytes) != 32:
                 raise EncodingError("private key encoding wrong length")
             self.secret_exponent_bytes = secret_exponent_bytes
-            self.secret_exponent = int.from_bytes(self.secret_exponent_bytes,
-                                                  byteorder="big")
+            self.secret_exponent = from_bytes_32(self.secret_exponent_bytes)
+            if self.secret_exponent > ecdsa.generator_secp256k1.curve().p():
+                raise InvalidKeyGeneratedError(
+                    "this key would produce an invalid secret exponent; please skip it")
             self.public_pair = ecdsa.public_pair_for_secret_exponent(
                 ecdsa.generator_secp256k1, self.secret_exponent)
         else:
-            # TODO: validate public_pair is on the curve
             self.public_pair = public_pair
+        # validate public_pair is on the curve
+        if not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1,
+                                          self.public_pair):
+            raise InvalidKeyGeneratedError(
+                "this key would produce an invalid public pair; please skip it")
         if not isinstance(chain_code, bytes):
             raise ValueError("chain code must be bytes")
         if len(chain_code) != 32:
             raise EncodingError("chain code wrong length")
         self.chain_code = chain_code
         self.depth = depth
+        if len(parent_fingerprint) != 4:
+            raise EncodingError("parent_fingerprint wrong length")
         self.parent_fingerprint = parent_fingerprint
         self.child_number = child_number
 
@@ -156,10 +171,11 @@ class Wallet(object):
             raise PublicPrivateMismatchError("public key has no private parts")
 
         ba = bytearray(PRIVATE_TEST__VERSION_LOOKUP[(as_private, self.is_test)])
-        ba += bytes([self.depth]) + self.parent_fingerprint + struct.pack(
-            ">L", self.child_number) + self.chain_code
+        ba.extend([self.depth])
+        ba.extend(self.parent_fingerprint + struct.pack(">L", self.child_number)
+                  + self.chain_code)
         if as_private:
-            ba += bytes([0]) + self.secret_exponent_bytes
+            ba += b'\0' + self.secret_exponent_bytes
         else:
             ba += public_pair_to_sec(self.public_pair, compressed=True)
         return bytes(ba)
@@ -217,14 +233,14 @@ class Wallet(object):
             if not self.is_private:
                 raise PublicPrivateMismatchError(
                     "can't derive a private key from a public key")
-            data = bytes([0]) + self.secret_exponent_bytes + i_as_bytes
+            data = b'\0' + self.secret_exponent_bytes + i_as_bytes
         else:
             data = public_pair_to_sec(self.public_pair,
                                       compressed=True) + i_as_bytes
         I64 = hmac.HMAC(key=self.chain_code,
                         msg=data,
                         digestmod=hashlib.sha512).digest()
-        I_left_as_exponent = int.from_bytes(I64[:32], byteorder="big")
+        I_left_as_exponent = from_bytes_32(I64[:32])
         d = dict(is_private=as_private,
                  is_test=self.is_test,
                  chain_code=I64[32:],
@@ -235,7 +251,7 @@ class Wallet(object):
         if as_private:
             exponent = (I_left_as_exponent + self.secret_exponent
                        ) % ecdsa.generator_secp256k1.order()
-            d["secret_exponent_bytes"] = exponent.to_bytes(32, byteorder="big")
+            d["secret_exponent_bytes"] = to_bytes_32(exponent)
         else:
             x, y = self.public_pair
             the_point = I_left_as_exponent * ecdsa.generator_secp256k1 + ecdsa.Point(

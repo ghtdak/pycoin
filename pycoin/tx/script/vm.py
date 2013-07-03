@@ -29,6 +29,7 @@ THE SOFTWARE.
 import logging
 
 from . import opcodes
+from . import ScriptError
 
 from .microcode import MICROCODE_LOOKUP, VCH_TRUE, make_bool
 from .signing import verify_script_signature
@@ -45,10 +46,6 @@ INVALID_OPCODE_VALUES = frozenset((
     for s in
     "OP_CAT OP_SUBSTR OP_LEFT OP_RIGHT OP_INVERT OP_AND OP_OR OP_XOR OP_2MUL OP_2DIV OP_MUL OP_DIV OP_MOD OP_LSHIFT OP_RSHIFT".split(
     )))
-
-
-class ScriptError(Exception):
-    pass
 
 
 def eval_script(script, tx_to, n_in, hash_type, stack=[], alt_stack=[]):
@@ -106,7 +103,7 @@ def eval_script(script, tx_to, n_in, hash_type, stack=[], alt_stack=[]):
                 continue
 
             if opcode >= opcodes.OP_1NEGATE and opcode <= opcodes.OP_16:
-                s.push(opcode + 1 - OP_1)
+                stack.append(opcode + 1 - opcodes.OP_1)
                 continue
 
             if opcode in (opcodes.OP_ELSE, opcodes.OP_ENDIF):
