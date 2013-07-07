@@ -48,7 +48,7 @@ INVALID_OPCODE_VALUES = frozenset((
     )))
 
 
-def eval_script(script, tx_to, n_in, hash_type, stack=[], alt_stack=[]):
+def eval_script(script, tx_hash, hash_type, stack=[]):
     if len(script) > 10000:
         return False
 
@@ -113,10 +113,8 @@ def eval_script(script, tx_to, n_in, hash_type, stack=[], alt_stack=[]):
             if opcode in (opcodes.OP_CHECKSIG, opcodes.OP_CHECKSIGVERIFY):
                 public_key_blob = stack.pop()
                 sig_blob = stack.pop()
-                subscript = script[begin_code_hash:]
-                v = verify_script_signature(
-                    script, tx_to, n_in, public_key_blob, sig_blob, subscript,
-                    hash_type)
+                v = verify_script_signature(script, tx_hash, public_key_blob,
+                                            sig_blob, hash_type)
                 v = make_bool(v)
                 stack.append(v)
                 if opcode == opcodes.OP_CHECKSIGVERIFY:
@@ -138,16 +136,12 @@ def eval_script(script, tx_to, n_in, hash_type, stack=[], alt_stack=[]):
     return len(stack) != 0
 
 
-def verify_script(script_signature,
-                  script_public_key,
-                  tx_to,
-                  n_in,
-                  hash_type=0):
+def verify_script(script_signature, script_public_key, tx_hash, hash_type=0):
     stack = []
-    if not eval_script(script_signature, tx_to, n_in, hash_type, stack):
+    if not eval_script(script_signature, tx_hash, hash_type, stack):
         logging.debug("script_signature did not evaluate")
         return False
-    if not eval_script(script_public_key, tx_to, n_in, hash_type, stack):
+    if not eval_script(script_public_key, tx_hash, hash_type, stack):
         logging.debug("script_public_key did not evaluate")
         return False
 

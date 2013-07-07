@@ -63,7 +63,9 @@ class ValidatingTest(unittest.TestCase):
         block_80971 = Block.parse(io.BytesIO(block_80971_data))
         block_80974 = Block.parse(io.BytesIO(block_80974_data))
 
-        tx_db = dict((tx.hash(), tx) for tx in block_80971.txs)
+        tx_out_script_db = dict(((tx.hash(), idx), tx_out.script)
+                                for tx in block_80971.txs
+                                for idx, tx_out in enumerate(tx.txs_out))
 
         tx_to_validate = block_80974.txs[2]
         self.assertEqual(
@@ -73,7 +75,7 @@ class ValidatingTest(unittest.TestCase):
             tx_to_validate.id(),
             "7c4f5385050c18aa8df2ba50da566bbab68635999cc99b75124863da1594195b")
 
-        tx_to_validate.validate(tx_db)
+        tx_to_validate.validate(tx_out_script_db)
 
         # now, let's corrupt the Tx and see what happens
         tx_out = tx_to_validate.txs_out[1]
@@ -82,7 +84,7 @@ class ValidatingTest(unittest.TestCase):
 
         tx_out.script = tools.compile(disassembly)
 
-        tx_to_validate.validate(tx_db)
+        tx_to_validate.validate(tx_out_script_db)
 
         disassembly = disassembly.replace(
             "9661a79ae1f6d487af3420c13e649d6df3747fc2",
@@ -91,7 +93,7 @@ class ValidatingTest(unittest.TestCase):
         tx_out.script = tools.compile(disassembly)
 
         with self.assertRaises(ValidationFailureError) as cm:
-            tx_to_validate.validate(tx_db)
+            tx_to_validate.validate(tx_out_script_db)
         exception = cm.exception
         self.assertEqual(
             exception.args[0],
