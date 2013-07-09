@@ -2,13 +2,13 @@
 
 import distutils.core
 
-version = "0.13"
+version = "0.14"
 
 distutils.core.setup(
     name="pycoin",
     version=version,
     packages=["pycoin", "pycoin.ecdsa", "pycoin.tx", "pycoin.tx.script",
-              "pycoin.serialize"],
+              "pycoin.serialize", "pycoin.scripts"],
     author="Richard Kiss",
     entry_points={'console_scripts':
                   ['genwallet = pycoin.scripts.genwallet:main']},

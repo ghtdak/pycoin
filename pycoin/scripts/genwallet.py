@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import binascii
 import subprocess
 import sys
 
@@ -17,6 +18,10 @@ def dev_random_entropy():
     return open("/dev/urandom", "rb").read(64)
 
 
+def b2h(b):
+    return binascii.hexlify(b).decode("utf8")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate a private wallet key.")
@@ -24,6 +29,10 @@ def main():
     parser.add_argument('-a',
                         "--address",
                         help='show as Bitcoin address',
+                        action='store_true')
+    parser.add_argument('-i',
+                        "--info",
+                        help='show metadata',
                         action='store_true')
     parser.add_argument('-w',
                         "--wif",
@@ -84,7 +93,36 @@ def main():
     try:
         if args.subkey:
             wallet = wallet.subkey_for_path(args.subkey)
-        if args.address:
+        if args.info:
+            print(wallet.wallet_key(as_private=wallet.is_private))
+            if wallet.is_test:
+                print("test network")
+            else:
+                print("main network")
+            if wallet.is_private:
+                print("private key")
+                print("secret exponent: %d" % wallet.secret_exponent)
+            else:
+                print("public key only")
+            print("public pair x:   %d\npublic pair y:   %d" %
+                  wallet.public_pair)
+            print("tree depth:      %d" % wallet.depth)
+            print("fingerprint:     %s" % b2h(wallet.fingerprint()))
+            print("parent f'print:  %s" % b2h(wallet.parent_fingerprint))
+            if wallet.child_number >= 0x80000000:
+                wc = wallet.child_number - 0x80000000
+                child_index = "%dp (%d)" % (wc, wallet.child_number)
+            else:
+                child_index = "%d" % wallet.child_number
+            print("child index:     %s" % child_index)
+            print("chain code:      %s" % b2h(wallet.chain_code))
+            if wallet.is_private:
+                print("WIF:             %s" % wallet.wif())
+                print("  uncompressed:  %s" % wallet.wif(compressed=False))
+            print("Bitcoin address: %s" % wallet.bitcoin_address())
+            print("  uncompressed:  %s" % wallet.bitcoin_address(
+                compressed=False))
+        elif args.address:
             print(wallet.bitcoin_address(compressed=not args.uncompressed))
         elif args.wif:
             print(wallet.wif(compressed=not args.uncompressed))
