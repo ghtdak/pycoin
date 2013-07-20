@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
-import binascii
 import unittest
 
 from pycoin import wallet
+from pycoin.encoding import h2b
 
 
 class Bip0032TestCase(unittest.TestCase):
 
     def test_vector_1(self):
-        master = wallet.Wallet.from_master_secret(binascii.unhexlify(
+        master = wallet.Wallet.from_master_secret(h2b(
             "000102030405060708090a0b0c0d0e0f"))
         self.assertEqual(
             master.wallet_key(as_private=True),
@@ -102,7 +102,7 @@ class Bip0032TestCase(unittest.TestCase):
             pub_m0p1_1_2p_2_1000000000.wallet_key())
 
     def test_vector_2(self):
-        master = wallet.Wallet.from_master_secret(binascii.unhexlify(
+        master = wallet.Wallet.from_master_secret(h2b(
             "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"))
         self.assertEqual(
             master.wallet_key(as_private=True),
