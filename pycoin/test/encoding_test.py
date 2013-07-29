@@ -126,7 +126,7 @@ class EncodingTestCase(unittest.TestCase):
         def do_test(as_public_pair, as_sec, is_compressed, as_hash160_sec,
                     as_bitcoin_address):
             self.assertEqual(
-                encoding.public_pair_from_sec(as_sec), as_public_pair)
+                encoding.sec_to_public_pair(as_sec), as_public_pair)
             self.assertEqual(
                 encoding.public_pair_to_sec(as_public_pair,
                                             compressed=is_compressed),

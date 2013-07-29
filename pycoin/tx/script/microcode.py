@@ -32,29 +32,12 @@ import hashlib
 from . import ScriptError
 
 from .opcodes import OPCODE_TO_INT
+from .tools import bytes_to_int, int_to_bytes
 from ...encoding import hash160, h2b, double_sha256
 
 bytes_from_ints = (
     lambda x: ''.join(chr(c) for c in x)) if bytes == str else bytes
 bytes_to_ints = (lambda x: (ord(c) for c in x)) if bytes == str else lambda x: x
-
-
-def as_bignum(s):
-    v = 0
-    b = 0
-    for c in bytes_to_ints(s):
-        v += (c << b)
-        b += 8
-    return v
-
-
-def from_bignum(v):
-    l = bytearray()
-    while v > 0:
-        v, mod = divmod(v, 256)
-        l.append(mod)
-    return bytes(l)
-
 
 VCH_TRUE = b'\1\1'
 VCH_FALSE = b'\0'
@@ -215,7 +198,7 @@ def do_OP_PICK(stack):
     >>> print(s)
     ['a', 'b', 'c', 'd', 'b']
     """
-    v = as_bignum(stack.pop())
+    v = bytes_to_int(stack.pop())
     stack.append(stack[-v - 1])
 
 
@@ -226,7 +209,7 @@ def do_OP_ROLL(stack):
     >>> print(s)
     ['a', 'c', 'd', 'b']
     """
-    v = as_bignum(stack.pop())
+    v = bytes_to_int(stack.pop())
     stack.append(stack.pop(-v - 1))
 
 
@@ -283,8 +266,8 @@ def do_OP_SUBSTR(stack):
     >>> print(s)
     ['de']
     """
-    pos = as_bignum(stack.pop())
-    length = as_bignum(stack.pop())
+    pos = bytes_to_int(stack.pop())
+    length = bytes_to_int(stack.pop())
     stack.append(stack.pop()[length:length + pos])
 
 
@@ -299,7 +282,7 @@ def do_OP_LEFT(stack):
     >>> print(len(s) ==1 and s[0]==b'')
     True
     """
-    pos = as_bignum(stack.pop())
+    pos = bytes_to_int(stack.pop())
     stack.append(stack.pop()[:pos])
 
 
@@ -314,7 +297,7 @@ def do_OP_RIGHT(stack):
     >>> print(s==[b''])
     True
     """
-    pos = as_bignum(stack.pop())
+    pos = bytes_to_int(stack.pop())
     if pos > 0:
         stack.append(stack.pop()[-pos:])
     else:
@@ -330,10 +313,10 @@ def do_OP_SIZE(stack):
     True
     >>> s = [b'abcdef'*1000]
     >>> do_OP_SIZE(s)
-    >>> print(binascii.hexlify(s[-1]) == b'7017')
+    >>> print(binascii.hexlify(s[-1]) == b'1770')
     True
     """
-    stack.append(from_bignum(len(stack[-1])))
+    stack.append(int_to_bytes(len(stack[-1])))
 
 
 def do_OP_INVERT(stack):
@@ -417,9 +400,9 @@ do_OP_EQUALVERIFY = lambda s: do_OP_EQUAL(s)
 def make_bin_op(binop):
 
     def f(stack):
-        v1 = as_bignum(stack.pop())
-        v2 = as_bignum(stack.pop())
-        stack.append(from_bignum(binop(v2, v1)))
+        v1 = bytes_to_int(stack.pop())
+        v2 = bytes_to_int(stack.pop())
+        stack.append(int_to_bytes(binop(v2, v1)))
 
     return f
 
@@ -515,7 +498,7 @@ def do_OP_HASH256(stack):
 def make_unary_num_op(unary_f):
 
     def f(stack):
-        stack.append(from_bignum(unary_f(as_bignum(stack.pop()))))
+        stack.append(int_to_bytes(unary_f(bytes_to_int(stack.pop()))))
 
     return f
 
