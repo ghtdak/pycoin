@@ -22,6 +22,14 @@ class EncodingTestCase(unittest.TestCase):
             b'\0\xff\xde\xfeOHu\xcf\x11\x9f\xc3\xd8\xf4\xa0\x9a\xe3~\xc4\xccB\xb1',
             256)
 
+    def test_to_bytes_32(self):
+        for i in range(256):
+            v = encoding.to_bytes_32(i)
+            self.assertEqual(v, b'\0' * 31 + bytes(bytearray([i])))
+        for i in range(256, 512):
+            v = encoding.to_bytes_32(i)
+            self.assertEqual(v, b'\0' * 30 + bytes(bytearray([1, i & 0xff])))
+
     def test_to_from_base58(self):
 
         def do_test(as_text, as_bin):
