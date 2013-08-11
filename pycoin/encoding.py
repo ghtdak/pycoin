@@ -92,7 +92,10 @@ def from_long(v, prefix, base, charset):
 
 
 def to_bytes_32(v):
-    return from_long(v, 0, 256, lambda x: x)
+    v = from_long(v, 0, 256, lambda x: x)
+    if len(v) > 32:
+        raise ValueError("input to to_bytes_32 is too large")
+    return ((b'\0' * 32) + v)[-32:]
 
 
 if hasattr(int, "to_bytes"):
@@ -100,6 +103,8 @@ if hasattr(int, "to_bytes"):
 
 
 def from_bytes_32(v):
+    if len(v) != 32:
+        raise ValueError("input to from_bytes_32 is wrong length")
     return to_long(256, byte_to_int, v)[0]
 
 
