@@ -194,12 +194,14 @@ class Wallet(object):
             raise PublicPrivateMismatchError(
                 "can't generate WIF for public key")
         return secret_exponent_to_wif(self.secret_exponent,
-                                      compressed=compressed)
+                                      compressed=compressed,
+                                      is_test=self.is_test)
 
     def bitcoin_address(self, compressed=True):
         """Yield the Bitcoin address corresponding to this node."""
         return public_pair_to_bitcoin_address(self.public_pair,
-                                              compressed=compressed)
+                                              compressed=compressed,
+                                              is_test=self.is_test)
 
     def public_copy(self):
         """Yield the corresponding public node for this node."""
