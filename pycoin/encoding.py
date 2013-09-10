@@ -38,22 +38,6 @@ BASE58_BASE = len(BASE58_ALPHABET)
 BASE58_LOOKUP = dict((c, i) for i, c in enumerate(BASE58_ALPHABET))
 
 
-def private_byte_prefix(is_test):
-    """WIF prefix. Returns b'\x80' for main network and b'\xef' for testnet"""
-    if is_test:
-        return b'\xef'
-    else:
-        return b'\x80'
-
-
-def public_byte_prefix(is_test):
-    """Address prefix. Returns b'\0' for main network and b'\x6f' for testnet"""
-    if is_test:
-        return b'\x6f'
-    else:
-        return b'\0'
-
-
 class EncodingError(Exception):
     pass
 
@@ -182,6 +166,16 @@ def is_hashed_base58_valid(base58):
     except EncodingError:
         return False
     return True
+
+
+def private_byte_prefix(is_test):
+    """WIF prefix. Returns b'\x80' for main network and b'\xef' for testnet"""
+    return b'\xef' if is_test else b'\x80'
+
+
+def public_byte_prefix(is_test):
+    """Address prefix. Returns b'\0' for main network and b'\x6f' for testnet"""
+    return b'\x6f' if is_test else b'\0'
 
 
 def wif_to_tuple_of_secret_exponent_compressed(wif, is_test=False):
