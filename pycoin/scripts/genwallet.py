@@ -15,7 +15,7 @@ def gpg_entropy():
 
 
 def dev_random_entropy():
-    return open("/dev/urandom", "rb").read(64)
+    return open("/dev/random", "rb").read(64)
 
 
 def b2h(b):
@@ -49,7 +49,7 @@ def main():
                         action='store_true')
     parser.add_argument('-u',
                         "--dev-random",
-                        help='use /dev/urandom to get additional entropy',
+                        help='use /dev/random to get additional entropy',
                         action='store_true')
     parser.add_argument('-n',
                         "--uncompressed",
