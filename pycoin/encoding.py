@@ -42,6 +42,21 @@ class EncodingError(Exception):
     pass
 
 
+def ripemd160(data):
+    return hashlib.new("ripemd160", data)
+
+
+try:
+    ripemd160(b'').digest()
+except Exception:
+    # stupid Google App Engine hashlib doesn't support ripemd160 for some stupid reason
+    # import it from pycrypto. You need to add
+    # - name: pycrypto
+    #   version: "latest"
+    # to the "libraries" section of your app.yaml
+    from Crypto.Hash.RIPEMD import RIPEMD160Hash as ripemd160
+
+
 def h2b(h):
     """
     A version of binascii.unhexlify that accepts unicode. This is
@@ -119,7 +134,7 @@ def double_sha256(data):
 
 def hash160(data):
     """A standard compound hash."""
-    return hashlib.new("ripemd160", hashlib.sha256(data).digest()).digest()
+    return ripemd160(hashlib.sha256(data).digest()).digest()
 
 
 def b2a_base58(s):
