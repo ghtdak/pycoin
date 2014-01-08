@@ -123,7 +123,7 @@ def main():
                               WIF_uncompressed=wallet.wif(compressed=False)))
             else:
                 d.update(dict(key="public"))
-            print json.dumps(d, indent=3)
+            print(json.dumps(d, indent=3))
         elif args.info:
             print(wallet.wallet_key(as_private=wallet.is_private))
             if wallet.is_test:
