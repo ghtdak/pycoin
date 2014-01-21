@@ -56,6 +56,6 @@ class TxOut(object):
         return 'TxOut<%s "%s">' % (decimal.Decimal(self.coin_value) /
                                    COIN_FACTOR, disassemble(self.script))
 
-    def bitcoin_address(self):
+    def bitcoin_address(self, is_test=False):
         # attempt to return the destination address, or None on failure
-        return bitcoin_address_for_script(self.script)
+        return bitcoin_address_for_script(self.script, is_test=is_test)
