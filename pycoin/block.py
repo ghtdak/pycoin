@@ -99,10 +99,12 @@ class BlockHeader(object):
         return b2h_rev(self.previous_block_hash)
 
     def __str__(self):
-        return "BlockHeader [%s] (previous %s)" % (self.id(), previous_block_id)
+        return "BlockHeader [%s] (previous %s)" % (self.id(),
+                                                   self.previous_block_id())
 
     def __repr__(self):
-        return "BlockHeader [%s] (previous %s)" % (self.id(), previous_block_id)
+        return "BlockHeader [%s] (previous %s)" % (self.id(),
+                                                   self.previous_block_id())
 
 
 class Block(BlockHeader):
