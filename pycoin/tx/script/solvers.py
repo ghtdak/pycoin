@@ -181,10 +181,6 @@ class SecretExponentSolver(object):
                 r, s = ecdsa.sign(ecdsa.generator_secp256k1, secret_exponent,
                                   signature_hash, k)
 
-                # Ensure that 's' is even to prevent attacks - see https://bitcointalk.org/index.php?topic=285142.msg3295518#msg3295518
-                if s > (ecdsa.generator_secp256k1.order() / 2):
-                    s = ecdsa.generator_secp256k1.order() - s
-
             else:
                 r, s = ecdsa.sign(ecdsa.generator_secp256k1, secret_exponent,
                                   signature_hash)
