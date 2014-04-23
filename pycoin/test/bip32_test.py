@@ -2,14 +2,14 @@
 
 import unittest
 
-from pycoin import wallet
+from pycoin.key import bip32
 from pycoin.encoding import h2b
 
 
 class Bip0032TestCase(unittest.TestCase):
 
     def test_vector_1(self):
-        master = wallet.Wallet.from_master_secret(h2b(
+        master = bip32.Wallet.from_master_secret(h2b(
             "000102030405060708090a0b0c0d0e0f"))
         self.assertEqual(
             master.wallet_key(as_private=True),
@@ -22,7 +22,7 @@ class Bip0032TestCase(unittest.TestCase):
         self.assertEqual(master.wallet_key(
         ), "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8")
 
-        m0p = master.subkey(is_prime=True)
+        m0p = master.subkey(is_hardened=True)
         self.assertEqual(m0p.wallet_key(
         ), "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw")
         self.assertEqual(
@@ -31,7 +31,7 @@ class Bip0032TestCase(unittest.TestCase):
         self.assertEqual(
             master.subkey_for_path("0p").wallet_key(), m0p.wallet_key())
 
-        pub_mp0 = master.subkey(is_prime=True, as_private=False)
+        pub_mp0 = master.subkey(is_hardened=True, as_private=False)
         self.assertEqual(pub_mp0.wallet_key(), m0p.wallet_key())
         self.assertEqual(
             master.subkey_for_path("0p.pub").wallet_key(), pub_mp0.wallet_key())
@@ -51,7 +51,7 @@ class Bip0032TestCase(unittest.TestCase):
             master.subkey_for_path("0p/1.pub").wallet_key(),
             pub_m0p1.wallet_key())
 
-        m0p1_1_2p = m0p1.subkey(i=2, is_prime=True)
+        m0p1_1_2p = m0p1.subkey(i=2, is_hardened=True)
         self.assertEqual(m0p1_1_2p.wallet_key(
         ), "xpub6D4BDPcP2GT577Vvch3R8wDkScZWzQzMMUm3PWbmWvVJrZwQY4VUNgqFJPMM3No2dFDFGTsxxpG5uJh7n7epu4trkrX7x7DogT5Uv6fcLW5")
         self.assertEqual(
@@ -61,7 +61,7 @@ class Bip0032TestCase(unittest.TestCase):
             master.subkey_for_path("0p/1/2p").wallet_key(),
             m0p1_1_2p.wallet_key())
 
-        pub_m0p1_1_2p = m0p1.subkey(i=2, as_private=False, is_prime=True)
+        pub_m0p1_1_2p = m0p1.subkey(i=2, as_private=False, is_hardened=True)
         self.assertEqual(pub_m0p1_1_2p.wallet_key(), m0p1_1_2p.wallet_key())
         self.assertEqual(
             master.subkey_for_path("0p/1/2p.pub").wallet_key(),
@@ -102,7 +102,7 @@ class Bip0032TestCase(unittest.TestCase):
             pub_m0p1_1_2p_2_1000000000.wallet_key())
 
     def test_vector_2(self):
-        master = wallet.Wallet.from_master_secret(h2b(
+        master = bip32.Wallet.from_master_secret(h2b(
             "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"))
         self.assertEqual(
             master.wallet_key(as_private=True),
@@ -120,14 +120,14 @@ class Bip0032TestCase(unittest.TestCase):
         pub_m0 = master.subkey(as_private=False)
         self.assertEqual(pub_m0.wallet_key(), m0.wallet_key())
 
-        m0_2147483647p = m0.subkey(i=2147483647, is_prime=True)
+        m0_2147483647p = m0.subkey(i=2147483647, is_hardened=True)
         self.assertEqual(m0_2147483647p.wallet_key(
         ), "xpub6ASAVgeehLbnwdqV6UKMHVzgqAG8Gr6riv3Fxxpj8ksbH9ebxaEyBLZ85ySDhKiLDBrQSARLq1uNRts8RuJiHjaDMBU4Zn9h8LZNnBC5y4a")
         self.assertEqual(
             m0_2147483647p.wallet_key(as_private=True),
             "xprv9wSp6B7kry3Vj9m1zSnLvN3xH8RdsPP1Mh7fAaR7aRLcQMKTR2vidYEeEg2mUCTAwCd6vnxVrcjfy2kRgVsFawNzmjuHc2YmYRmagcEPdU9")
         pub_m0_2147483647p = m0.subkey(i=2147483647,
-                                       is_prime=True,
+                                       is_hardened=True,
                                        as_private=False)
         self.assertEqual(pub_m0_2147483647p.wallet_key(),
                          m0_2147483647p.wallet_key())
@@ -146,7 +146,7 @@ class Bip0032TestCase(unittest.TestCase):
                          m0_2147483647p_1.wallet_key())
 
         m0_2147483647p_1_2147483646p = m0_2147483647p_1.subkey(i=2147483646,
-                                                               is_prime=True)
+                                                               is_hardened=True)
         self.assertEqual(m0_2147483647p_1_2147483646p.wallet_key(
         ), "xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL")
         self.assertEqual(
@@ -154,7 +154,7 @@ class Bip0032TestCase(unittest.TestCase):
             "xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc")
         pub_m0_2147483647p_1_2147483646p = m0_2147483647p_1.subkey(
             i=2147483646, as_private=False,
-            is_prime=True)
+            is_hardened=True)
         self.assertEqual(pub_m0_2147483647p_1_2147483646p.wallet_key(),
                          m0_2147483647p_1_2147483646p.wallet_key())
 
@@ -185,9 +185,9 @@ class Bip0032TestCase(unittest.TestCase):
 
     def test_testnet(self):
         # WARNING: these values have not been verified independently. TODO: do so
-        master = wallet.Wallet.from_master_secret(
+        master = bip32.Wallet.from_master_secret(
             h2b("000102030405060708090a0b0c0d0e0f"),
-            is_test=True)
+            netcode='T')
         self.assertEqual(
             master.wallet_key(as_private=True),
             "tprv8ZgxMBicQKsPeDgjzdC36fs6bMjGApWDNLR9erAXMs5skhMv36j9MV5ecvfavji5khqjWaWSFhN3YcCUUdiKH6isR4Pwy3U5y5egddBr16m")
@@ -197,28 +197,27 @@ class Bip0032TestCase(unittest.TestCase):
                          "cVPXTF2TnozE1PenpP3x9huctiATZmp27T9Ue1d8nqLSExoPwfN5")
 
     def test_streams(self):
-        m0 = wallet.Wallet.from_master_secret("foo bar baz".encode("utf8"))
+        m0 = bip32.Wallet.from_master_secret("foo bar baz".encode("utf8"))
         pm0 = m0.public_copy()
         self.assertEqual(m0.wallet_key(), pm0.wallet_key())
         m1 = m0.subkey()
         pm1 = pm0.subkey()
-        for i in range(10):
+        for i in range(4):
             m = m1.subkey(i=i)
             pm = pm1.subkey(i=i)
             self.assertEqual(m.wallet_key(), pm.wallet_key())
             self.assertEqual(m.bitcoin_address(), pm.bitcoin_address())
-            m2 = wallet.Wallet.from_wallet_key(m.wallet_key(as_private=True))
+            m2 = bip32.Wallet.from_wallet_key(m.wallet_key(as_private=True))
             m3 = m2.public_copy()
             self.assertEqual(
                 m.wallet_key(as_private=True),
                 m2.wallet_key(as_private=True))
             self.assertEqual(m.wallet_key(), m3.wallet_key())
             print(m.wallet_key(as_private=True))
-            for j in range(10):
+            for j in range(2):
                 k = m.subkey(i=j)
-                k2 = wallet.Wallet.from_wallet_key(k.wallet_key(
-                    as_private=True))
-                k3 = wallet.Wallet.from_wallet_key(k.wallet_key())
+                k2 = bip32.Wallet.from_wallet_key(k.wallet_key(as_private=True))
+                k3 = bip32.Wallet.from_wallet_key(k.wallet_key())
                 k4 = k.public_copy()
                 self.assertEqual(
                     k.wallet_key(as_private=True),

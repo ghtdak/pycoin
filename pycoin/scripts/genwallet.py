@@ -6,7 +6,7 @@ import json
 import subprocess
 import sys
 
-from pycoin.wallet import Wallet, PublicPrivateMismatchError
+from pycoin.key.bip32 import Wallet, PublicPrivateMismatchError
 
 
 def gpg_entropy():
@@ -25,7 +25,7 @@ def b2h(b):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a private wallet key.")
+        description="Generate a private wallet key. WARNING: obsolete. Use ku instead.")
 
     parser.add_argument('-a',
                         "--address",
@@ -76,6 +76,8 @@ def main():
     if args.inputfile == sys.stdin:
         args.inputfile = sys.stdin.buffer
 
+    network = 'T' if args.t else 'M'
+
     entropy = bytearray()
     if args.gpg:
         entropy.extend(gpg_entropy())
@@ -94,7 +96,7 @@ def main():
     elif args.wallet_key:
         wallet = Wallet.from_wallet_key(args.wallet_key)
     else:
-        wallet = Wallet.from_master_secret(bytes(entropy), is_test=args.t)
+        wallet = Wallet.from_master_secret(bytes(entropy), netcode=network)
     try:
         if args.subkey:
             wallet = wallet.subkey_for_path(args.subkey)

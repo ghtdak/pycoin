@@ -90,16 +90,26 @@ def compile(s):
     for t in s.split():
         if t in OPCODE_TO_INT:
             f.write(bytes_from_int(OPCODE_TO_INT[t]))
+        elif ("OP_%s" % t) in OPCODE_TO_INT:
+            f.write(bytes_from_int(OPCODE_TO_INT["OP_%s" % t]))
         else:
+            if (t[0], t[-1]) == ('[', ']'):
+                t = t[1:-1]
+            if len(t) == 1:
+                t = "0" + t
             t = binascii.unhexlify(t.encode("utf8"))
+            if len(t) == 1 and bytes_to_ints(t)[0] < 16:
+                f.write(OPCODE_TO_INT["OP_%d" % t])
+            elif len(t) <= 75:
+                f.write(bytes_from_int(len(t)))
+                f.write(t)
             # BRAIN DAMAGE: if len(t) is too much, we need a different opcode
-            f.write(bytes_from_int(len(t)))
-            f.write(t)
+            # This will never be used in practice as it makes the scripts too long.
     return f.getvalue()
 
 
-def disassemble(script):
-    """Disassemble the given script. Returns a string."""
+def opcode_list(script):
+    """Disassemble the given script. Returns a list of opcodes."""
     opcodes = []
     pc = 0
     while pc < len(script):
@@ -111,7 +121,12 @@ def disassemble(script):
             logging.info("missing opcode %r", opcode)
             continue
         opcodes.append(INT_TO_OPCODE[opcode])
-    return ' '.join(opcodes)
+    return opcodes
+
+
+def disassemble(script):
+    """Disassemble the given script. Returns a string."""
+    return ' '.join(opcode_list(script))
 
 
 def delete_subscript(script, subscript):

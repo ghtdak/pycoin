@@ -2,19 +2,25 @@
 
 from setuptools import setup
 
-version = "0.26"
+version = "0.4"
 
 setup(
     name="pycoin",
     version=version,
     packages=[
-        "pycoin", "pycoin.convention", "pycoin.ecdsa", "pycoin.tx",
-        "pycoin.tx.script", "pycoin.serialize", "pycoin.services",
+        "pycoin", "pycoin.convention", "pycoin.ecdsa", "pycoin.key",
+        "pycoin.tx", "pycoin.tx.script", "pycoin.serialize", "pycoin.services",
         "pycoin.scripts"
     ],
     author="Richard Kiss",
     entry_points={'console_scripts':
                   [
+                      'block = pycoin.scripts.dump_block:main',
+                      'ku = pycoin.scripts.ku:main',
+                      'tx = pycoin.scripts.tx:main',
+                      'cache_tx = pycoin.scripts.cache_tx:main',
+                      'fetch_unspent = pycoin.scripts.fetch_unspent:main',
+                      ## these scripts are obsolete
                       'genwallet = pycoin.scripts.genwallet:main',
                       'spend = pycoin.scripts.spend:main',
                       'bu = pycoin.scripts.bitcoin_utils:main',

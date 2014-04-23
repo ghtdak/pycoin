@@ -43,6 +43,12 @@ class BadMerkleRootError(Exception):
     pass
 
 
+def difficulty_max_mask_for_bits(bits):
+    prefix = bits >> 24
+    mask = (bits & 0x7ffff) << (8 * (prefix - 3))
+    return mask
+
+
 class BlockHeader(object):
     """A BlockHeader is a block with the transaction data removed. With a
     complete Merkle tree database, it can be reconstructed from the
@@ -119,7 +125,7 @@ class Block(BlockHeader):
             "L##LLLI", f)
         txs = []
         for i in range(count):
-            txs.append(Tx.parse(f, is_first_in_block=(i == 0)))
+            txs.append(Tx.parse(f))
         return self(version, previous_block_hash, merkle_root, timestamp,
                     difficulty, nonce, txs)
 

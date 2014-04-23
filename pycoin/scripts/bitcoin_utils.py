@@ -72,7 +72,8 @@ def parse_as_address(s):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Bitcoin utilities.")
+    parser = argparse.ArgumentParser(
+        description="Bitcoin utilities. WARNING: obsolete. Use ku instead.")
 
     parser.add_argument('-a',
                         "--address",
