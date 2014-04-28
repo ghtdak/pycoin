@@ -39,12 +39,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import binascii
 import hashlib
 import hmac
 import itertools
 import struct
-import itertools
 
 from .. import ecdsa
 
@@ -94,7 +92,7 @@ class Wallet(object):
     @classmethod
     def from_wallet_key(class_, b58_str, allow_subkey_suffix=True):
         """Generate a Wallet from a base58 string in a standard way."""
-        ## TODO: support subkey suffixes
+        # TODO: support subkey suffixes
 
         data = a2b_hashed_base58(b58_str)
         netcode, key_type = netcode_and_type_for_data(data)
@@ -271,14 +269,14 @@ class Wallet(object):
             d["secret_exponent_bytes"] = to_bytes_32(exponent)
         else:
             x, y = self.public_pair
-            the_point = I_left_as_exponent * ecdsa.generator_secp256k1 + ecdsa.Point(
-                ecdsa.generator_secp256k1.curve(), x, y,
-                ecdsa.generator_secp256k1.order())
+            the_point = I_left_as_exponent * ecdsa.generator_secp256k1 +\
+                ecdsa.Point(ecdsa.generator_secp256k1.curve(), x, y, ecdsa.generator_secp256k1.order())
             d["public_pair"] = the_point.pair()
         return self.__class__(**d)
 
     def subkey(self, i=0, is_hardened=False, as_private=None):
-        if as_private is None: as_private = self.is_private
+        if as_private is None:
+            as_private = self.is_private
         is_hardened = not not is_hardened
         as_private = not not as_private
         lookup = (i, is_hardened, as_private)
@@ -309,7 +307,8 @@ class Wallet(object):
             invocations = path.split("/")
             for v in invocations:
                 is_hardened = v[-1] in ("'pH")
-                if is_hardened: v = v[:-1]
+                if is_hardened:
+                    v = v[:-1]
                 v = int(v)
                 key = key.subkey(i=v,
                                  is_hardened=is_hardened,
@@ -343,8 +342,10 @@ class Wallet(object):
             # examples:
             #   0/1H/0-4 => ['0/1H/0', '0/1H/1', '0/1H/2', '0/1H/3', '0/1H/4']
             #   0/2,5,9-11 => ['0/2', '0/5', '0/9', '0/10', '0/11']
-            #   3H/2/5/15-20p => ['3H/2/5/15p', '3H/2/5/16p', '3H/2/5/17p', '3H/2/5/18p', '3H/2/5/19p', '3H/2/5/20p']
-            #   5-6/7-8p,15/1-2 => ['5/7H/1', '5/7H/2', '5/8H/1', '5/8H/2', '5/15/1', '5/15/2', '6/7H/1', '6/7H/2', '6/8H/1', '6/8H/2', '6/15/1', '6/15/2']
+            #   3H/2/5/15-20p => ['3H/2/5/15p', '3H/2/5/16p', '3H/2/5/17p', '3H/2/5/18p',
+            #          '3H/2/5/19p', '3H/2/5/20p']
+            #   5-6/7-8p,15/1-2 => ['5/7H/1', '5/7H/2', '5/8H/1', '5/8H/2',
+            #         '5/15/1', '5/15/2', '6/7H/1', '6/7H/2', '6/8H/1', '6/8H/2', '6/15/1', '6/15/2']
 
             components = subkey_paths.split("/")
             iterators = [range_iterator(c) for c in components]

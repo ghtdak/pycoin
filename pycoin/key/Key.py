@@ -236,7 +236,8 @@ class Key(object):
 
     def subkeys(self, path_to_subkeys):
         """
-        Return an iterator yielding Keys corresponding to the hierarchical wallet's subkey path (or just this key).
+        Return an iterator yielding Keys corresponding to the
+        hierarchical wallet's subkey path (or just this key).
         """
         if self._hierarchical_wallet:
             for subwallet in self._hierarchical_wallet.subkeys_for_path(

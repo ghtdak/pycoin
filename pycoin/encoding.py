@@ -27,10 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import binascii
 import hashlib
-
-from .serialize import h2b
 
 bytes_from_int = chr if bytes == str else lambda x: bytes([x])
 byte_to_int = ord if bytes == str else lambda x: x
@@ -60,11 +57,16 @@ except Exception:
 
 
 def to_long(base, lookup_f, s):
-    """Convert an array to a (possibly bignum) integer, along with a prefix value of how many prefixed zeros there are.
+    """
+    Convert an array to a (possibly bignum) integer, along with a prefix value
+    of how many prefixed zeros there are.
 
-    base: the source base
-    lookup_f: a function to convert an element of s to a value between 0 and base-1.
-    s: the value to convert
+    base:
+        the source base
+    lookup_f:
+        a function to convert an element of s to a value between 0 and base-1.
+    s:
+        the value to convert
     """
     prefix = 0
     v = 0
@@ -209,7 +211,8 @@ def is_valid_wif(wif):
 def secret_exponent_to_wif(secret_exp, compressed=True, wif_prefix=b'\x80'):
     """Convert a secret exponent (correspdong to a private key) to WIF format."""
     d = wif_prefix + to_bytes_32(secret_exp)
-    if compressed: d += b'\01'
+    if compressed:
+        d += b'\01'
     return b2a_hashed_base58(d)
 
 

@@ -26,7 +26,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import decimal
 import struct
 
 import io
@@ -59,8 +58,8 @@ class BlockHeader(object):
         """Parse the BlockHeader from the file-like object in the standard way
         that blocks are sent in the network (well, except we ignore the
         transaction information)."""
-        version, previous_block_hash, merkle_root, timestamp, difficulty, nonce = struct.unpack(
-            "<L32s32sLLL", f.read(4 + 32 + 32 + 4 * 3))
+        (version, previous_block_hash, merkle_root, timestamp, difficulty,
+         nonce) = struct.unpack("<L32s32sLLL", f.read(4 + 32 + 32 + 4 * 3))
         return self(version, previous_block_hash, merkle_root, timestamp,
                     difficulty, nonce)
 
@@ -121,8 +120,8 @@ class Block(BlockHeader):
     def parse(self, f):
         """Parse the Block from the file-like object in the standard way
         that blocks are sent in the network."""
-        version, previous_block_hash, merkle_root, timestamp, difficulty, nonce, count = parse_struct(
-            "L##LLLI", f)
+        (version, previous_block_hash, merkle_root, timestamp, difficulty,
+         nonce, count) = parse_struct("L##LLLI", f)
         txs = []
         for i in range(count):
             txs.append(Tx.parse(f))
@@ -152,8 +151,9 @@ class Block(BlockHeader):
         transactions does not match the Merkle hash included in the block."""
         calculated_hash = merkle([tx.hash() for tx in self.txs], double_sha256)
         if calculated_hash != self.merkle_root:
-            raise BadMerkleRootError("calculated %s but block contains %s" % (
-                b2h(calculated_hash), b2h(self.merkle_root)))
+            raise BadMerkleRootError(
+                "calculated %s but block contains %s" %
+                (b2h(calculated_hash), b2h(self.merkle_root)))
 
     def __str__(self):
         return "Block [%s] (previous %s) [tx count: %d]" % (

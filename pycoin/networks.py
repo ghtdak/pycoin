@@ -1,4 +1,5 @@
 from .serialize import h2b
+from .encoding import EncodingError
 
 # (network_name, network_code, wif_prefix, address_prefix, bip32_priv_prefix, bip32_pub_prefix)
 

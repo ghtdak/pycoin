@@ -1,5 +1,4 @@
 import io
-import struct
 
 
 class Streamer(object):

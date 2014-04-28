@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import argparse
-import binascii
 import json
 import re
 import subprocess
@@ -234,9 +233,12 @@ def main():
     args = parser.parse_args()
 
     PREFIX_TRANSFORMS = (
-        ("P:", lambda s: Key(hierarchical_wallet=Wallet.from_master_secret(s.encode("utf8"), netcode=args.network))),
-        ("H:", lambda s: Key(hierarchical_wallet=Wallet.from_master_secret(h2b(s), netcode=args.network))),
-        ("create", lambda s: Key(hierarchical_wallet=Wallet.from_master_secret(get_entropy(), netcode=args.network))),
+        ("P:", lambda s:
+            Key(hierarchical_wallet=Wallet.from_master_secret(s.encode("utf8"), netcode=args.network))),
+        ("H:", lambda s:
+            Key(hierarchical_wallet=Wallet.from_master_secret(h2b(s), netcode=args.network))),
+        ("create", lambda s:
+            Key(hierarchical_wallet=Wallet.from_master_secret(get_entropy(), netcode=args.network))),
     )
 
     for item in args.item:
