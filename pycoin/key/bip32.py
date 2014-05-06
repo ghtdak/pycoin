@@ -79,7 +79,7 @@ class Wallet(object):
     """
 
     @classmethod
-    def from_master_secret(class_, master_secret, netcode='M'):
+    def from_master_secret(class_, master_secret, netcode='BTC'):
         """Generate a Wallet from a master password."""
         I64 = hmac.HMAC(key=b"Bitcoin seed",
                         msg=master_secret,

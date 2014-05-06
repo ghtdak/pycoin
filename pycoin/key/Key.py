@@ -19,7 +19,7 @@ class Key(object):
                  hash160=None,
                  prefer_uncompressed=None,
                  is_compressed=True,
-                 netcode='M'):
+                 netcode='BTC'):
         """
         hierarchical_wallet:
             a bip32 wallet
