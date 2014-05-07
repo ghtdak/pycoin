@@ -1,6 +1,7 @@
+from collections import namedtuple
+
 from .serialize import h2b
 from .encoding import EncodingError
-from collections import namedtuple
 
 NetworkValues = namedtuple(
     'NetworkValues', ('code', 'wif_prefix', 'address_prefix',
@@ -58,7 +59,7 @@ def pub32_prefix_for_netcode(netcode):
 
 def netcode_and_type_for_data(data):
     """
-    Given some already-decoded raw data from a base58 string, 
+    Given some already-decoded raw data from a base58 string,
     return (N, T) where N is the network code ("BTC" or "LTC") and
     T is the data type ("wif", "address", "prv32", "pub32").
     May also raise EncodingError.
