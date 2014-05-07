@@ -41,7 +41,7 @@ def validate_bitcoind(tx, tx_db, bitcoind_url):
         print("warning: can't talk to bitcoind due to missing library")
 
 
-def dump_tx(tx, netcode='M'):
+def dump_tx(tx, netcode='BTC'):
     address_prefix = address_prefix_for_netcode(netcode)
     tx_bin = stream_to_bytes(tx.stream)
     print("Version: %2d  tx hash %s  %d bytes   " %
@@ -162,7 +162,7 @@ def main():
     parser.add_argument(
         '-n',
         "--network",
-        default="M",
+        default="BTC",
         help='Define network code (M=Bitcoin mainnet, T=Bitcoin testnet).')
 
     parser.add_argument(
