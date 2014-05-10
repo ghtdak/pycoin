@@ -3,29 +3,29 @@ from collections import namedtuple
 from .serialize import h2b
 from .encoding import EncodingError
 
-NetworkValues = namedtuple(
-    'NetworkValues', ('code', 'wif_prefix', 'address_prefix',
-                      'bip32_priv_prefix', 'bip32_pub_prefix', 'network_name'))
+NetworkValues = namedtuple('NetworkValues', (
+    'code', 'wif_prefix', 'address_prefix', 'bip32_priv_prefix',
+    'bip32_pub_prefix', 'network_name', 'subnet_name'))
 
 NETWORKS = (
     # Bitcoin
     NetworkValues("BTC", b'\x80', b'\0', h2b("0488ADE4"), h2b("0488B21E"),
-                  "Bitcoin"),
+                  "Bitcoin", "mainnet"),
 
     # Bitcoin Textnet3
     NetworkValues("XTN", b'\xef', b'\x6f', h2b("04358394"), h2b("043587CF"),
-                  "Bitcoin testnet"),
+                  "Bitcoin", "testnet"),
 
     # Litecoin
-    NetworkValues("LTC", b'\xb0', b'\x30', None, None, "Litecoin"),
+    NetworkValues("LTC", b'\xb0', b'\x30', None, None, "Litecoin", "mainnet"),
 
     # Dogecoin
     NetworkValues("DOGE", b'\x9e', b'\x1e', h2b("02fda4e8"), h2b("02fda923"),
-                  "Dogecoin"),
+                  "Dogecoin", "mainnet"),
 
     # BlackCoin: unsure about bip32 prefixes; assuming will use Bitcoin's
     NetworkValues("BLK", b'\x99', b'\x19', h2b("0488ADE4"), h2b("0488B21E"),
-                  "Blackcoin"),)
+                  "Blackcoin", "mainnet"),)
 
 # Map from short code to details about that network.
 NETWORK_NAME_LOOKUP = dict((i.code, i) for i in NETWORKS)
@@ -39,6 +39,15 @@ NETWORK_NAMES = [i.code for i in NETWORKS]
 #
 def network_name_for_netcode(netcode):
     return NETWORK_NAME_LOOKUP[netcode].network_name
+
+
+def subnet_name_for_netcode(netcode):
+    return NETWORK_NAME_LOOKUP[netcode].subnet_name
+
+
+def full_network_name_for_netcode(netcode):
+    network = NETWORK_NAME_LOOKUP[netcode]
+    return "%s %s" % (network.network_name, network.subnet_name)
 
 
 def wif_prefix_for_netcode(netcode):
