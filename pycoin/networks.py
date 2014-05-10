@@ -14,7 +14,7 @@ NETWORKS = (
 
     # Bitcoin Textnet3
     NetworkValues("XTN", b'\xef', b'\x6f', b'\xc4', h2b("04358394"),
-                  h2b("043587CF"), "Bitcoin", "testnet"),
+                  h2b("043587CF"), "Bitcoin", "testnet3"),
 
     # Litecoin
     NetworkValues("LTC", b'\xb0', b'\x30', None, None, None, "Litecoin",
