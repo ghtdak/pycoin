@@ -35,7 +35,5 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Topic :: Internet',
-        'Topic :: Internet :: Bitcoin',
-        'Topic :: Internet :: Cryptocurrency',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],)
