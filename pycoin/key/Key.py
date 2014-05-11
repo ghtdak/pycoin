@@ -1,6 +1,6 @@
 from pycoin import ecdsa
-from pycoin.networks import address_prefix_for_netcode,\
-    netcode_and_type_for_data, wif_prefix_for_netcode
+from pycoin.key.validate import netcode_and_type_for_data
+from pycoin.networks import address_prefix_for_netcode, wif_prefix_for_netcode
 
 from pycoin.encoding import a2b_hashed_base58, secret_exponent_to_wif,\
     public_pair_to_sec, hash160,\
