@@ -27,7 +27,7 @@ class TxTest(unittest.TestCase):
                          "19LemzJ3XPdUxp113uynqCAivDbXZBdBy3")
         # TODO: fix this when pay-to-hash properly parsed
         self.assertEqual(tx.txs_out[1].bitcoin_address(),
-                         None)  #"3KmkA7hvqG2wKkWUGz1BySioUywvcmdPLR")
+                         "3KmkA7hvqG2wKkWUGz1BySioUywvcmdPLR")
 
 
 if __name__ == "__main__":
