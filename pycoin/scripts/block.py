@@ -38,7 +38,7 @@ def main():
 
     for f in args.block_bin:
         block = Block.parse(f)
-        dump_block(block, network='M')
+        dump_block(block, network='BTC')
         print('')
 
 
