@@ -33,7 +33,7 @@ import hmac
 from . import ellipticcurve, intbytes, numbertheory
 
 if hasattr(1, "bit_length"):
-    bit_length = int.bit_length
+    bit_length = lambda v: v.bit_length()
 else:
 
     def bit_length(self):
