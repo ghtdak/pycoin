@@ -42,6 +42,8 @@ STREAMER_FUNCTIONS = {
           lambda f, v: f.write(struct.pack("!H", v))),
     "L": (lambda f: struct.unpack("<L", f.read(4))[0],
           lambda f, v: f.write(struct.pack("<L", v))),
+    "q": (lambda f: struct.unpack("<q", f.read(8))[0],
+          lambda f, v: f.write(struct.pack("<q", v))),
     "Q": (lambda f: struct.unpack("<Q", f.read(8))[0],
           lambda f, v: f.write(struct.pack("<Q", v))),
     "#": (lambda f: f.read(32), lambda f, v: f.write(v[:32])),
