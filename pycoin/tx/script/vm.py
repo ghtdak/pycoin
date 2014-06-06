@@ -51,8 +51,11 @@ INVALID_OPCODE_VALUES = frozenset((
     )))
 
 
-def check_signature(script, signature_hash, public_key_blob, sig_blob,
-                    hash_type):
+def check_signature(script,
+                    signature_for_hash_type_f,
+                    public_key_blob,
+                    sig_blob,
+                    expected_hash_type=None):
     """Ensure the given transaction has the correct signature. Invoked by the VM.
     Adapted from official Bitcoin-QT client.
 
@@ -60,21 +63,23 @@ def check_signature(script, signature_hash, public_key_blob, sig_blob,
     signature_hash: the signature hash of the transaction being verified
     public_key_blob: the blob representing the SEC-encoded public pair
     sig_blob: the blob representing the DER-encoded signature
-    hash_type: expected signature_type (or 0 for wild card)
+    expected_hash_type: expected signature_type (or 0 for wild card)
     """
     signature_type = ord(sig_blob[-1:])
     sig_pair = der.sigdecode_der(sig_blob[:-1])
-    if hash_type == 0:
-        hash_type = signature_type
-    elif hash_type != signature_type:
+    if expected_hash_type not in (None, signature_type):
         raise ScriptError("wrong hash type")
     public_pair = sec_to_public_pair(public_key_blob)
+    signature_hash = signature_for_hash_type_f(signature_type)
     v = ecdsa.verify(ecdsa.generator_secp256k1, public_pair, signature_hash,
                      sig_pair)
     return make_bool(v)
 
 
-def eval_script(script, signature_hash, hash_type, stack=[]):
+def eval_script(script,
+                signature_for_hash_type_f,
+                expected_hash_type=None,
+                stack=[]):
     altstack = []
     if len(script) > 10000:
         return False
@@ -141,8 +146,9 @@ def eval_script(script, signature_hash, hash_type, stack=[]):
             if opcode in (opcodes.OP_CHECKSIG, opcodes.OP_CHECKSIGVERIFY):
                 public_key_blob = stack.pop()
                 sig_blob = stack.pop()
-                v = check_signature(script, signature_hash, public_key_blob,
-                                    sig_blob, hash_type)
+                v = check_signature(script, signature_for_hash_type_f,
+                                    public_key_blob, sig_blob,
+                                    expected_hash_type)
                 stack.append(v)
                 if opcode == opcodes.OP_CHECKSIGVERIFY:
                     if stack.pop() != VCH_TRUE:
@@ -165,13 +171,15 @@ def eval_script(script, signature_hash, hash_type, stack=[]):
 
 def verify_script(script_signature,
                   script_public_key,
-                  signature_hash,
-                  hash_type=0):
+                  signature_for_hash_type_f,
+                  expected_hash_type=None):
     stack = []
-    if not eval_script(script_signature, signature_hash, hash_type, stack):
+    if not eval_script(script_signature, signature_for_hash_type_f,
+                       expected_hash_type, stack):
         logging.debug("script_signature did not evaluate")
         return False
-    if not eval_script(script_public_key, signature_hash, hash_type, stack):
+    if not eval_script(script_public_key, signature_for_hash_type_f,
+                       expected_hash_type, stack):
         logging.debug("script_public_key did not evaluate")
         return False
 

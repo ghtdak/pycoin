@@ -84,7 +84,10 @@ class TxIn(object):
             return bitcoin_address
         return "(unknown)"
 
-    def verify(self, tx_out_script, signature_hash, hash_type=0):
+    def verify(self,
+               tx_out_script,
+               signature_for_hash_type_f,
+               expected_hash_type=None):
         """
         Return True or False depending upon whether this TxIn verifies.
 
@@ -93,8 +96,8 @@ class TxIn(object):
         """
         return verify_script(self.script,
                              tx_out_script,
-                             signature_hash,
-                             hash_type=hash_type)
+                             signature_for_hash_type_f,
+                             expected_hash_type=expected_hash_type)
 
     def __str__(self):
         if self.is_coinbase():

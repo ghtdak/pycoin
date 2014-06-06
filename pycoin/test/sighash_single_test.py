@@ -130,7 +130,7 @@ class SighashSingleTest(unittest.TestCase):
         self.assertTrue(sigcheck(k0, sig_hash, sig[:-1]))
 
         tx.txs_in[0].script = pycoin_compile(b2h(sig))
-        self.assertTrue(tx.is_signature_ok(0, sig_type))
+        self.assertTrue(tx.is_signature_ok(0))
 
         sig_hash = tx.signature_hash(coinbase_tx.txs_out[1].script, 1, sig_type)
         self.assertEqual(
@@ -141,7 +141,7 @@ class SighashSingleTest(unittest.TestCase):
         self.assertTrue(sigcheck(k1, sig_hash, sig[:-1]))
 
         tx.txs_in[1].script = pycoin_compile(b2h(sig))
-        self.assertTrue(tx.is_signature_ok(1, sig_type))
+        self.assertTrue(tx.is_signature_ok(1))
 
         sig_hash = tx.signature_hash(coinbase_tx.txs_out[2].script, 2, sig_type)
         self.assertEqual(
@@ -152,7 +152,7 @@ class SighashSingleTest(unittest.TestCase):
         self.assertTrue(sigcheck(k2, sig_hash, sig[:-1]))
 
         tx.txs_in[2].script = pycoin_compile(b2h(sig))
-        self.assertTrue(tx.is_signature_ok(2, sig_type))
+        self.assertTrue(tx.is_signature_ok(2))
 
         sig_type = SIGHASH_SINGLE | SIGHASH_ANYONECANPAY
 
@@ -165,7 +165,7 @@ class SighashSingleTest(unittest.TestCase):
         self.assertTrue(sigcheck(k0, sig_hash, sig[:-1]))
 
         tx.txs_in[0].script = pycoin_compile(b2h(sig))
-        self.assertTrue(tx.is_signature_ok(0, sig_type))
+        self.assertTrue(tx.is_signature_ok(0))
 
         sig_hash = tx.signature_hash(coinbase_tx.txs_out[1].script, 1, sig_type)
         self.assertEqual(
@@ -176,7 +176,7 @@ class SighashSingleTest(unittest.TestCase):
         self.assertTrue(sigcheck(k1, sig_hash, sig[:-1]))
 
         tx.txs_in[1].script = pycoin_compile(b2h(sig))
-        self.assertTrue(tx.is_signature_ok(1, sig_type))
+        self.assertTrue(tx.is_signature_ok(1))
 
         sig_hash = tx.signature_hash(coinbase_tx.txs_out[2].script, 2, sig_type)
         self.assertEqual(
@@ -187,7 +187,7 @@ class SighashSingleTest(unittest.TestCase):
         self.assertTrue(sigcheck(k2, sig_hash, sig[:-1]))
 
         tx.txs_in[2].script = pycoin_compile(b2h(sig))
-        self.assertTrue(tx.is_signature_ok(2, sig_type))
+        self.assertTrue(tx.is_signature_ok(2))
 
 
 if __name__ == "__main__":
