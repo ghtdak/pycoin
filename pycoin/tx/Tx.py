@@ -36,9 +36,10 @@ from .TxIn import TxIn
 from .TxOut import TxOut
 from .Spendable import Spendable
 
+from .pay_to import script_obj_from_script, SolvingError
+
 from .script import opcodes
 from .script import tools
-from .script.solvers import canonical_solver, SolvingError
 
 SIGHASH_ALL = 1
 SIGHASH_NONE = 2
@@ -205,7 +206,8 @@ class Tx(object):
                    hash160_lookup,
                    tx_in_idx,
                    tx_out_script,
-                   hash_type=SIGHASH_ALL):
+                   hash_type=SIGHASH_ALL,
+                   **kwargs):
         """
         Sign a standard transaction.
         hash160_lookup:
@@ -227,10 +229,23 @@ class Tx(object):
         if tx_in.verify(tx_out_script, signature_for_hash_type_f):
             return
 
-        signature_hash = signature_for_hash_type_f(hash_type)
-        tx_in.script = canonical_solver(tx_out_script, signature_hash,
-                                        hash_type, hash160_lookup)
-        if not tx_in.verify(tx_out_script, signature_for_hash_type_f):
+        sign_value = self.signature_hash(tx_out_script,
+                                         tx_in_idx,
+                                         hash_type=hash_type)
+        the_script = script_obj_from_script(tx_out_script)
+        solution = the_script.solve(
+            hash160_lookup=hash160_lookup,
+            sign_value=sign_value,
+            signature_type=hash_type,
+            exiting_script=self.txs_in[tx_in_idx].script,
+            **kwargs)
+        tx_in.script = solution
+
+    def verify_tx_in(self, tx_in_idx, tx_out_script, expected_hash_type=None):
+        tx_in = self.txs_in[tx_in_idx]
+        signature_for_hash_type_f = lambda hash_type: self.signature_hash(tx_out_script, tx_in_idx, hash_type)
+        if not tx_in.verify(tx_out_script, signature_for_hash_type_f,
+                            expected_hash_type):
             raise ValidationFailureError(
                 "just signed script Tx %s TxIn index %d did not verify" % (
                     b2h_rev(tx_in.previous_hash), tx_in_idx))
@@ -267,6 +282,9 @@ class Tx(object):
     def unspents_from_db(self, tx_db, ignore_missing=False):
         unspents = []
         for tx_in in self.txs_in:
+            if tx_in.is_coinbase():
+                unspents.append(None)
+                continue
             tx = tx_db.get(tx_in.previous_hash)
             if tx and tx.hash() == tx_in.previous_hash:
                 unspents.append(tx.txs_out[tx_in.previous_index])
@@ -339,7 +357,7 @@ class Tx(object):
         signature_for_hash_type_f = lambda hash_type: self.signature_hash(tx_out_script, tx_in_idx, hash_type)
         return tx_in.verify(tx_out_script, signature_for_hash_type_f)
 
-    def sign(self, hash160_lookup, hash_type=SIGHASH_ALL):
+    def sign(self, hash160_lookup, hash_type=SIGHASH_ALL, **kwargs):
         """
         Sign a standard transaction.
         hash160_lookup:
@@ -353,8 +371,11 @@ class Tx(object):
                 continue
             try:
                 if self.unspents[idx]:
-                    self.sign_tx_in(hash160_lookup, idx,
-                                    self.unspents[idx].script)
+                    self.sign_tx_in(hash160_lookup,
+                                    idx,
+                                    self.unspents[idx].script,
+                                    hash_type=hash_type,
+                                    **kwargs)
             except SolvingError:
                 pass
 
