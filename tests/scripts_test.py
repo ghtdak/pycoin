@@ -19,7 +19,7 @@ class ScriptsTest(unittest.TestCase):
         # set
         python_path = sys.executable
         script_dir = os.path.abspath(os.path.join(
-            os.path.dirname(__file__), "..", "scripts"))
+            os.path.dirname(__file__), "..", "pycoin", "scripts"))
         cwd = os.getcwd()
         os.chdir(script_dir)
         tool = "%s %s" % (python_path, tool)
