@@ -232,7 +232,7 @@ class Key(object):
         if self._hierarchical_wallet:
             return Key(
                 hierarchical_wallet=self._hierarchical_wallet.subkey_for_path(
-                    path_to_subkey))
+                    str(path_to_subkey)))
 
     def subkeys(self, path_to_subkeys):
         """
