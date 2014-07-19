@@ -4,7 +4,7 @@ from ... import encoding
 from ...networks import address_prefix_for_netcode
 from ...serialize import b2h
 
-from . import ScriptType
+from .ScriptType import ScriptType
 
 
 class ScriptPayToPublicKey(ScriptType):
@@ -70,7 +70,6 @@ class ScriptPayToPublicKey(ScriptType):
 
         solution = tools.compile(b2h(self._create_script_signature(
             secret_exponent, sign_value, signature_type)))
-
         return solution
 
     def info(self, netcode="BTC"):

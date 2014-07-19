@@ -237,7 +237,7 @@ class Tx(object):
             hash160_lookup=hash160_lookup,
             sign_value=sign_value,
             signature_type=hash_type,
-            exiting_script=self.txs_in[tx_in_idx].script,
+            existing_script=self.txs_in[tx_in_idx].script,
             **kwargs)
         tx_in.script = solution
 
