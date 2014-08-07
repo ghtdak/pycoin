@@ -81,7 +81,7 @@ class ScriptsTest(unittest.TestCase):
             % gpg_wif.name)
 
     def test_genwallet(self):
-        self.launch_tool("genwallet.py -g")
+        self.launch_tool("genwallet.py -u")
 
     def test_cache_tx(self):
         the_dir = self.set_cache_dir()
