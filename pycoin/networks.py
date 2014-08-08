@@ -19,7 +19,11 @@ NETWORKS = (
                   h2b("02fda4e8"), h2b("02fda923")),
     # BlackCoin: unsure about bip32 prefixes; assuming will use Bitcoin's
     NetworkValues("Blackcoin", "mainnet", "BLK", b'\x99', b'\x19', None,
-                  h2b("0488ADE4"), h2b("0488B21E")),)
+                  h2b("0488ADE4"), h2b("0488B21E")),
+    NetworkValues("Viacoin", "mainnet", "VIA", b'\xc7', b'\x47', b'\x21',
+                  h2b('0488ADE4'), h2b('0488B21E')),
+    NetworkValues("Viacoin", "testnet", "TVI", b'\xff', b'\x7f', b'\xc4',
+                  h2b('04358394'), h2b('043587CF')),)
 
 # Map from short code to details about that network.
 NETWORK_NAME_LOOKUP = dict((i.code, i) for i in NETWORKS)
