@@ -40,7 +40,7 @@ class ScriptPayToScript(ScriptType):
                              b2h(self.hash160))
         script_obj = script_obj_from_script(underlying_script)
         underlying_solution = script_obj.solve(**kwargs)
-        solution = underlying_solution + tools.compile(b2h(underlying_script))
+        solution = underlying_solution + tools.bin_script([underlying_script])
         return solution
 
     def script(self):
