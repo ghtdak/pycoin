@@ -9,8 +9,9 @@ setup(
     version=version,
     packages=[
         "pycoin", "pycoin.blockchain", "pycoin.convention", "pycoin.ecdsa",
-        "pycoin.key", "pycoin.tx", "pycoin.tx.pay_to", "pycoin.tx.script",
-        "pycoin.serialize", "pycoin.services", "pycoin.scripts"
+        "pycoin.key", "pycoin.network", "pycoin.tx", "pycoin.tx.pay_to",
+        "pycoin.tx.script", "pycoin.serialize", "pycoin.services",
+        "pycoin.scripts"
     ],
     author="Richard Kiss",
     entry_points={'console_scripts':
