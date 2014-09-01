@@ -153,14 +153,15 @@ def create_output(item, key, subkey_path=None):
         add_output("hash160_uncompressed", b2h(hash160_u), " uncompressed")
 
     if hash160_c:
-        add_output("%s_address" % key._netcode,
-                   key.address(use_uncompressed=False),
-                   "%s address" % network_name)
+        address = key.address(use_uncompressed=False)
+        add_output("address", address, "%s address" % network_name)
+        output_dict["%s_address" % key._netcode] = address
 
     if hash160_u:
-        add_output("%s_address_uncompressed" % key._netcode,
-                   key.address(use_uncompressed=True),
-                   " uncompressed")
+        address = key.address(use_uncompressed=True)
+        add_output("address_uncompressed", address, "%s address uncompressed" %
+                   network_name)
+        output_dict["%s_address_uncompressed" % key._netcode] = address
 
     return output_dict, output_order
 
@@ -295,7 +296,6 @@ def main():
             # the values would be on each other network type.
             # XXX public interface for this is needed...
             key._netcode = args.override_network
-            key._hierarchical_wallet.netcode = args.override_network
 
         for key in key.subkeys(args.subkey or ""):
             if args.public:
@@ -311,8 +311,8 @@ def main():
                 print(output_dict["wif_uncompressed"
                                   if args.uncompressed else "wif"])
             elif args.address:
-                print(output_dict[args.network.lower() + "_address" + (
-                    "_uncompressed" if args.uncompressed else "")])
+                print(output_dict["address" + ("_uncompressed"
+                                               if args.uncompressed else "")])
             else:
                 dump_output(output_dict, output_order)
 
