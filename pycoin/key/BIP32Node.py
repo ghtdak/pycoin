@@ -235,7 +235,10 @@ class BIP32Node(Key):
                 self.secret_exponent(), self._chain_code, i, is_hardened,
                 self.public_pair())
         d["chain_code"] = chain_code
-        return self.__class__(**d)
+        key = self.__class__(**d)
+        if not as_private:
+            key = key.public_copy()
+        return key
 
     def __repr__(self):
         r = self.as_text(as_private=False)
