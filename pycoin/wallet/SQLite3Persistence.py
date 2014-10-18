@@ -21,6 +21,9 @@ class SQLite3Persistence(object):
     def commit(self):
         self.db.commit()
 
+    def rollback(self):
+        self.db.rollback()
+
     def _init_tables(self):
         self._init_table_bip32key()
         self._init_table_bip32node()
