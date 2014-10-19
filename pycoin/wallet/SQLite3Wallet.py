@@ -26,6 +26,7 @@ class SQLite3Wallet(object):
     def create_unsigned_send_tx(self, address, amount):
         total_input_value = 0
         estimated_fee = TX_FEE_PER_THOUSAND_BYTES
+        lbi = self.last_block_index()
         with self._lock:
             confirmations = 7
             while confirmations > 0 and self.get_balance(
@@ -34,8 +35,7 @@ class SQLite3Wallet(object):
 
             spendables = []
             for spendable in self.persistence.unspent_spendables(
-                    self.last_block_index(),
-                    confirmations=1):
+                    lbi, confirmations=1):
                 spendables.append(spendable)
                 total_input_value += spendable.coin_value
                 if total_input_value >= amount + estimated_fee and len(
@@ -109,11 +109,11 @@ class SQLite3Wallet(object):
             self.persistence.invalidate_block_index_for_wallet(block_index)
 
     def get_balance(self, confirmations=1):
+        lbi = self.last_block_index()
         with self._lock:
             balance = 0
             for s in self.persistence.unspent_spendables(
-                    self.last_block_index(),
-                    confirmations=confirmations):
+                    lbi, confirmations=confirmations):
                 # if it looks already spent, skip
                 if s.does_seem_spent:
                     continue
@@ -122,8 +122,7 @@ class SQLite3Wallet(object):
                     if s.block_index_available is None:
                         continue
                     # if not enough confirmations have elapsed, skip
-                    if self.last_block_index(
-                    ) - s.block_index_available + 1 < confirmations:
+                    if lbi - s.block_index_available + 1 < confirmations:
                         continue
                 balance += s.coin_value
             return balance
