@@ -204,8 +204,8 @@ def verify_script(script_signature,
     stack = []
 
     is_p2h = (len(script_public_key) == 23 and
-              script_public_key[0] == opcodes.OP_HASH160 and
-              script_public_key[-1] == opcodes.OP_EQUAL)
+              byte_to_int(script_public_key[0]) == opcodes.OP_HASH160 and
+              byte_to_int(script_public_key[-1]) == opcodes.OP_EQUAL)
 
     if not eval_script(script_signature, signature_for_hash_type_f,
                        expected_hash_type, stack):
