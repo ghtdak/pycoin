@@ -250,4 +250,4 @@ def verify_script(script_signature,
                              signature_for_hash_type_f,
                              expected_hash_type=expected_hash_type)
 
-    return stack[-1] == VCH_TRUE
+    return stack[-1] != VCH_FALSE
