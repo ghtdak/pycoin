@@ -30,7 +30,7 @@ import logging
 
 from ... import ecdsa
 from ...encoding import sec_to_public_pair, EncodingError
-from ...intbytes import byte_to_int, int_to_bytes
+from ...intbytes import byte_to_int, int_to_bytes, int_from_bytes
 
 from . import der
 from . import opcodes
@@ -146,7 +146,7 @@ def eval_script(script,
                 continue
 
             if opcode == opcodes.OP_CHECKMULTISIG:
-                key_count = stack.pop()
+                key_count = int_from_bytes(stack.pop())
                 public_pairs = []
                 for i in range(key_count):
                     the_sec = stack.pop()
@@ -158,7 +158,7 @@ def eval_script(script,
                         # is in a block and requires this hack
                         pass
 
-                signature_count = stack.pop()
+                signature_count = int_from_bytes(stack.pop())
                 sig_blobs = []
                 for i in range(signature_count):
                     sig_blobs.append(stack.pop())
