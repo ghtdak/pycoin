@@ -30,7 +30,7 @@ import logging
 
 from ... import ecdsa
 from ...encoding import sec_to_public_pair, EncodingError
-from ...intbytes import byte_to_int
+from ...intbytes import byte_to_int, int_to_bytes
 
 from . import der
 from . import opcodes
@@ -61,9 +61,10 @@ def parse_signature_blob(sig_blob):
 def eval_script(script,
                 signature_for_hash_type_f,
                 expected_hash_type=None,
-                stack=[]):
+                stack=[],
+                disallow_long_scripts=True):
     altstack = []
-    if len(script) > 10000:
+    if disallow_long_scripts and len(script) > 10000:
         return False
 
     pc = 0
@@ -120,7 +121,7 @@ def eval_script(script,
                 continue
 
             if opcode >= opcodes.OP_1NEGATE and opcode <= opcodes.OP_16:
-                stack.append(opcode + 1 - opcodes.OP_1)
+                stack.append(int_to_bytes(opcode + 1 - opcodes.OP_1))
                 continue
 
             if opcode in (opcodes.OP_ELSE, opcodes.OP_ENDIF):
