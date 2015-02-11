@@ -34,7 +34,8 @@ bytes_from_ints = (
 
 if hasattr(int, "to_bytes"):
     to_bytes = lambda v, length, byteorder="big": v.to_bytes(length, byteorder=byteorder)
-    from_bytes = lambda bytes, byteorder="big", signed=False: int.from_bytes(bytes, byteorder="big", signed=signed)
+    from_bytes = lambda bytes, byteorder="big", signed=False: int.from_bytes(
+        bytes, byteorder="big", signed=signed)
     int_to_bytes = lambda v: v.to_bytes((v.bit_length()+7)//8, byteorder="big")
     int_from_bytes = lambda v: int.from_bytes(v, byteorder="big")
 else:
