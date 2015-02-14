@@ -134,7 +134,7 @@ def eval_script(script,
                 if expected_hash_type not in (None, signature_type):
                     raise ScriptError("wrong hash type")
                 signature_hash = signature_for_hash_type_f(signature_type,
-                                                           script=script)
+                                                           script)
                 if ecdsa.verify(ecdsa.generator_secp256k1, public_pair,
                                 signature_hash, sig_pair):
                     stack.append(VCH_TRUE)
@@ -169,7 +169,7 @@ def eval_script(script,
                 for sig_blob in sig_blobs:
                     sig_pair, signature_type = parse_signature_blob(sig_blob)
                     signature_hash = signature_for_hash_type_f(signature_type,
-                                                               script=script)
+                                                               script)
 
                     ppp = ecdsa.possible_public_pairs_for_signature(
                         ecdsa.generator_secp256k1, signature_hash, sig_pair)
