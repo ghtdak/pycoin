@@ -39,6 +39,8 @@ from . import ScriptError
 from .microcode import MICROCODE_LOOKUP, VCH_TRUE, VCH_FALSE, make_bool
 from .tools import get_opcode, bin_script
 
+logger = logging.getLogger(__name__)
+
 VERIFY_OPS = frozenset((
     opcodes.OPCODE_TO_INT[s]
     for s in
@@ -192,10 +194,10 @@ def eval_script(script,
                 if v != VCH_TRUE:
                     raise ScriptError("VERIFY failed at %d" % pc - 1)
 
-            logging.error("can't execute opcode %s", opcode)
+            logger.error("can't execute opcode %s", opcode)
 
     except Exception as ex:
-        logging.exception("script failed")
+        logger.exception("script failed")
 
     return len(stack) != 0
 
@@ -212,7 +214,7 @@ def verify_script(script_signature,
 
     if not eval_script(script_signature, signature_for_hash_type_f,
                        expected_hash_type, stack):
-        logging.debug("script_signature did not evaluate")
+        logger.debug("script_signature did not evaluate")
         return False
 
     if is_p2h:
@@ -221,7 +223,7 @@ def verify_script(script_signature,
 
     if not eval_script(script_public_key, signature_for_hash_type_f,
                        expected_hash_type, stack):
-        logging.debug("script_public_key did not evaluate")
+        logger.debug("script_public_key did not evaluate")
         return False
 
     if is_p2h and stack[-1] == VCH_TRUE:
