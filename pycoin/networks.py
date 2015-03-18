@@ -38,8 +38,12 @@ NETWORKS = (
                   h2b("02cfbf60"), h2b("02cfbede")),
 
     # DRK Darkcoin mainnet : drkv/drkp
-    NetworkValues("Darkcoin", "mainnet", "DRK", b'\xcc', b'\x4c', None,
+    NetworkValues("Darkcoin", "mainnet", "DRK", b'\xcc', b'\x4c', b'\x10',
                   h2b("02fe52f8"), h2b("02fe52cc")),
+
+    # DRK Darkcoin testnet : DRKV/DRKP
+    NetworkValues("Darkcoin", "testnet", "tDRK", b'\xef', b'\x8b', b'\x13',
+                  h2b("3a8061a0"), h2b("3a805837")),
 
     # MEC Megacoin mainnet : mecv/mecp
     NetworkValues("Megacoin", "mainnet", "MEC", b'\xb2', b'\x32', None,
@@ -47,7 +51,15 @@ NETWORKS = (
     NetworkValues("Myriadcoin", "mainnet", "MYR", b'\xb2', b'\x32', b'\x09',
                   h2b('0488ADE4'), h2b('0488B21E')),
     NetworkValues("Unobtanium", "mainnet", "UNO", b'\xe0', b'\x82', b'\x1e',
-                  h2b('0488ADE4'), h2b('0488B21E')),)
+                  h2b('0488ADE4'), h2b('0488B21E')),
+
+    # JBS Jumbucks mainnet : jprv/jpub
+    NetworkValues("Jumbucks", "mainnet", "JBS", b'\xab', b'\x2b', None,
+                  h2b('037a6460'), h2b('037a689a')),
+
+    # MZC Mazacoin mainnet: xprv/xpub
+    NetworkValues("Mazacoin", "mainnet", "MZC", b'\xe0', b'\x32', b'\9',
+                  h2b("0488ADE4"), h2b("0488B21E")),)
 
 # Map from short code to details about that network.
 NETWORK_NAME_LOOKUP = dict((i.code, i) for i in NETWORKS)

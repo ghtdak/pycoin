@@ -30,6 +30,7 @@ import logging
 
 from ... import ecdsa
 from ...encoding import sec_to_public_pair, EncodingError
+from ...intbytes import byte_to_int, int_to_bytes, int_from_bytes
 
 from . import der
 from . import opcodes
@@ -60,9 +61,10 @@ def parse_signature_blob(sig_blob):
 def eval_script(script,
                 signature_for_hash_type_f,
                 expected_hash_type=None,
-                stack=[]):
+                stack=[],
+                disallow_long_scripts=True):
     altstack = []
-    if len(script) > 10000:
+    if disallow_long_scripts and len(script) > 10000:
         return False
 
     pc = 0
@@ -119,7 +121,7 @@ def eval_script(script,
                 continue
 
             if opcode >= opcodes.OP_1NEGATE and opcode <= opcodes.OP_16:
-                stack.append(opcode + 1 - opcodes.OP_1)
+                stack.append(int_to_bytes(opcode + 1 - opcodes.OP_1))
                 continue
 
             if opcode in (opcodes.OP_ELSE, opcodes.OP_ENDIF):
@@ -131,7 +133,8 @@ def eval_script(script,
                 sig_pair, signature_type = parse_signature_blob(stack.pop())
                 if expected_hash_type not in (None, signature_type):
                     raise ScriptError("wrong hash type")
-                signature_hash = signature_for_hash_type_f(signature_type)
+                signature_hash = signature_for_hash_type_f(signature_type,
+                                                           script)
                 if ecdsa.verify(ecdsa.generator_secp256k1, public_pair,
                                 signature_hash, sig_pair):
                     stack.append(VCH_TRUE)
@@ -143,7 +146,7 @@ def eval_script(script,
                 continue
 
             if opcode == opcodes.OP_CHECKMULTISIG:
-                key_count = stack.pop()
+                key_count = int_from_bytes(stack.pop())
                 public_pairs = []
                 for i in range(key_count):
                     the_sec = stack.pop()
@@ -155,7 +158,7 @@ def eval_script(script,
                         # is in a block and requires this hack
                         pass
 
-                signature_count = stack.pop()
+                signature_count = int_from_bytes(stack.pop())
                 sig_blobs = []
                 for i in range(signature_count):
                     sig_blobs.append(stack.pop())
@@ -165,7 +168,8 @@ def eval_script(script,
                 sig_ok = VCH_TRUE
                 for sig_blob in sig_blobs:
                     sig_pair, signature_type = parse_signature_blob(sig_blob)
-                    signature_hash = signature_for_hash_type_f(signature_type)
+                    signature_hash = signature_for_hash_type_f(signature_type,
+                                                               script)
 
                     ppp = ecdsa.possible_public_pairs_for_signature(
                         ecdsa.generator_secp256k1, signature_hash, sig_pair)
@@ -203,8 +207,8 @@ def verify_script(script_signature,
     stack = []
 
     is_p2h = (len(script_public_key) == 23 and
-              script_public_key[0] == opcodes.OP_HASH160 and
-              script_public_key[-1] == opcodes.OP_EQUAL)
+              byte_to_int(script_public_key[0]) == opcodes.OP_HASH160 and
+              byte_to_int(script_public_key[-1]) == opcodes.OP_EQUAL)
 
     if not eval_script(script_signature, signature_for_hash_type_f,
                        expected_hash_type, stack):
