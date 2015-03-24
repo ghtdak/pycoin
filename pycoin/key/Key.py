@@ -44,6 +44,7 @@ class Key(object):
         Include at most one of secret_exponent, public_pair or hash160.
         prefer_uncompressed, is_compressed (booleans) are optional.
         """
+
         if [secret_exponent, public_pair, hash160].count(None) != 2:
             raise ValueError(
                 "exactly one of secret_exponent, public_pair, hash160 must be passed.")

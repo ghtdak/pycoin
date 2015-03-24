@@ -10,13 +10,6 @@ from pycoin.key.validate import is_address_valid, is_wif_valid, is_public_bip32_
 from pycoin.networks import pay_to_script_prefix_for_netcode, NETWORK_NAMES
 from pycoin.ecdsa.secp256k1 import generator_secp256k1
 
-
-def change_prefix(address, new_prefix):
-    return hash160_sec_to_bitcoin_address(
-        Key.from_text(address).hash160(),
-        address_prefix=new_prefix)
-
-
 PAY_TO_HASH_ADDRESSES = [
     "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH", "1EHNa6Q4Jz2uvNExL497mE43ikXhwF6kZm",
     "1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP", "1LagHJk2FyCV2VzrNHVqg3gYG4TSYwDV4m",
@@ -27,6 +20,12 @@ PAY_TO_SCRIPT_PREFIX = pay_to_script_prefix_for_netcode("BTC")
 
 PAY_TO_SCRIPT_ADDRESSES = [change_prefix(t, PAY_TO_SCRIPT_PREFIX)
                            for t in PAY_TO_HASH_ADDRESSES]
+
+
+def change_prefix(address, new_prefix):
+    return hash160_sec_to_bitcoin_address(
+        Key.from_text(address).hash160(),
+        address_prefix=new_prefix)
 
 
 class KeyUtilsTest(unittest.TestCase):
