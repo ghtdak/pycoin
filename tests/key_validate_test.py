@@ -2,14 +2,13 @@
 
 import unittest
 
-from pycoin.block import Block
 from pycoin.encoding import hash160_sec_to_bitcoin_address
 from pycoin.key import Key
-from pycoin.key.bip32 import Wallet
-from pycoin.networks import pay_to_script_prefix_for_netcode, prv32_prefix_for_netcode, NETWORK_NAMES
-from pycoin.serialize import b2h_rev, h2b
-
+from pycoin.key.Key import InvalidKeyGeneratedError
+from pycoin.key.BIP32Node import BIP32Node
 from pycoin.key.validate import is_address_valid, is_wif_valid, is_public_bip32_valid, is_private_bip32_valid
+from pycoin.networks import pay_to_script_prefix_for_netcode, NETWORK_NAMES
+from pycoin.ecdsa.secp256k1 import generator_secp256k1
 
 
 def change_prefix(address, new_prefix):
@@ -87,7 +86,7 @@ class KeyUtilsTest(unittest.TestCase):
         # not all networks support BIP32 yet
         for netcode in "BTC XTN DOGE".split():
             for wk in WALLET_KEYS:
-                wallet = Wallet.from_master_secret(
+                wallet = BIP32Node.from_master_secret(
                     wk.encode("utf8"), netcode=netcode)
                 text = wallet.wallet_key(as_private=True)
                 self.assertEqual(
@@ -123,3 +122,16 @@ class KeyUtilsTest(unittest.TestCase):
                 self.assertEqual(
                     is_public_bip32_valid(a, allowable_netcodes=NETWORK_NAMES),
                     None)
+
+    def test_key_limits(self):
+        self.assertRaises(InvalidKeyGeneratedError, Key, secret_exponent=0)
+        self.assertRaises(InvalidKeyGeneratedError,
+                          Key,
+                          secret_exponent=generator_secp256k1.order())
+
+        for i in range(1, 512):
+            Key(secret_exponent=i)
+
+
+if __name__ == '__main__':
+    unittest.main()
