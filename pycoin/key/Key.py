@@ -8,10 +8,6 @@ from pycoin.networks import address_prefix_for_netcode, wif_prefix_for_netcode
 from pycoin.serialize import b2h
 
 
-class InvalidKeyGeneratedError(Exception):
-    pass
-
-
 class Key(object):
 
     def __init__(self,
@@ -62,8 +58,18 @@ class Key(object):
                 self._hash160_uncompressed = hash160
         self._netcode = netcode
 
-        # Check to see if secret_exponent yielded a valid key pair
-        self.public_pair()
+        if self._public_pair is None and self._secret_exponent is not None:
+            if self._secret_exponent < 1 \
+                    or self._secret_exponent >= ecdsa.generator_secp256k1.order():
+                raise ValueError("invalid secret exponent")
+            public_pair = ecdsa.public_pair_for_secret_exponent(
+                ecdsa.generator_secp256k1, self._secret_exponent)
+            self._public_pair = public_pair
+
+        if self._public_pair is not None \
+                and (None in self._public_pair \
+                    or not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1, self._public_pair)):
+            raise ValueError("invalid public pair")
 
     @classmethod
     def from_text(class_, text, is_compressed=True):
@@ -132,20 +138,6 @@ class Key(object):
         """
         Return a pair of integers representing the public key (or None).
         """
-        if self._public_pair is None and self._secret_exponent is not None:
-            if self._secret_exponent < 1 \
-                    or self._secret_exponent >= ecdsa.generator_secp256k1.order():
-                raise InvalidKeyGeneratedError(
-                    "this key would produce an invalid public pair; please skip it")
-            public_pair = ecdsa.public_pair_for_secret_exponent(
-                ecdsa.generator_secp256k1, self._secret_exponent)
-            # This is probably redundant
-            if None in public_pair \
-                    or not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1, public_pair):
-                raise InvalidKeyGeneratedError(
-                    "this key would produce an invalid public pair; please skip it")
-            self._public_pair = public_pair
-
         return self._public_pair
 
     def sec(self, use_uncompressed=None):
