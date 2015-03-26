@@ -144,7 +144,7 @@ def eval_script(script,
                     stack.append(VCH_FALSE)
                 if opcode == opcodes.OP_CHECKSIGVERIFY:
                     if stack.pop() != VCH_TRUE:
-                        raise ScriptError("VERIFY failed at %d" % pc - 1)
+                        raise ScriptError("VERIFY failed at %d" % (pc - 1))
                 continue
 
             if opcode == opcodes.OP_CHECKMULTISIG:
