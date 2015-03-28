@@ -117,9 +117,6 @@ class BIP32Node(Key):
             raise ValueError(
                 "must include exactly one of public_pair and secret_exponent")
 
-        if secret_exponent:
-            self._secret_exponent_bytes = to_bytes_32(secret_exponent)
-
         super(BIP32Node, self).__init__(secret_exponent=secret_exponent,
                                         public_pair=public_pair,
                                         prefer_uncompressed=False,
@@ -127,7 +124,9 @@ class BIP32Node(Key):
                                         is_pay_to_script=False,
                                         netcode=netcode)
 
-        # validate public_pair is on the curve
+        if secret_exponent:
+            self._secret_exponent_bytes = to_bytes_32(secret_exponent)
+
         if not isinstance(chain_code, bytes):
             raise ValueError("chain code must be bytes")
         if len(chain_code) != 32:
