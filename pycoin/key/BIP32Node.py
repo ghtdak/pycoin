@@ -128,7 +128,7 @@ class BIP32Node(Key):
             self._secret_exponent_bytes = to_bytes_32(secret_exponent)
 
         if not isinstance(chain_code, bytes):
-            raise ValueError("chain code must be bytes")
+            raise TypeError("chain code must be bytes")
         if len(chain_code) != 32:
             raise ValueError("chain code wrong length")
         self._netcode = netcode
