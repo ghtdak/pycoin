@@ -73,7 +73,7 @@ def dump_tx(tx, netcode='BTC'):
                 suffix = " %12.5f mBTC %s" % (
                     satoshi_to_mbtc(tx_out.coin_value), sig_result)
                 address = tx_out.bitcoin_address(netcode=netcode)
-            print("%3d: %34s from %s:%d%s" %
+            print("%3d: %34s from %s:%-4d%s" %
                   (idx, address, b2h_rev(tx_in.previous_hash),
                    tx_in.previous_index, suffix))
     print("Output%s:" % ('s' if len(tx.txs_out) != 1 else ''))
