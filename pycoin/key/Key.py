@@ -148,6 +148,12 @@ class Key(object):
         """
         return self._public_pair
 
+    def netcode(self):
+        """
+        Return the netcode
+        """
+        return self._netcode
+
     def sec(self, use_uncompressed=None):
         """
         Return the SEC representation of this key, if available.
