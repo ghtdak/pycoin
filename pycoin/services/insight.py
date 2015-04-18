@@ -4,12 +4,15 @@
 import decimal
 import json
 import logging
+import io
 
 try:
-    from urllib2 import (HTTPError, urlopen)
+    from urllib2 import HTTPError, urlopen
+    from urllib import urlencode
 except ImportError:
     from urllib.request import urlopen
     from urllib.error import HTTPError
+    from urllib.parse import urlencode
 
 from pycoin.block import BlockHeader
 from pycoin.convention import btc_to_satoshi
