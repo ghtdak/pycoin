@@ -10,18 +10,47 @@ from pycoin.tx import Spendable, Tx, TxIn, TxOut
 from pycoin.tx.script import tools
 
 
+def fetch_json(url_extension):
+    URL = "https://api.biteasy.com/blockchain/v1/%s" % url_extension
+    r = Request(URL,
+                headers={
+                    "content-type": "application/json",
+                    "accept": "*/*",
+                    "User-Agent": "curl/7.29.0"
+                })
+    d = urlopen(r).read()
+    json_response = json.loads(d.decode("utf8"))
+
+    return json_response
+
+
+def balance_for_address(bitcoin_address, confidence=1):
+    """
+    Rerturns a basic balance for this address.
+    """
+    # From my basic testing I think biteasy only ever shows confirmed
+    # transactions.
+    if confidence != 1:
+        raise Exception("biteasy only shows confirmed transactions")
+
+    json_response = fetch_json("addresses/%s" % bitcoin_address)
+    if json_response.get("status") == 404:
+        # Assume this is an unused address:
+        return [0, 0, 0]
+
+    payload = json_response.get("data", {})
+    return [
+        payload.get("total_received"), payload.get("total_sent"),
+        payload.get("balance")
+    ]
+
+
 def spendables_for_address(bitcoin_address):
     """
     Return a list of Spendable objects for the
     given bitcoin address.
     """
-    URL = "https://api.biteasy.com/blockchain/v1/addresses/%s/unspent-outputs" % bitcoin_address
-    r = Request(URL,
-                headers={"content-type": "application/json",
-                         "accept": "*/*",
-                         "User-Agent": "curl/7.29.0"})
-    d = urlopen(r).read()
-    json_response = json.loads(d.decode("utf8"))
+    json_response = fetch_json("addresses/%s/unspent-outputs" % bitcoin_address)
     spendables = []
     for tx_out_info in json_response.get("data", {}).get("outputs"):
         if tx_out_info.get("to_address") == bitcoin_address:
@@ -35,24 +64,19 @@ def spendables_for_address(bitcoin_address):
 
 
 def tx_for_tx_hash(tx_hash):
-    URL = "https://api.biteasy.com/blockchain/v1/transactions/%s" % b2h_rev(
-        tx_hash)
-    r = Request(URL,
-                headers={"content-type": "application/json",
-                         "accept": "*/*",
-                         "User-Agent": "curl/7.29.0"})
-    d = urlopen(r).read()
-    tx = json_to_tx(d.decode("utf8"))
+    json_response = fetch_json("transactions/%s" % b2h_rev(tx_hash))
+    tx = json_to_tx(json_response)
     if tx.hash() == tx_hash:
         return tx
     return None
 
 
-def json_to_tx(json_text):
+def json_to_tx(json_response):
     # transactions with non-standard lock time are not decoded properly
     # for example, d1ef46055a84fd02ee82580d691064780def18614d98646371c3448ca20019ac
-    # there is no way to fix this until biteasy add a lock_time field to their output
-    d = json.loads(json_text).get("data")
+    # there is no way to fix this until biteasy add a lock_time field to their
+    # output
+    d = json_response.get("data")
     txs_in = []
     for d1 in d.get("inputs"):
         previous_hash = h2b_rev(d1.get("outpoint_hash"))
