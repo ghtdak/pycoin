@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import io
+import copy
 import unittest
 from pycoin.key import Key
 from pycoin.serialize import h2b
@@ -178,17 +179,19 @@ class ScriptTypesTest(unittest.TestCase):
             'block_index_available': 0,
             'tx_out_index': 0
         }
-        tx = Tx(version=DEFAULT_VERSION,
-                txs_in=txs_in,
-                txs_out=txs_out,
-                unspents=[Spendable.from_dict(spendable)])
-        for key in ['Kz6pytJCigYHeMsGLmfHQPJhN5og2wpeSVrU43xWwgHLCAvpsprh',
-                    'Kz7NHgX7MBySA3RSKj9GexUSN6NepEDoPNugSPr5absRDoKgn2dT']:
-            self.assertEqual(tx.bad_signature_count(), 1)
-            tx.sign(
-                LazySecretExponentDB([key], {}),
-                p2sh_lookup=build_p2sh_lookup(raw_scripts))
-        self.assertEqual(tx.bad_signature_count(), 0)
+        tx__prototype = Tx(version=DEFAULT_VERSION,
+                           txs_in=txs_in,
+                           txs_out=txs_out,
+                           unspents=[Spendable.from_dict(spendable)])
+        key_1, key_2 = 'Kz6pytJCigYHeMsGLmfHQPJhN5og2wpeSVrU43xWwgHLCAvpsprh', 'Kz7NHgX7MBySA3RSKj9GexUSN6NepEDoPNugSPr5absRDoKgn2dT'
+        for ordered_keys in [(key_1, key_2), (key_2, key_1)]:
+            tx = copy.deepcopy(tx__prototype)
+            for key in ordered_keys:
+                self.assertEqual(tx.bad_signature_count(), 1)
+                tx.sign(
+                    LazySecretExponentDB([key], {}),
+                    p2sh_lookup=build_p2sh_lookup(raw_scripts))
+            self.assertEqual(tx.bad_signature_count(), 0)
 
     def test_sign_pay_to_script_multisig(self):
         N, M = 3, 3
