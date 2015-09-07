@@ -47,12 +47,12 @@ NETWORKS = (
     NetworkValues("Blackcoin", "mainnet", "BC", b'\x99', b'\x19', None,
                   h2b("02cfbf60"), h2b("02cfbede")),
 
-    # DRK Darkcoin mainnet : drkv/drkp
-    NetworkValues("Darkcoin", "mainnet", "DRK", b'\xcc', b'\x4c', b'\x10',
+    # DRK Dash mainnet : drkv/drkp
+    NetworkValues("Dash", "mainnet", "DASH", b'\xcc', b'\x4c', b'\x10',
                   h2b("02fe52f8"), h2b("02fe52cc")),
 
-    # DRK Darkcoin testnet : DRKV/DRKP
-    NetworkValues("Darkcoin", "testnet", "tDRK", b'\xef', b'\x8b', b'\x13',
+    # DRK Dash testnet : DRKV/DRKP
+    NetworkValues("Dash", "testnet", "tDASH", b'\xef', b'\x8b', b'\x13',
                   h2b("3a8061a0"), h2b("3a805837")),
 
     # MEC Megacoin mainnet : mecv/mecp
