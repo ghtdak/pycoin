@@ -33,7 +33,10 @@
 
 from . import numbertheory
 
-from .native.library import NATIVE_LIBRARY
+try:
+    from .native.library import NATIVE_LIBRARY
+except ImportError:
+    NATIVE_LIBRARY = None
 
 
 class NoSuchPointError(ValueError):
