@@ -109,6 +109,7 @@ import binascii
 
 from pycoin.convention import SATOSHI_PER_COIN
 from pycoin.intbytes import bytes_from_int, byte_to_int
+from pycoin.serialize import h2b_rev, h2b
 from pycoin.tx.Tx import Tx, TxIn
 from pycoin.tx.Spendable import Spendable
 from pycoin.tx.script.opcodes import OPCODE_TO_INT
@@ -223,14 +224,16 @@ class TestTx(unittest.TestCase):
 
             unspents = [Spendable(coin_value=1000000,
                                   script=compile_script(prevout[2]),
-                                  tx_hash=prevout[0],
+                                  tx_hash=h2b(prevout[0]),
                                   tx_out_index=prevout[1])
                         for prevout in prevouts]
             tx.set_unspents(unspents)
 
             bs = tx.bad_signature_count()
             if bs > 0:
-                msg = str(tx_hex) + " bad_signature_count() = " + str(bs)
+                msg = str(tx.as_hex(
+                    include_unspents=True)) + " bad_signature_count() = " + str(
+                        bs)
                 self.fail(msg)
 
     def test_is_invalid(self):
@@ -241,7 +244,7 @@ class TestTx(unittest.TestCase):
                     continue
                 unspents = [Spendable(coin_value=1000000,
                                       script=compile_script(prevout[2]),
-                                      tx_hash=prevout[0],
+                                      tx_hash=h2b_rev(prevout[0]),
                                       tx_out_index=prevout[1])
                             for prevout in prevouts]
                 tx.set_unspents(unspents)

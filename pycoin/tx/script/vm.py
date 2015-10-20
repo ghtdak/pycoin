@@ -146,7 +146,8 @@ def eval_script(script,
             logger.error("can't execute opcode %s", opcode)
 
     except Exception:
-        logger.exception("script failed")
+        logger.exception("script failed for unknown reason")
+        return False
 
     return len(stack) != 0
 
