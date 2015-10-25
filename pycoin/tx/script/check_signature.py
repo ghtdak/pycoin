@@ -50,7 +50,7 @@ def op_checksig(stack, signature_for_hash_type_f, expected_hash_type,
         public_pair = sec_to_public_pair(stack.pop())
         sig_blob = stack.pop()
         sig_pair, signature_type = parse_signature_blob(sig_blob)
-    except (der.UnexpectedDER, ValueError):
+    except (der.UnexpectedDER, ValueError, EncodingError):
         stack.append(VCH_FALSE)
         return
 
