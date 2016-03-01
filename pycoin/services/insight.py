@@ -3,7 +3,6 @@
 
 import decimal
 import json
-import logging
 import io
 
 try:
@@ -23,9 +22,9 @@ from pycoin.tx.script import tools
 from pycoin.tx import Spendable, Tx, TxIn, TxOut
 
 
-class InsightService(object):
+class InsightProvider(object):
 
-    def __init__(self, base_url):
+    def __init__(self, base_url, netcode="BTC"):
         while base_url[-1] == '/':
             base_url = base_url[:-1]
         self.base_url = base_url
@@ -63,7 +62,7 @@ class InsightService(object):
         return self.get_blockheader_with_transaction_hashes(block_hash)[
             0].height
 
-    def get_tx(self, tx_hash):
+    def tx_for_tx_hash(self, tx_hash):
         URL = "%s/api/tx/%s" % (self.base_url, b2h_rev(tx_hash))
         r = json.loads(urlopen(URL).read().decode("utf8"))
         tx = tx_from_json_dict(r)
