@@ -119,7 +119,11 @@ def eval_script(script,
                 stack.append(altstack.pop())
                 continue
 
-            if opcode >= opcodes.OP_1NEGATE and opcode <= opcodes.OP_16:
+            if opcode == opcodes.OP_1NEGATE:
+                stack.append(b'\x81')
+                continue
+
+            if opcode > opcodes.OP_1NEGATE and opcode <= opcodes.OP_16:
                 stack.append(int_to_bytes(opcode + 1 - opcodes.OP_1))
                 continue
 
