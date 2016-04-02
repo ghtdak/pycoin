@@ -157,7 +157,7 @@ def op_checkmultisig(stack, signature_for_hash_type_f, expected_hash_type,
         sig_blobs.append(stack.pop())
 
     # check that we have the required hack 00 byte
-    if stack != [b'\x00']:
+    if stack != [b'']:
         stack.append(VCH_FALSE)
         return
 

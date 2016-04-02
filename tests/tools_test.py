@@ -56,13 +56,14 @@ class ToolsTest(unittest.TestCase):
 
         def build_hex(size, a, b):
             "build some random-looking hex"
-            return "".join("%02x" % (((i + a) * b) & 0xff) for i in range(size))
+            return "[%s]" % "".join("%02x" % (((i + a) * b) & 0xff)
+                                    for i in range(size))
 
         scripts = []
-        check("ff")
-        check("ff03")
-        check("ff030102")
-        check("55aabbccddeeff112131")
+        check("[ff]")
+        check("[ff03]")
+        check("[ff030102]")
+        check("[55aabbccddeeff112131]")
         long_hex_260 = build_hex(260, 13, 93)
         long_hex_270 = build_hex(270, 11, 47)
         check("%s %s" % (long_hex_260, long_hex_270))
