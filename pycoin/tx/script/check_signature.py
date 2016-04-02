@@ -36,6 +36,8 @@ from . import ScriptError
 from .microcode import VCH_TRUE, VCH_FALSE
 from .tools import bin_script, delete_subscript
 
+from .flags import VERIFY_NULLDUMMY, VERIFY_STRICTENC, VERIFY_MINIMALDATA, VERIFY_DERSIG, VERIFY_LOW_S
+
 
 def parse_signature_blob(sig_blob):
     sig_pair = der.sigdecode_der(sig_blob[:-1],
@@ -45,7 +47,7 @@ def parse_signature_blob(sig_blob):
 
 
 def op_checksig(stack, signature_for_hash_type_f, expected_hash_type,
-                tmp_script):
+                tmp_script, flags):
     try:
         public_pair = sec_to_public_pair(stack.pop())
         sig_blob = stack.pop()
@@ -75,6 +77,7 @@ def sig_blob_matches(sig_blobs,
                      public_pairs,
                      tmp_script,
                      signature_for_hash_type_f,
+                     flags,
                      strict_checks=False):
     """
     sig_blobs: signature blobs
@@ -135,7 +138,7 @@ def sig_blob_matches(sig_blobs,
 
 
 def op_checkmultisig(stack, signature_for_hash_type_f, expected_hash_type,
-                     tmp_script):
+                     tmp_script, flags):
     key_count = int_from_bytes(stack.pop())
     public_pairs = []
     for i in range(key_count):
@@ -165,6 +168,7 @@ def op_checkmultisig(stack, signature_for_hash_type_f, expected_hash_type,
                                         public_pairs,
                                         tmp_script,
                                         signature_for_hash_type_f,
+                                        flags,
                                         strict_checks=True)
 
     sig_ok = VCH_FALSE

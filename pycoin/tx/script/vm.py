@@ -54,11 +54,13 @@ INVALID_OPCODE_VALUES = frozenset((
 
 def eval_script(script,
                 signature_for_hash_type_f,
+                lock_time,
                 expected_hash_type=None,
                 stack=[],
                 disallow_long_scripts=True,
                 traceback_f=None,
-                is_signature=False):
+                is_signature=False,
+                flags=0):
     altstack = []
     if disallow_long_scripts and len(script) > 10000:
         return False
@@ -134,7 +136,7 @@ def eval_script(script,
             if opcode in (opcodes.OP_CHECKSIG, opcodes.OP_CHECKSIGVERIFY):
                 # Subset of script starting at the most recent codeseparator
                 op_checksig(stack, signature_for_hash_type_f,
-                            expected_hash_type, script[begin_code_hash:])
+                            expected_hash_type, script[begin_code_hash:], flags)
                 if opcode == opcodes.OP_CHECKSIGVERIFY:
                     if stack.pop() != VCH_TRUE:
                         raise ScriptError("VERIFY failed at %d" % (pc - 1))
@@ -142,8 +144,9 @@ def eval_script(script,
 
             if opcode == opcodes.OP_CHECKMULTISIG:
                 # Subset of script starting at the most recent codeseparator
-                op_checkmultisig(stack, signature_for_hash_type_f,
-                                 expected_hash_type, script[begin_code_hash:])
+                n_ops = op_checkmultisig(stack, signature_for_hash_type_f,
+                                         expected_hash_type,
+                                         script[begin_code_hash:], flags)
                 continue
 
             # BRAIN DAMAGE -- does it always get down here for each verify op? I think not
@@ -170,6 +173,8 @@ def is_pay_to_script_hash(script_public_key):
 def verify_script(script_signature,
                   script_public_key,
                   signature_for_hash_type_f,
+                  lock_time,
+                  flags=None,
                   expected_hash_type=None,
                   traceback_f=None):
     stack = []
@@ -178,9 +183,11 @@ def verify_script(script_signature,
 
     if not eval_script(script_signature,
                        signature_for_hash_type_f,
+                       lock_time,
                        expected_hash_type,
                        stack,
                        traceback_f=traceback_f,
+                       flags=flags,
                        is_signature=True):
         logger.debug("script_signature did not evaluate")
         return False
@@ -191,9 +198,11 @@ def verify_script(script_signature,
 
     if not eval_script(script_public_key,
                        signature_for_hash_type_f,
+                       lock_time,
                        expected_hash_type,
                        stack,
                        traceback_f=traceback_f,
+                       flags=flags,
                        is_signature=False):
         logger.debug("script_public_key did not evaluate")
         return False
@@ -202,6 +211,8 @@ def verify_script(script_signature,
         return verify_script(alt_script_signature,
                              alt_script_public_key,
                              signature_for_hash_type_f,
+                             lock_time=lock_time,
+                             flags=flags,
                              expected_hash_type=expected_hash_type,
                              traceback_f=traceback_f)
 

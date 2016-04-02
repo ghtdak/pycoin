@@ -279,7 +279,8 @@ class Tx(object):
         # Leave out the signature from the hash, since a signature can't sign itself.
         # The checksig op will also drop the signatures from its hash.
         signature_for_hash_type_f = lambda hash_type, script: self.signature_hash(script, tx_in_idx, hash_type)
-        if tx_in.verify(tx_out_script, signature_for_hash_type_f):
+        if tx_in.verify(tx_out_script, signature_for_hash_type_f,
+                        self.lock_time):
             return
 
         sign_value = self.signature_hash(script_to_hash,
@@ -450,7 +451,7 @@ class Tx(object):
             unspents.append(tx_out)
         self.set_unspents(unspents)
 
-    def is_signature_ok(self, tx_in_idx, traceback_f=None):
+    def is_signature_ok(self, tx_in_idx, flags=None, traceback_f=None):
         tx_in = self.txs_in[tx_in_idx]
         if tx_in.is_coinbase():
             return True
@@ -463,6 +464,8 @@ class Tx(object):
         signature_for_hash_type_f = lambda hash_type, script: self.signature_hash(script, tx_in_idx, hash_type)
         return tx_in.verify(tx_out_script,
                             signature_for_hash_type_f,
+                            self.lock_time,
+                            flags=flags,
                             traceback_f=traceback_f)
 
     def sign(self, hash160_lookup, hash_type=SIGHASH_ALL, **kwargs):
@@ -489,10 +492,10 @@ class Tx(object):
 
         return self
 
-    def bad_signature_count(self):
+    def bad_signature_count(self, flags=None):
         count = 0
         for idx, tx_in in enumerate(self.txs_in):
-            if not self.is_signature_ok(idx):
+            if not self.is_signature_ok(idx, flags=flags):
                 count += 1
         return count
 
