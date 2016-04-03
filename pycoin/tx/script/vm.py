@@ -34,6 +34,7 @@ from . import opcodes
 from . import ScriptError
 
 from .check_signature import op_checksig, op_checkmultisig
+from .flags import VERIFY_P2SH, VERIFY_DISCOURAGE_UPGRADABLE_NOPS, VERIFY_MINIMALDATA, VERIFY_SIGPUSHONLY, VERIFY_CHECKLOCKTIMEVERIFY, VERIFY_CLEANSTACK
 from .microcode import MICROCODE_LOOKUP, VCH_TRUE, VCH_FALSE
 from .tools import get_opcode, bin_script
 
@@ -177,6 +178,9 @@ def verify_script(script_signature,
                   flags=None,
                   expected_hash_type=None,
                   traceback_f=None):
+    if flags is None:
+        flags = VERIFY_P2SH
+
     stack = []
 
     is_p2h = is_pay_to_script_hash(script_public_key)
