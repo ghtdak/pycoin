@@ -19,10 +19,8 @@ SCRIPT_VALID_JSON = os.path.dirname(__file__) + '/data/script_valid.json'
 SCRIPT_INVALID_JSON = os.path.dirname(__file__) + '/data/script_invalid.json'
 
 
-class ScriptsTest(unittest.TestCase):
-
-    def do_test_valid_line(self, line):
-        pass
+class TestTx(unittest.TestCase):
+    pass
 
 
 def parse_flags(flag_string):
@@ -110,14 +108,14 @@ def inject():
     for idx, (script_in, script_out, flags,
               comment) in enumerate(items_from_json(SCRIPT_VALID_JSON)):
         name_of_f = "test_valid_%03d" % idx
-        setattr(ScriptsTest, name_of_f, make_test(script_in, script_out, flags,
-                                                  comment))
+        setattr(TestTx, name_of_f, make_test(script_in, script_out, flags,
+                                             comment))
         print("adding %s" % name_of_f)
 
     for idx, (script_in, script_out, flags,
               comment) in enumerate(items_from_json(SCRIPT_INVALID_JSON)):
         name_of_f = "test_invalid_%03d" % idx
-        setattr(ScriptsTest,
+        setattr(TestTx,
                 name_of_f,
                 make_test(script_in,
                           script_out,
