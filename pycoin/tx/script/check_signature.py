@@ -97,7 +97,7 @@ def check_defined_hashtype_signature(sig):
 
 def parse_signature_blob(sig_blob, flags=0):
     if len(sig_blob) == 0:
-        return (0, 0), 0
+        raise ValueError("empty sig_blob")
     if flags & (VERIFY_DERSIG | VERIFY_LOW_S | VERIFY_STRICTENC):
         check_valid_signature(sig_blob)
     if flags & VERIFY_STRICTENC:
@@ -191,7 +191,7 @@ def sig_blob_matches(sig_blobs,
         sig_blob, sig_blobs = sig_blobs[0], sig_blobs[1:]
         try:
             sig_pair, signature_type = parse_signature_blob(sig_blob, flags)
-        except der.UnexpectedDER:
+        except (der.UnexpectedDER, ValueError):
             sig_blob_indices.append(-1)
             continue
 
