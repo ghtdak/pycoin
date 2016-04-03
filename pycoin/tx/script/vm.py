@@ -72,6 +72,8 @@ def eval_script(script,
     # TODO: set op_count
     # op_count = 0
 
+    require_minimal = flags & VERIFY_MINIMALDATA
+
     try:
         while pc < len(script):
             old_pc = pc
@@ -107,7 +109,12 @@ def eval_script(script,
                                   (opcodes.INT_TO_OPCODE[opcode], pc - 1))
 
             if opcode in MICROCODE_LOOKUP:
-                MICROCODE_LOOKUP[opcode](stack)
+                f = MICROCODE_LOOKUP[opcode]
+                if f.require_minimal:
+                    f(stack, require_minimal=require_minimal)
+                else:
+                    f(stack)
+
                 if opcode in VERIFY_OPS:
                     v = stack.pop()
                     if v != VCH_TRUE:
