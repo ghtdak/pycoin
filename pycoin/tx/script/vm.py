@@ -220,7 +220,7 @@ def eval_script(script,
                 op_checksig(stack, signature_for_hash_type_f,
                             expected_hash_type, script[begin_code_hash:], flags)
                 if opcode == opcodes.OP_CHECKSIGVERIFY:
-                    if bool_from_script_bytes(stack.pop()):
+                    if not bool_from_script_bytes(stack.pop()):
                         raise ScriptError("VERIFY failed at %d" % (pc - 1))
                 continue
 
