@@ -29,7 +29,6 @@ from pycoin.tx.script.tools import opcode_list
 from pycoin.tx.script.check_signature import parse_signature_blob
 from pycoin.tx.script.der import UnexpectedDER
 from pycoin.tx.script.disassemble import disassemble_scripts, sighash_type_to_string
-from pycoin.tx.script.trace import trace_script
 
 DEFAULT_VERSION = 1
 DEFAULT_LOCK_TIME = 0
@@ -47,7 +46,8 @@ def validate_bitcoind(tx, tx_db, bitcoind_url):
         print("warning: can't talk to bitcoind due to missing library")
 
 
-def dump_tx(tx, netcode, verbose_signature, disassembly_level, do_trace):
+def dump_tx(tx, netcode, verbose_signature, disassembly_level, do_trace,
+            use_pdb):
     address_prefix = address_prefix_for_netcode(netcode)
     tx_bin = stream_to_bytes(tx.stream)
     print("Version: %2d  tx hash %s  %d bytes   " %
@@ -63,7 +63,24 @@ def dump_tx(tx, netcode, verbose_signature, disassembly_level, do_trace):
     print("Lock time: %d (%s)" % (tx.lock_time, meaning))
     print("Input%s:" % ('s' if len(tx.txs_in) != 1 else ''))
     missing_unspents = tx.missing_unspents()
-    traceback_f = trace_script if do_trace else None
+
+    def trace_script(old_pc, opcode, data, stack, altstack, if_condition_stack,
+                     is_signature):
+        from pycoin.tx.script.tools import disassemble_for_opcode_data
+        print("%3d : %02x  %s" %
+              (old_pc, opcode, disassemble_for_opcode_data(opcode, data)))
+        if use_pdb:
+            import pdb
+            from pycoin.serialize import b2h
+            print("stack: [%s]" % ', '.join(b2h(s) for s in stack))
+            if len(altstack) > 0:
+                print("altstack: %s" % altstack)
+            if len(if_condition_stack) > 0:
+                print("condition stack: %s" % ', '.join(
+                    int(s) for s in if_condition_stack))
+            pdb.set_trace()
+
+    traceback_f = trace_script if do_trace or use_pdb else None
     for idx, tx_in in enumerate(tx.txs_in):
         if disassembly_level > 0:
             signature_for_hash_type_f = lambda hash_type, script: tx.signature_hash(script, idx, hash_type)
@@ -313,6 +330,10 @@ def main():
                         "--disassemble",
                         action='store_true',
                         help='Disassemble scripts.')
+
+    parser.add_argument("--pdb",
+                        action="store_true",
+                        help='Enter PDB debugger on each script instruction.')
 
     parser.add_argument("--trace", action='store_true', help='Trace scripts.')
 
@@ -624,7 +645,7 @@ def main():
         if not tx.missing_unspents():
             check_fees(tx)
         dump_tx(tx, args.network, args.verbose_signature, args.disassemble,
-                args.trace)
+                args.trace, args.pdb)
         if include_unspents:
             print(
                 "including unspents in hex dump since transaction not fully signed")
