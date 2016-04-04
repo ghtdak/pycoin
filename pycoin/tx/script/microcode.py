@@ -91,7 +91,7 @@ def do_OP_2DROP(stack):
 
 
 def do_OP_2DUP(stack):
-    #// (x1 x2 -- x1 x2 x1 x2)
+    #  (x1 x2 -- x1 x2 x1 x2)
     """
     >>> s = [1, 2]
     >>> do_OP_2DUP(s)
@@ -103,7 +103,7 @@ def do_OP_2DUP(stack):
 
 
 def do_OP_3DUP(stack):
-    #// (x1 x2 x3 -- x1 x2 x3 x1 x2 x3)
+    #  (x1 x2 x3 -- x1 x2 x3 x1 x2 x3)
     """
     >>> s = [1, 2, 3]
     >>> do_OP_3DUP(s)
@@ -116,7 +116,7 @@ def do_OP_3DUP(stack):
 
 
 def do_OP_2OVER(stack):
-    #// (x1 x2 x3 x4 -- x1 x2 x3 x4 x1 x2)
+    #  (x1 x2 x3 x4 -- x1 x2 x3 x4 x1 x2)
     """
     >>> s = [1, 2, 3, 4]
     >>> do_OP_2OVER(s)
@@ -415,7 +415,7 @@ def do_OP_EQUAL(stack):
     stack.append(bool_to_script_bytes(v1 == v2))
 
 
-do_OP_EQUALVERIFY = lambda s: do_OP_EQUAL(s)
+do_OP_EQUALVERIFY = do_OP_EQUAL
 
 
 def pop_check_bounds(stack, require_minimal):
@@ -546,8 +546,16 @@ do_OP_2MUL = make_unary_num_op(lambda x: x << 1)
 do_OP_2DIV = make_unary_num_op(lambda x: x >> 1)
 do_OP_NEGATE = make_unary_num_op(lambda x: -x)
 do_OP_ABS = make_unary_num_op(lambda x: abs(x))
-do_OP_NOT = lambda stack, require_minimal: stack.append(bool_to_script_bytes(not pop_check_bounds(stack, require_minimal)))
-do_OP_0NOTEQUAL = lambda stack, require_minimal: stack.append(int_to_script_bytes(bool_from_script_bytes(stack.pop(), require_minimal=require_minimal)))
+
+
+def do_OP_NOT(stack, require_minimal):
+    return stack.append(bool_to_script_bytes(not pop_check_bounds(
+        stack, require_minimal)))
+
+
+def do_OP_0NOTEQUAL(stack, require_minimal):
+    return stack.append(int_to_script_bytes(bool_from_script_bytes(stack.pop(
+    ), require_minimal=require_minimal)))
 
 
 def build_ops_lookup():

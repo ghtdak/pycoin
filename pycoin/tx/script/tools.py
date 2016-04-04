@@ -33,7 +33,7 @@ import struct
 
 from . import ScriptError
 from .opcodes import OPCODE_TO_INT, INT_TO_OPCODE
-from ...intbytes import (bytes_from_int, bytes_to_ints, to_bytes, from_bytes,
+from ...intbytes import (bytes_from_int, bytes_to_ints, from_bytes,
                          int_to_bytes)
 
 logger = logging.getLogger(__name__)
@@ -143,6 +143,24 @@ def bin_script(data_list):
     return f.getvalue()
 
 
+def compile_expression(t):
+    if (t[0], t[-1]) == ('[', ']'):
+        return binascii.unhexlify(t[1:-1])
+    if t.startswith("'") and t.endswith("'"):
+        return t[1:-1].encode("utf8")
+    try:
+        t0 = int(t)
+        if abs(t0) <= 18446744073709551615 and t[0] != '0':
+            return int_to_script_bytes(t0)
+    except (SyntaxError, ValueError):
+        pass
+    try:
+        return binascii.unhexlify(t)
+    except Exception:
+        pass
+    raise SyntaxError("unknown expression %s" % t)
+
+
 def compile(s):
     """Compile the given script. Returns a bytes object with the compiled script."""
     f = io.BytesIO()
@@ -155,23 +173,7 @@ def compile(s):
             d = binascii.unhexlify(t[2:])
             f.write(d)
         else:
-            v = None
-            if (t[0], t[-1]) == ('[', ']'):
-                v = binascii.unhexlify(t[1:-1])
-            elif t.startswith("'") and t.endswith("'"):
-                v = t[1:-1].encode("utf8")
-            else:
-                try:
-                    t0 = int(t)
-                    if abs(t0) <= 18446744073709551615 and t[0] != '0':
-                        v = int_to_script_bytes(t0)
-                except (SyntaxError, ValueError):
-                    pass
-            if v is None:
-                try:
-                    v = binascii.unhexlify(t)
-                except Exception as ex:
-                    raise SyntaxError("unknown expression %s" % t)
+            v = compile_expression(t)
             write_push_data([v], f)
     return f.getvalue()
 

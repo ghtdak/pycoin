@@ -76,10 +76,6 @@ def instruction_for_opcode(opcode, data):
 
 def annotation_f_for_scripts(input_script, output_script,
                              signature_for_hash_type_f):
-    if len(output_script):
-        #  pay_to_script = script_obj_from_script(output_script)
-        pass
-
     is_p2sh = is_pay_to_script_hash(output_script)
     in_ap = b'\0'
     out_ap = b'\0'

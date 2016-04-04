@@ -278,7 +278,9 @@ class Tx(object):
 
         # Leave out the signature from the hash, since a signature can't sign itself.
         # The checksig op will also drop the signatures from its hash.
-        signature_for_hash_type_f = lambda hash_type, script: self.signature_hash(script, tx_in_idx, hash_type)
+        def signature_for_hash_type_f(hash_type, script):
+            return self.signature_hash(script, tx_in_idx, hash_type)
+
         if tx_in.verify(tx_out_script, signature_for_hash_type_f,
                         self.lock_time):
             return
@@ -309,7 +311,10 @@ class Tx(object):
 
     def verify_tx_in(self, tx_in_idx, tx_out_script, expected_hash_type=None):
         tx_in = self.txs_in[tx_in_idx]
-        signature_for_hash_type_f = lambda hash_type, script: self.signature_hash(script, tx_in_idx, hash_type)
+
+        def signature_for_hash_type_f(hash_type, script):
+            return self.signature_hash(script, tx_in_idx, hash_type)
+
         if not tx_in.verify(tx_out_script, signature_for_hash_type_f,
                             expected_hash_type):
             raise ValidationFailureError(
@@ -461,7 +466,10 @@ class Tx(object):
         if unspent is None:
             return False
         tx_out_script = self.unspents[tx_in_idx].script
-        signature_for_hash_type_f = lambda hash_type, script: self.signature_hash(script, tx_in_idx, hash_type)
+
+        def signature_for_hash_type_f(hash_type, script):
+            return self.signature_hash(script, tx_in_idx, hash_type)
+
         return tx_in.verify(tx_out_script,
                             signature_for_hash_type_f,
                             self.lock_time,

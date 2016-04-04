@@ -182,13 +182,11 @@ def dump_output(output_dict, output_order):
 
 
 def main():
-    networks = "MTLD"
     parser = argparse.ArgumentParser(
         description='Crypto coin utility ku ("key utility") to show'
         ' information about Bitcoin or other cryptocoin data structures.',
-        epilog='Known networks codes:\n  ' \
-                + ', '.join(['%s (%s)'%(i, full_network_name_for_netcode(i)) for i in NETWORK_NAMES])
-    )
+        epilog=('Known networks codes:\n  ' + ', '.join(['%s (%s)' % (
+            i, full_network_name_for_netcode(i)) for i in NETWORK_NAMES])))
     parser.add_argument('-w',
                         "--wallet",
                         help='show just Bitcoin wallet key',

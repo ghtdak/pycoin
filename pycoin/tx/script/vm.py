@@ -35,7 +35,9 @@ from . import opcodes
 from . import ScriptError
 
 from .check_signature import op_checksig, op_checkmultisig
-from .flags import VERIFY_P2SH, VERIFY_DISCOURAGE_UPGRADABLE_NOPS, VERIFY_MINIMALDATA, VERIFY_SIGPUSHONLY, VERIFY_CHECKLOCKTIMEVERIFY, VERIFY_CLEANSTACK
+from .flags import (VERIFY_P2SH, VERIFY_DISCOURAGE_UPGRADABLE_NOPS,
+                    VERIFY_MINIMALDATA, VERIFY_SIGPUSHONLY,
+                    VERIFY_CHECKLOCKTIMEVERIFY, VERIFY_CLEANSTACK)
 from .microcode import MICROCODE_LOOKUP
 from .tools import get_opcode, bin_script, bool_from_script_bytes, int_from_script_bytes
 
@@ -191,7 +193,7 @@ def eval_script(script,
 
                 if opcode in VERIFY_OPS:
                     v = bool_from_script_bytes(stack.pop())
-                    if v == False:
+                    if not v:
                         raise ScriptError("VERIFY failed at %d" % (pc - 1))
                 continue
 
@@ -306,27 +308,27 @@ def verify_script(script_signature,
         check_script_push_only(script_signature)
 
     try:
-        r = eval_script(script_signature,
-                        signature_for_hash_type_f,
-                        lock_time,
-                        expected_hash_type,
-                        stack,
-                        traceback_f=traceback_f,
-                        flags=flags,
-                        is_signature=True)
+        eval_script(script_signature,
+                    signature_for_hash_type_f,
+                    lock_time,
+                    expected_hash_type,
+                    stack,
+                    traceback_f=traceback_f,
+                    flags=flags,
+                    is_signature=True)
 
         if is_p2h and (flags & VERIFY_P2SH):
             signatures, alt_script_public_key = stack[:-1], stack[-1]
             alt_script_signature = bin_script(signatures)
 
-        r = eval_script(script_public_key,
-                        signature_for_hash_type_f,
-                        lock_time,
-                        expected_hash_type,
-                        stack,
-                        traceback_f=traceback_f,
-                        flags=flags,
-                        is_signature=False)
+        eval_script(script_public_key,
+                    signature_for_hash_type_f,
+                    lock_time,
+                    expected_hash_type,
+                    stack,
+                    traceback_f=traceback_f,
+                    flags=flags,
+                    is_signature=False)
     except ScriptError:
         return False
 

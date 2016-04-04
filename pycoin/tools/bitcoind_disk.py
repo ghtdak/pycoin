@@ -117,7 +117,6 @@ def locked_blocks_iterator(start_info=(0, 0),
         break
     index_table = {initial_header.previous_block_hash: (-1, None, None)}
     head_hash = initial_header.previous_block_hash
-    block_iterator = Blockfiles(base_dir, start_info)
 
     max_index = -1
     for info in block_info_iterator(start_info, base_dir):

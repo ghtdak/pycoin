@@ -75,8 +75,8 @@ class Key(object):
             self._public_pair = public_pair
 
         if self._public_pair is not None \
-                and (None in self._public_pair \
-                    or not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1, self._public_pair)):
+                and (None in self._public_pair or
+                     not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1, self._public_pair)):
             raise InvalidPublicPairError()
 
     @classmethod
