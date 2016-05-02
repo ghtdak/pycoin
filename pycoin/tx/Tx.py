@@ -264,7 +264,7 @@ class Tx(object):
               hash160_lookup,
               tx_in_idx,
               tx_out_script,
-              hash_type=SIGHASH_ALL,
+              hash_type=None,
               **kwargs):
         """
         Sign a standard transaction.
@@ -278,7 +278,8 @@ class Tx(object):
         tx_out:
             the tx_out referenced by the given tx_in
         """
-
+        if hash_type is None:
+            hash_type = self.SIGHASH_ALL
         tx_in = self.txs_in[tx_in_idx]
 
         is_p2h = (len(tx_out_script) == 23 and
@@ -322,8 +323,10 @@ class Tx(object):
                    hash160_lookup,
                    tx_in_idx,
                    tx_out_script,
-                   hash_type=SIGHASH_ALL,
+                   hash_type=None,
                    **kwargs):
+        if hash_type is None:
+            hash_type = self.SIGHASH_ALL
         self.txs_in[tx_in_idx].script = self.solve(hash160_lookup,
                                                    tx_in_idx,
                                                    tx_out_script,
@@ -497,7 +500,7 @@ class Tx(object):
                             flags=flags,
                             traceback_f=traceback_f)
 
-    def sign(self, hash160_lookup, hash_type=SIGHASH_ALL, **kwargs):
+    def sign(self, hash160_lookup, hash_type=None, **kwargs):
         """
         Sign a standard transaction.
         hash160_lookup:
@@ -505,6 +508,8 @@ class Tx(object):
             values are tuples (secret exponent, public_pair, is_compressed) or None
             (in which case the script will obviously not be signed).
         """
+        if hash_type is None:
+            hash_type = self.SIGHASH_ALL
         self.check_unspents()
         for idx, tx_in in enumerate(self.txs_in):
             if self.is_signature_ok(idx) or tx_in.is_coinbase():
