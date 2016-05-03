@@ -8,9 +8,9 @@ setup(
     name="pycoin",
     version=version,
     packages=[
-        "pycoin", "pycoin.blockchain", "pycoin.convention", "pycoin.ecdsa",
-        "pycoin.ecdsa.native", "pycoin.key", "pycoin.network", "pycoin.tx",
-        "pycoin.tx.pay_to", "pycoin.tx.script", "pycoin.serialize",
+        "pycoin", "pycoin.blockchain", "pycoin.contrib", "pycoin.convention",
+        "pycoin.ecdsa", "pycoin.ecdsa.native", "pycoin.key", "pycoin.network",
+        "pycoin.tx", "pycoin.tx.pay_to", "pycoin.tx.script", "pycoin.serialize",
         "pycoin.services", "pycoin.scripts", "pycoin.wallet"
     ],
     author="Richard Kiss",
