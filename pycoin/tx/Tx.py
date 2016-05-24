@@ -311,7 +311,7 @@ class Tx(object):
         self.txs_in[tx_in_idx].script = self.solve(hash160_lookup,
                                                    tx_in_idx,
                                                    tx_out_script,
-                                                   hash_type=SIGHASH_ALL,
+                                                   hash_type=hash_type,
                                                    **kwargs)
 
     def verify_tx_in(self, tx_in_idx, tx_out_script, expected_hash_type=None):
