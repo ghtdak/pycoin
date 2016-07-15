@@ -60,7 +60,7 @@ class ScriptMultisig(ScriptType):
             public_keys = [b2h(sk) for sk in self.sec_keys]
             script_source = "%d %s %d OP_CHECKMULTISIG" % (
                 self.n, " ".join(public_keys), len(public_keys))
-            self._script = tools.compile(script_source)
+            self._script = tools.pycoin_compile(script_source)
         return self._script
 
     def _find_signatures(self, script, sign_value):
@@ -145,7 +145,7 @@ class ScriptMultisig(ScriptType):
                 existing_signatures.append((-1, signature_placeholder))
 
         script = "OP_0 %s" % " ".join(b2h(s[1]) for s in existing_signatures)
-        solution = tools.compile(script)
+        solution = tools.pycoin_compile(script)
         return solution
 
     def info(self, netcode='BTC'):

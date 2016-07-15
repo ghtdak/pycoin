@@ -11,7 +11,7 @@ from pycoin.serialize import h2b
 from pycoin.tx import TxIn, TxOut, Tx
 from pycoin.tx.script import ScriptError
 from pycoin.tx.script import flags
-from pycoin.tx.script.tools import compile
+from pycoin.tx.script.tools import pycoin_compile
 from pycoin.tx.script.vm import eval_script
 from pycoin.tx.script.vm import verify_script
 
@@ -76,8 +76,8 @@ def dump_failure_info(spend_tx, script_in, script_out, flags, comment):
 
 def make_test(script_in, script_out, flags_string, comment, expect_valid=True):
     def f(self):
-        script_in_bin = compile(script_in)
-        script_out_bin = compile(script_out)
+        script_in_bin = pycoin_compile(script_in)
+        script_out_bin = pycoin_compile(script_out)
         flags = parse_flags(flags_string)
         try:
             credit_tx = build_credit_tx(script_out_bin)

@@ -609,9 +609,9 @@ def main():
 
         def wif_iter(iters):
             while len(iters) > 0:
-                for idx, iter in enumerate(iters):
+                for idx, _iter in enumerate(iters):
                     try:
-                        wif = next(iter)
+                        wif = next(_iter)
                         yield wif
                     except StopIteration:
                         iters = iters[:idx] + iters[idx + 1:]

@@ -161,8 +161,9 @@ def compile_expression(t):
     raise SyntaxError("unknown expression %s" % t)
 
 
-def compile(s):
-    """Compile the given script. Returns a bytes object with the compiled script."""
+def pycoin_compile(s):
+    """Compile the given script. Returns a bytes object with the compiled
+    script. """
     f = io.BytesIO()
     for t in s.split():
         if t in OPCODE_TO_INT:

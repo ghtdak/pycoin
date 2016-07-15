@@ -13,7 +13,7 @@ class ScriptPayToPublicKey(ScriptType):
     """
     This is generally used in coinbase transactions only.
     """
-    TEMPLATE = tools.compile("OP_PUBKEY OP_CHECKSIG")
+    TEMPLATE = tools.pycoin_compile("OP_PUBKEY OP_CHECKSIG")
 
     def __init__(self, sec):
         self.sec = sec
@@ -42,7 +42,7 @@ class ScriptPayToPublicKey(ScriptType):
             # create the script
             STANDARD_SCRIPT_OUT = "%s OP_CHECKSIG"
             script_text = STANDARD_SCRIPT_OUT % b2h(self.sec)
-            self._script = tools.compile(script_text)
+            self._script = tools.pycoin_compile(script_text)
         return self._script
 
     def solve(self, **kwargs):

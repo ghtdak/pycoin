@@ -26,8 +26,8 @@ class TxDb(object):
                 self.writable_cache_path):
             os.makedirs(self.writable_cache_path)
 
-    def paths_for_hash(self, hash):
-        name = b2h_rev(hash)
+    def paths_for_hash(self, _hash):
+        name = b2h_rev(_hash)
         for base_dir in self.read_only_paths:
             p = os.path.join(base_dir, "%s_tx.bin" % name)
             if os.path.exists(p):

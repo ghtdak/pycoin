@@ -9,7 +9,7 @@ from .ScriptType import ScriptType
 
 
 class ScriptPayToScript(ScriptType):
-    TEMPLATE = tools.compile("OP_HASH160 OP_PUBKEYHASH OP_EQUAL")
+    TEMPLATE = tools.pycoin_compile("OP_HASH160 OP_PUBKEYHASH OP_EQUAL")
 
     def __init__(self, hash160):
         self.hash160 = hash160
@@ -48,7 +48,7 @@ class ScriptPayToScript(ScriptType):
             # create the script
             STANDARD_SCRIPT_OUT = "OP_HASH160 %s OP_EQUAL"
             script_text = STANDARD_SCRIPT_OUT % b2h(self.hash160)
-            self._script = tools.compile(script_text)
+            self._script = tools.pycoin_compile(script_text)
         return self._script
 
     def info(self, netcode="BTC"):

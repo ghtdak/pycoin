@@ -231,7 +231,7 @@ class ScriptTypesTest(unittest.TestCase):
             out = TxOut(1, nd.script())
             tx = Tx(0, [], [out])  # ensure we can create a tx
             self.assertEqual(nd.script(
-            ), tools.compile(tools.disassemble(nd.script(
+            ), tools.pycoin_compile(tools.disassemble(nd.script(
             ))))  # convert between asm and back to ensure no bugs with compilation
 
 

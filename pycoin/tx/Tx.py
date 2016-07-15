@@ -87,7 +87,7 @@ class Tx(object):
         tx_in = cls.TxIn.coinbase_tx_in(script=coinbase_bytes)
         COINBASE_SCRIPT_OUT = "%s OP_CHECKSIG"
         script_text = COINBASE_SCRIPT_OUT % b2h(public_key_sec)
-        script_bin = tools.compile(script_text)
+        script_bin = tools.pycoin_compile(script_text)
         tx_out = cls.TxOut(coin_value, script_bin)
         return cls(version, [tx_in], [tx_out], lock_time)
 

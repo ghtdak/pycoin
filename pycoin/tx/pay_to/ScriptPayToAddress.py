@@ -11,7 +11,7 @@ from .ScriptType import ScriptType
 
 
 class ScriptPayToAddress(ScriptType):
-    TEMPLATE = tools.compile(
+    TEMPLATE = tools.pycoin_compile(
         "OP_DUP OP_HASH160 OP_PUBKEYHASH OP_EQUALVERIFY OP_CHECKSIG")
 
     def __init__(self, hash160):
@@ -33,7 +33,7 @@ class ScriptPayToAddress(ScriptType):
             # create the script
             STANDARD_SCRIPT_OUT = "OP_DUP OP_HASH160 %s OP_EQUALVERIFY OP_CHECKSIG"
             script_text = STANDARD_SCRIPT_OUT % b2h(self.hash160)
-            self._script = tools.compile(script_text)
+            self._script = tools.pycoin_compile(script_text)
         return self._script
 
     def solve(self, **kwargs):

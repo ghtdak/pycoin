@@ -4,7 +4,7 @@ import unittest
 
 from pycoin.serialize import h2b
 from pycoin.intbytes import int_to_bytes, bytes_from_ints
-from pycoin.tx.script.tools import bin_script, compile, disassemble, int_to_script_bytes, int_from_script_bytes
+from pycoin.tx.script.tools import bin_script, pycoin_compile, disassemble, int_to_script_bytes, int_from_script_bytes
 from pycoin.tx.script.opcodes import OPCODE_LIST
 from pycoin.tx.script.vm import eval_script
 
@@ -48,9 +48,9 @@ class ToolsTest(unittest.TestCase):
     def test_compile_decompile(self):
 
         def check(s):
-            b1 = compile(s)
+            b1 = pycoin_compile(s)
             s1 = disassemble(b1)
-            b2 = compile(s1)
+            b2 = pycoin_compile(s1)
             self.assertEqual(s, s1)
             self.assertEqual(b1, b2)
 

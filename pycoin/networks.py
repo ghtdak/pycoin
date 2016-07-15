@@ -90,11 +90,11 @@ NETWORK_NAMES = [i.code for i in NETWORKS]
 DEFAULT_NETCODES = NETWORK_NAMES
 
 
-def _lookup(netcode, property):
+def _lookup(netcode, _property):
     # Lookup a specific value needed for a specific network
     network = NETWORK_NAME_LOOKUP.get(netcode)
     if network:
-        return getattr(network, property)
+        return getattr(network, _property)
     return None
 
 

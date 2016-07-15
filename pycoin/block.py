@@ -156,8 +156,8 @@ class Block(BlockHeader):
         return block
 
     @classmethod
-    def from_bin(cls, bytes):
-        f = io.BytesIO(bytes)
+    def from_bin(cls, _bytes):
+        f = io.BytesIO(_bytes)
         return cls.parse(f)
 
     def __init__(self, version, previous_block_hash, merkle_root, timestamp,

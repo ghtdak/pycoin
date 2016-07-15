@@ -18,7 +18,7 @@ from pycoin.tx.Tx import (SIGHASH_ALL,
 from pycoin.tx.TxOut import standard_tx_out_script
 from pycoin.tx.script.der import (sigdecode_der,
                                   sigencode_der, )
-from pycoin.tx.script.tools import compile as pycoin_compile
+from pycoin.tx.script.tools import pycoin_compile as pycoin_compile
 
 PRIV_KEYS = (
     2330949616242593315303241053456316633827293588958882755297900732239663851861,

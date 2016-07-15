@@ -6,7 +6,7 @@ from .ScriptType import ScriptType
 
 
 class ScriptNulldata(ScriptType):
-    TEMPLATE = tools.compile("OP_RETURN OP_NULLDATA")
+    TEMPLATE = tools.pycoin_compile("OP_RETURN OP_NULLDATA")
 
     def __init__(self, nulldata):
         self.nulldata = nulldata
@@ -26,7 +26,7 @@ class ScriptNulldata(ScriptType):
             # create the script
             STANDARD_SCRIPT_OUT = "OP_RETURN [%s]"
             script_text = STANDARD_SCRIPT_OUT % b2h(self.nulldata)
-            self._script = tools.compile(script_text)
+            self._script = tools.pycoin_compile(script_text)
         return self._script
 
     def info(self, netcode="BTC"):

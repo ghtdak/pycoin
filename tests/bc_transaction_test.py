@@ -41,7 +41,7 @@ from pycoin.serialize import h2b_rev, h2b
 from pycoin.tx import Tx, TxIn, ValidationFailureError
 from pycoin.tx.Spendable import Spendable
 from pycoin.tx.script.opcodes import OPCODE_TO_INT
-from pycoin.tx.script.tools import compile
+from pycoin.tx.script.tools import pycoin_compile
 
 TX_VALID_JSON = os.path.dirname(__file__) + '/data/tx_valid.json'
 TX_INVALID_JSON = os.path.dirname(__file__) + '/data/tx_invalid.json'
@@ -91,7 +91,7 @@ def txs_from_json(path):
             blank_spendable = Spendable(0, b'', b'\0' * 32, 0)
             for prevout in prevouts:
                 spendable = Spendable(coin_value=1000000,
-                                      script=compile(prevout[2]),
+                                      script=pycoin_compile(prevout[2]),
                                       tx_hash=h2b_rev(prevout[0]),
                                       tx_out_index=prevout[1])
                 spendable_db[(spendable.tx_hash,

@@ -126,14 +126,14 @@ def tx_from_json_dict(r):
             if "hex" in scriptSig:
                 script = h2b(scriptSig.get("hex"))
             else:
-                script = tools.compile(scriptSig.get("asm"))
+                script = tools.pycoin_compile(scriptSig.get("asm"))
             previous_index = vin.get("vout")
         sequence = vin.get("sequence")
         txs_in.append(TxIn(previous_hash, previous_index, script, sequence))
     txs_out = []
     for vout in r.get("vout"):
         coin_value = btc_to_satoshi(decimal.Decimal(vout.get("value")))
-        script = tools.compile(vout.get("scriptPubKey").get("asm"))
+        script = tools.pycoin_compile(vout.get("scriptPubKey").get("asm"))
         txs_out.append(TxOut(coin_value, script))
     tx = Tx(version, txs_in, txs_out, lock_time)
     bh = r.get("blockhash")
