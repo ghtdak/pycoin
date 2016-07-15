@@ -131,10 +131,10 @@ class Point(object):
 
         def leftmost_bit(x):
             assert x > 0
-            result = 1
-            while result <= x:
-                result = 2 * result
-            return result // 2
+            result2 = 1
+            while result2 <= x:
+                result2 = 2 * result2
+            return result2 // 2
 
         e = other
         if self.__order:

@@ -302,8 +302,8 @@ class Tx(object):
 
         # Leave out the signature from the hash, since a signature can't sign itself.
         # The checksig op will also drop the signatures from its hash.
-        def signature_for_hash_type_f(hash_type, script):
-            return self.signature_hash(script, tx_in_idx, hash_type)
+        def signature_for_hash_type_f(hash_type2, script):
+            return self.signature_hash(script, tx_in_idx, hash_type2)
 
         if tx_in.verify(tx_out_script, signature_for_hash_type_f,
                         self.lock_time):

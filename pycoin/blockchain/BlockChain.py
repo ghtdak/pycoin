@@ -147,10 +147,10 @@ class BlockChain(object):
 
         def iterate():
             for header in header_iter:
-                h = header.hash()
-                self.weight_lookup[h] = header.difficulty
-                self.unlocked_block_storage[h] = header
-                yield h, header.previous_block_hash
+                _h = header.hash()
+                self.weight_lookup[_h] = header.difficulty
+                self.unlocked_block_storage[_h] = header
+                yield _h, header.previous_block_hash
 
         old_longest_chain = self._longest_local_block_chain()
 

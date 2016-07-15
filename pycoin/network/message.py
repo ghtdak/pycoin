@@ -106,7 +106,7 @@ def _make_parse_from_data():
     MESSAGE_PARSERS = _message_parsers()
     MESSAGE_FIXUPS = _message_fixups()
 
-    def parse_from_data(message_name, data):
+    def parse_from_data2(message_name, data):
         message_stream = io.BytesIO(data)
         parser = MESSAGE_PARSERS.get(message_name)
         if parser:
@@ -120,7 +120,7 @@ def _make_parse_from_data():
             d = {}
         return d
 
-    return parse_from_data
+    return parse_from_data2
 
 
 parse_from_data = _make_parse_from_data()
