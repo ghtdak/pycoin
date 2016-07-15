@@ -10,9 +10,13 @@ class TxDb(object):
     """
 
     def __init__(self,
-                 lookup_methods=[],
-                 read_only_paths=[],
+                 lookup_methods=None,
+                 read_only_paths=None,
                  writable_cache_path=None):
+        if lookup_methods is None:
+            lookup_methods = []
+        if read_only_paths is None:
+            read_only_paths = []
         self.lookup_methods = lookup_methods
         self.read_only_paths = read_only_paths
         if writable_cache_path:

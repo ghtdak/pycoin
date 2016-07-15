@@ -55,7 +55,7 @@ class ToolsTest(unittest.TestCase):
             self.assertEqual(b1, b2)
 
         def build_hex(size, a, b):
-            "build some random-looking hex"
+            """build some random-looking hex"""
             return "[%s]" % "".join("%02x" % (((i + a) * b) & 0xff)
                                     for i in range(size))
 

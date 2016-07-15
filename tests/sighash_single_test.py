@@ -3,21 +3,21 @@
 import unittest
 from pycoin.ecdsa import (generator_secp256k1,
                           sign as ecdsa_sign,
-                          verify as ecdsa_verify,)
+                          verify as ecdsa_verify, )
 from pycoin.encoding import (bytes_from_int,
-                             to_bytes_32,)
+                             to_bytes_32, )
 from pycoin.key import Key
 from pycoin.serialize import (b2h,
-                              b2h_rev,)
+                              b2h_rev, )
 from pycoin.tx import (Tx,
                        TxIn,
-                       TxOut,)
+                       TxOut, )
 from pycoin.tx.Tx import (SIGHASH_ALL,
                           SIGHASH_ANYONECANPAY,
-                          SIGHASH_SINGLE,)
+                          SIGHASH_SINGLE, )
 from pycoin.tx.TxOut import standard_tx_out_script
 from pycoin.tx.script.der import (sigdecode_der,
-                                  sigencode_der,)
+                                  sigencode_der, )
 from pycoin.tx.script.tools import compile as pycoin_compile
 
 PRIV_KEYS = (
@@ -30,7 +30,7 @@ PRIV_KEYS = (
 )
 
 
-#=========================================================================
+# =========================================================================
 def sigcheck(a_key, a_hash_for_sig, a_sig):
     """
     Returns True if a_key was used to generate a_sig from a_hash_for_sig;
@@ -42,7 +42,7 @@ def sigcheck(a_key, a_hash_for_sig, a_sig):
                         a_hash_for_sig, (r, s))
 
 
-#=========================================================================
+# =========================================================================
 def sigmake(a_key, a_hash_for_sig, a_sig_type=SIGHASH_ALL):
     """
     Signs a_hash_for_sig with a_key and returns a DER-encoded signature
@@ -58,18 +58,17 @@ def sigmake(a_key, a_hash_for_sig, a_sig_type=SIGHASH_ALL):
     return sigencode_der(r, s) + bytes_from_int(a_sig_type)
 
 
-#=========================================================================
+# =========================================================================
 class SighashSingleTest(unittest.TestCase):
-
-    #=====================================================================
+    # =====================================================================
     def test_sighash_single_mainnet(self):
         self._test_sighash_single('BTC')
 
-    #=====================================================================
+    # =====================================================================
     def test_sighash_single_testnet3(self):
         self._test_sighash_single('XTN')
 
-    #=====================================================================
+    # =====================================================================
     def _test_sighash_single(self, netcode):
         k0 = Key(secret_exponent=PRIV_KEYS[0],
                  is_compressed=True,

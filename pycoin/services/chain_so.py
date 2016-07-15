@@ -45,7 +45,7 @@ class ChainSoProvider(object):
         return spendables
 
     def tx_for_tx_hash(self, tx_hash):
-        "Get a Tx by its hash."
+        """Get a Tx by its hash."""
         url = self.base_url("get_tx", b2h_rev(tx_hash))
         r = json.loads(urlopen(url).read().decode("utf8"))
         tx = Tx.parse(io.BytesIO(h2b(r.get("data").get("tx_hex"))))

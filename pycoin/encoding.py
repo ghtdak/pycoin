@@ -189,13 +189,15 @@ def wif_to_tuple_of_prefix_secret_exponent_compressed(wif):
 
 
 def wif_to_tuple_of_secret_exponent_compressed(
-        wif, allowable_wif_prefixes=[b'\x80']):
+        wif, allowable_wif_prefixes=None):
     """Convert a WIF string to the corresponding secret exponent. Private key manipulation.
     Returns a tuple: the secret exponent, as a bignum integer, and a boolean indicating if the
     WIF corresponded to a compressed key or not.
 
     Not that it matters, since we can use the secret exponent to generate both the compressed
     and uncompressed Bitcoin address."""
+    if allowable_wif_prefixes is None:
+        allowable_wif_prefixes = [b'\x80']
     actual_prefix, secret_exponent, is_compressed = wif_to_tuple_of_prefix_secret_exponent_compressed(
         wif)
     if actual_prefix not in allowable_wif_prefixes:
@@ -203,14 +205,18 @@ def wif_to_tuple_of_secret_exponent_compressed(
     return secret_exponent, is_compressed
 
 
-def wif_to_secret_exponent(wif, allowable_wif_prefixes=[b'\x80']):
+def wif_to_secret_exponent(wif, allowable_wif_prefixes=None):
     """Convert a WIF string to the corresponding secret exponent."""
+    if allowable_wif_prefixes is None:
+        allowable_wif_prefixes = [b'\x80']
     return wif_to_tuple_of_secret_exponent_compressed(
         wif, allowable_wif_prefixes=allowable_wif_prefixes)[0]
 
 
-def is_valid_wif(wif, allowable_wif_prefixes=[b'\x80']):
+def is_valid_wif(wif, allowable_wif_prefixes=None):
     """Return a boolean indicating if the WIF is valid."""
+    if allowable_wif_prefixes is None:
+        allowable_wif_prefixes = [b'\x80']
     try:
         wif_to_secret_exponent(wif,
                                allowable_wif_prefixes=allowable_wif_prefixes)
@@ -247,7 +253,7 @@ def sec_to_public_pair(sec, strict=True):
             isok = isok or (sec0 in [b'\6', b'\7'])
         if isok:
             y = from_bytes_32(sec[33:65])
-            return (x, y)
+            return x, y
     elif len(sec) == 33:
         if not strict or (sec0 in (b'\2', b'\3')):
             from .ecdsa import public_pair_for_x, generator_secp256k1
@@ -295,7 +301,7 @@ def bitcoin_address_to_hash160_sec(bitcoin_address, address_prefix=b'\0'):
     Since we only know the hash of the public key, we can't get the full public key back."""
     hash160, actual_prefix = bitcoin_address_to_hash160_sec_with_prefix(
         bitcoin_address)
-    if (address_prefix == actual_prefix):
+    if address_prefix == actual_prefix:
         return hash160
     raise EncodingError("Bitcoin address %s for wrong network" %
                         bitcoin_address)

@@ -103,11 +103,13 @@ def eval_script(script,
                 signature_for_hash_type_f,
                 lock_time,
                 expected_hash_type=None,
-                stack=[],
+                stack=None,
                 disallow_long_scripts=True,
                 traceback_f=None,
                 is_signature=False,
                 flags=0):
+    if stack is None:
+        stack = []
     altstack = Stack()
     if disallow_long_scripts and len(script) > 10000:
         return False
@@ -238,7 +240,7 @@ def eval_script(script,
 
             if opcode == opcodes.OP_CHECKLOCKTIMEVERIFY:
                 if not (flags & VERIFY_CHECKLOCKTIMEVERIFY):
-                    if (flags & VERIFY_DISCOURAGE_UPGRADABLE_NOPS):
+                    if flags & VERIFY_DISCOURAGE_UPGRADABLE_NOPS:
                         raise ScriptError("discouraging nops")
                     continue
                 if lock_time is None:

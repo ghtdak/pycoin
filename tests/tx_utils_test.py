@@ -5,7 +5,8 @@ import struct
 import unittest
 
 from pycoin.ecdsa import generator_secp256k1, public_pair_for_secret_exponent
-from pycoin.encoding import public_pair_to_bitcoin_address, secret_exponent_to_wif
+from pycoin.encoding import public_pair_to_bitcoin_address, \
+    secret_exponent_to_wif
 
 from pycoin.tx.Tx import BadSpendableError
 from pycoin.tx.TxOut import standard_tx_out_script
@@ -23,7 +24,6 @@ FAKE_HASHES = [hashlib.sha256(struct.pack("Q", idx)).digest()
 
 
 class SpendTest(unittest.TestCase):
-
     def test_simple_spend(self):
 
         FEE = 10000

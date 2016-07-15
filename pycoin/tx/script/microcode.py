@@ -30,17 +30,20 @@ import binascii
 import hashlib
 import inspect
 
+from pycoin.intbytes import bytes_from_ints, bytes_to_ints
 from . import ScriptError
 
 from .opcodes import OPCODE_TO_INT
-from .tools import bool_from_script_bytes, bool_to_script_bytes, int_to_script_bytes, int_from_script_bytes
+from .tools import bool_from_script_bytes, bool_to_script_bytes, \
+    int_to_script_bytes, int_from_script_bytes
 from ...encoding import hash160, double_sha256, ripemd160
 from ...serialize import h2b
 
 VCH_TRUE = b'\1'
 VCH_FALSE = b''
 
-do_OP_NOP = do_OP_NOP1 = do_OP_NOP2 = do_OP_NOP3 = do_OP_NOP4 = do_OP_NOP5 = lambda s: None
+do_OP_NOP = do_OP_NOP1 = do_OP_NOP2 = do_OP_NOP3 = lambda s: None
+do_OP_NOP4 = do_OP_NOP5 = lambda s: None
 do_OP_NOP6 = do_OP_NOP7 = do_OP_NOP8 = do_OP_NOP9 = do_OP_NOP10 = lambda s: None
 
 
@@ -369,15 +372,15 @@ def make_same_size(v1, v2):
 
 def make_bitwise_bin_op(binop):
     """
-    >>> s = [h2b('5dcf39832aebc166'), h2b('ff00f086') ]
+    >>> s = [h2b('5dcf39832aebc166'), h2b('ff00f086')]
     >>> do_OP_AND(s)
     >>> print(binascii.hexlify(s[0]) == b'5d00308200000000')
     True
-    >>> s = [h2b('5dcf39832aebc166'), h2b('ff00f086') ]
+    >>> s = [h2b('5dcf39832aebc166'), h2b('ff00f086')]
     >>> do_OP_OR(s)
     >>> print(binascii.hexlify(s[0]) == b'ffcff9872aebc166')
     True
-    >>> s = [h2b('5dcf39832aebc166'), h2b('ff00f086') ]
+    >>> s = [h2b('5dcf39832aebc166'), h2b('ff00f086')]
     >>> do_OP_XOR(s)
     >>> print(binascii.hexlify(s[0]) == b'a2cfc9052aebc166')
     True
@@ -390,7 +393,7 @@ def make_bitwise_bin_op(binop):
         v1, v2 = make_same_size(v1, v2)
         stack.append(bytes_from_ints(binop(c1, c2)
                                      for c1, c2 in zip(
-                                         bytes_to_ints(v1), bytes_to_ints(v2))))
+            bytes_to_ints(v1), bytes_to_ints(v2))))
 
     return f
 
@@ -426,7 +429,6 @@ def pop_check_bounds(stack, require_minimal):
 
 
 def make_bin_op(binop):
-
     def f(stack, require_minimal):
         v1, v2 = [pop_check_bounds(stack, require_minimal) for i in range(2)]
         stack.append(int_to_script_bytes(binop(v2, v1)))
@@ -435,7 +437,6 @@ def make_bin_op(binop):
 
 
 def make_bool_bin_op(binop):
-
     def f(stack, require_minimal):
         v1, v2 = [pop_check_bounds(stack, require_minimal) for i in range(2)]
         stack.append(bool_to_script_bytes(binop(v2, v1)))
@@ -532,7 +533,6 @@ def do_OP_HASH256(stack):
 
 
 def make_unary_num_op(unary_f):
-
     def f(stack, require_minimal):
         stack.append(int_to_script_bytes(unary_f(pop_check_bounds(
             stack, require_minimal))))
@@ -574,4 +574,5 @@ MICROCODE_LOOKUP = build_ops_lookup()
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

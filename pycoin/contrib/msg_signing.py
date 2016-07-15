@@ -379,6 +379,6 @@ def _my_sign(generator, secret_exponent, val, _k=None):
     if s == 0:
         raise RuntimeError("amazingly unlucky random number s")
 
-    return (r, s, p1.y() % 2)
+    return r, s, p1.y() % 2
 
 # EOF

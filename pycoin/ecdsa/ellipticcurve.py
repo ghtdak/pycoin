@@ -88,13 +88,14 @@ class Point(object):
         if self.__curve and not self.__curve.contains_point(x, y):
             raise NoSuchPointError('({},{}) is not on the curve {}'.format(
                 x, y, curve))
-        if order: assert self * order == INFINITY
+        if order:
+            assert self * order == INFINITY
 
     def __eq__(self, other):
         """Return 1 if the points are identical, 0 otherwise."""
         if self.__curve == other.__curve \
-           and self.__x == other.__x \
-           and self.__y == other.__y:
+                and self.__x == other.__x \
+                and self.__y == other.__y:
             return 1
         else:
             return 0
@@ -104,8 +105,10 @@ class Point(object):
 
         # X9.62 B.3:
 
-        if other == INFINITY: return self
-        if self == INFINITY: return other
+        if other == INFINITY:
+            return self
+        if self == INFINITY:
+            return other
         assert self.__curve == other.__curve
         if self.__x == other.__x:
             if (self.__y + other.__y) % self.__curve.p() == 0:
@@ -115,8 +118,8 @@ class Point(object):
 
         p = self.__curve.p()
 
-        l = ( ( other.__y - self.__y ) * \
-              numbertheory.inverse_mod( other.__x - self.__x, p ) ) % p
+        l = ((other.__y - self.__y) *
+             numbertheory.inverse_mod(other.__x - self.__x, p)) % p
 
         x3 = (l * l - self.__x - other.__x) % p
         y3 = (l * (self.__x - x3) - self.__y) % p
@@ -134,9 +137,12 @@ class Point(object):
             return result // 2
 
         e = other
-        if self.__order: e = e % self.__order
-        if e == 0: return INFINITY
-        if self == INFINITY: return INFINITY
+        if self.__order:
+            e = e % self.__order
+        if e == 0:
+            return INFINITY
+        if self == INFINITY:
+            return INFINITY
         assert e > 0
 
         # From X9.62 D.3.2:
@@ -151,8 +157,10 @@ class Point(object):
         # print "Multiplying %s by %d (e3 = %d):" % ( self, other, e3 )
         while i > 1:
             result = result.double()
-            if (e3 & i) != 0 and (e & i) == 0: result = result + self
-            if (e3 & i) == 0 and (e & i) != 0: result = result + negative_self
+            if (e3 & i) != 0 and (e & i) == 0:
+                result = result + self
+            if (e3 & i) == 0 and (e & i) != 0:
+                result = result + negative_self
             # print ". . . i = %d, result = %s" % ( i, result )
             i = i // 2
 
@@ -169,7 +177,8 @@ class Point(object):
             self.__order)
 
     def __str__(self):
-        if self == INFINITY: return "infinity"
+        if self == INFINITY:
+            return "infinity"
         return "(%d,%d)" % (self.__x, self.__y)
 
     def double(self):
@@ -183,8 +192,8 @@ class Point(object):
         p = self.__curve.p()
         a = self.__curve.a()
 
-        l = ( ( 3 * self.__x * self.__x + a ) * \
-              numbertheory.inverse_mod( 2 * self.__y, p ) ) % p
+        l = ((3 * self.__x * self.__x + a) * \
+             numbertheory.inverse_mod(2 * self.__y, p)) % p
 
         x3 = (l * l - 2 * self.__x) % p
         y3 = (l * (self.__x - x3) - self.__y) % p
@@ -198,7 +207,7 @@ class Point(object):
         return self.__y
 
     def pair(self):
-        return (self.__x, self.__y)
+        return self.__x, self.__y
 
     def curve(self):
         return self.__curve
@@ -206,12 +215,12 @@ class Point(object):
     def order(self):
         return self.__order
 
+
 # This one point is the Point At Infinity for all purposes:
 INFINITY = Point(None, None, None)
 
 
 def __main__():
-
     class FailedTest(Exception):
         pass
 
@@ -284,7 +293,7 @@ def __main__():
     # NIST Curve P-192:
     p = 6277101735386680763835789423207666416083908700390324961279
     r = 6277101735386680763835789423176059013767194773182842284081
-    #s = 0x3045ae6fc8422f64ed579528d38120eae12196d5L
+    # s = 0x3045ae6fc8422f64ed579528d38120eae12196d5L
     c = 0x3099d2bbbfcb2538542dcd5fb078b6ef5f3d6fe2c745de65
     b = 0x64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1
     Gx = 0x188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012
@@ -306,7 +315,7 @@ def __main__():
     k = 6140507067065001063065065565667405560006161556565665656654
     R = k * p192
     if R.x() != 0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD \
-       or R.y() != 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835:
+            or R.y() != 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835:
         raise FailedTest("k * p192 came out wrong.")
     else:
         print("k * p192 came out right.")
@@ -315,7 +324,7 @@ def __main__():
     u2 = 6266643813348617967186477710235785849136406323338782220568
     temp = u1 * p192 + u2 * Q
     if temp.x() != 0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD \
-       or temp.y() != 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835:
+            or temp.y() != 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835:
         raise FailedTest("u1 * p192 + u2 * Q came out wrong.")
     else:
         print("u1 * p192 + u2 * Q came out right.")

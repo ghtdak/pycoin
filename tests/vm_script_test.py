@@ -3,8 +3,8 @@
 import json
 import unittest
 import os
-#import sys
-#import tempfile
+# import sys
+# import tempfile
 
 from pycoin.serialize import h2b
 
@@ -75,7 +75,6 @@ def dump_failure_info(spend_tx, script_in, script_out, flags, comment):
 
 
 def make_test(script_in, script_out, flags_string, comment, expect_valid=True):
-
     def f(self):
         script_in_bin = compile(script_in)
         script_out_bin = compile(script_out)

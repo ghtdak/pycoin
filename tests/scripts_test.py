@@ -15,7 +15,6 @@ WIF_1_GPG = h2b(
 
 
 class ScriptsTest(unittest.TestCase):
-
     def launch_tool(self, tool):
         # set
         python_path = sys.executable
@@ -81,12 +80,12 @@ class ScriptsTest(unittest.TestCase):
             "tx.py 01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff00ffffffff0100f2052a0100000023210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ac00000000")
 
     def test_tx_with_gpg(self):
-        #gpg_dir = tempfile.mkdtemp()
-        #import pdb; pdb.set_trace()
-        #os.environ["GNUPGHOME"] = gpg_dir
+        # gpg_dir = tempfile.mkdtemp()
+        # import pdb; pdb.set_trace()
+        # os.environ["GNUPGHOME"] = gpg_dir
         ##f = open(os.path.join(gpg_dir, "gpg.conf"), "w")
-        #f.write("use-agent\n")
-        #f.close()
+        # f.write("use-agent\n")
+        # f.close()
         gpg_wif = tempfile.NamedTemporaryFile(suffix=".gpg")
         gpg_wif.write(WIF_1_GPG)
         gpg_wif.flush()

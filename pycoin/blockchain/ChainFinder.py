@@ -1,5 +1,4 @@
 class ChainFinder(object):
-
     def __init__(self):
         self.parent_lookup = {}
         self.descendents_by_top = {}
@@ -41,7 +40,7 @@ class ChainFinder(object):
                 path.append(h)
             self.trees_from_bottom[path[0]] = path
 
-            #if len(path) <= 1:
+            # if len(path) <= 1:
             #    # this is a lone element... don't bother trying to extend
             #    continue
 
@@ -71,7 +70,9 @@ class ChainFinder(object):
     def missing_parents(self):
         return self.descendents_by_top.keys()
 
-    def maximum_path(self, h, cache={}):
+    def maximum_path(self, h, cache=None):
+        if cache is None:
+            cache = {}
         v = self.trees_from_bottom.get(h)
         if v:
             return v
@@ -84,7 +85,9 @@ class ChainFinder(object):
             cache[h1] = v[i:]
         return v
 
-    def find_ancestral_path(self, h1, h2, path_cache={}):
+    def find_ancestral_path(self, h1, h2, path_cache=None):
+        if path_cache is None:
+            path_cache = {}
         p1 = self.maximum_path(h1, path_cache)
         p2 = self.maximum_path(h2, path_cache)
         if p1[-1] != p2[-1]:

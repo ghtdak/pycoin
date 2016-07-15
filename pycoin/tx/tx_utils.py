@@ -151,7 +151,7 @@ def distribute_from_split_pool(tx, fee):
     return zero_count
 
 
-def sign_tx(tx, wifs=[], secret_exponent_db={}, netcode='BTC', **kwargs):
+def sign_tx(tx, wifs=None, secret_exponent_db=None, netcode='BTC', **kwargs):
     """
     This function provides an convenience method to sign a transaction.
 
@@ -177,16 +177,20 @@ def sign_tx(tx, wifs=[], secret_exponent_db={}, netcode='BTC', **kwargs):
 
     sign_tx(wifs=["KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn"])
     """
+    if wifs is None:
+        wifs = []
+    if secret_exponent_db is None:
+        secret_exponent_db = {}
     tx.sign(LazySecretExponentDB(wifs, secret_exponent_db, netcode), **kwargs)
 
 
 def create_signed_tx(spendables,
                      payables,
-                     wifs=[],
+                     wifs=None,
                      fee="standard",
                      lock_time=0,
                      version=1,
-                     secret_exponent_db={},
+                     secret_exponent_db=None,
                      netcode='BTC',
                      **kwargs):
     """
@@ -215,6 +219,10 @@ def create_signed_tx(spendables,
     take a while to confirm, possibly never).
     """
 
+    if wifs is None:
+        wifs = []
+    if secret_exponent_db is None:
+        secret_exponent_db = {}
     tx = create_tx(spendables,
                    payables,
                    fee=fee,

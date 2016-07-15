@@ -7,7 +7,8 @@ except ImportError:
 def inverse_mod(a, m):
     """Inverse of a mod m."""
 
-    if a < 0 or m <= a: a = a % m
+    if a < 0 or m <= a:
+        a = a % m
 
     # From Ferguson and Schneier, roughly:
 
@@ -21,12 +22,15 @@ def inverse_mod(a, m):
     # If d == 1, this means that ud is a inverse.
 
     assert d == 1
-    if ud > 0: return ud
-    else: return ud + m
+    if ud > 0:
+        return ud
+    else:
+        return ud + m
 
 
 if NATIVE_LIBRARY:
     inverse_mod = NATIVE_LIBRARY.inverse_mod
+
 
 # from http://eli.thegreenplace.net/2009/03/07/computing-modular-square-roots-in-python/
 # with few fixes and suggestions from

@@ -20,7 +20,7 @@ class BlockchainInfoProvider(object):
             raise ValueError("BlockchainInfo only supports mainnet")
 
     def payments_for_address(self, bitcoin_address):
-        "return an array of (TX ids, net_payment)"
+        """return an array of (TX ids, net_payment)"""
         URL = "https://blockchain.info/address/%s?format=json" % bitcoin_address
         d = urlopen(URL).read()
         json_response = json.loads(d.decode("utf8"))

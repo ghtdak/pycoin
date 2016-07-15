@@ -33,10 +33,12 @@ bytes_from_ints = (
     lambda l: b''.join(chr(x) for x in l)) if bytes == str else bytes
 
 if hasattr(int, "to_bytes"):
-    to_bytes = lambda v, length, byteorder="big": v.to_bytes(length, byteorder=byteorder)
+    to_bytes = lambda v, length, byteorder="big": v.to_bytes(length,
+                                                             byteorder=byteorder)
     from_bytes = lambda bytes, byteorder="big", signed=False: int.from_bytes(
         bytes, byteorder=byteorder, signed=signed)
-    int_to_bytes = lambda v: v.to_bytes((v.bit_length()+7)//8, byteorder="big")
+    int_to_bytes = lambda v: v.to_bytes((v.bit_length() + 7) // 8,
+                                        byteorder="big")
     int_from_bytes = lambda v: int.from_bytes(v, byteorder="big")
 else:
 
@@ -50,6 +52,7 @@ else:
             l.reverse()
         return bytes(l)
 
+
     def from_bytes(bytes, byteorder="big", signed=False):
         if byteorder != "big":
             bytes = reversed(bytes)
@@ -61,6 +64,7 @@ else:
             v = v - (1 << (8 * len(bytes)))
         return v
 
+
     def int_to_bytes(v):
         l = bytearray()
         while v > 0:
@@ -68,6 +72,7 @@ else:
             v >>= 8
         l.reverse()
         return bytes(l)
+
 
     def int_from_bytes(s):
         v = 0

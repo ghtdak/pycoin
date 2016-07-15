@@ -2,7 +2,6 @@ from pycoin.blockchain.ChainFinder import ChainFinder
 
 
 class BHO(object):
-
     def __init__(self, h, previous_block_hash=None, difficulty=10):
         self.h = h
         if previous_block_hash is None:
@@ -15,7 +14,7 @@ class BHO(object):
 
     def __repr__(self):
         return "<BHO: id:%s parent:%s difficulty:%s>" % \
-            (self.h, self.previous_block_hash, self.difficulty)
+               (self.h, self.previous_block_hash, self.difficulty)
 
 
 def do_scramble(items, tfb, dbt):
@@ -170,17 +169,16 @@ def test_longest_chain_endpoint():
 
     items = ITEMS + [B201, B202, B203, B204]
     load_items(cf, items)
-    #assert cf.difficulty(0, node_weight_f) == 10
-    #assert cf.difficulty(1, node_weight_f) == 20
-    #assert cf.difficulty(2, node_weight_f) == 30
-    #assert cf.difficulty(3, node_weight_f) == 40
-    #assert cf.difficulty(4, node_weight_f) == 50
-    #assert cf.difficulty(201, node_weight_f) == 140
-    #assert cf.difficulty(202, node_weight_f) == 150
+    # assert cf.difficulty(0, node_weight_f) == 10
+    # assert cf.difficulty(1, node_weight_f) == 20
+    # assert cf.difficulty(2, node_weight_f) == 30
+    # assert cf.difficulty(3, node_weight_f) == 40
+    # assert cf.difficulty(4, node_weight_f) == 50
+    # assert cf.difficulty(201, node_weight_f) == 140
+    # assert cf.difficulty(202, node_weight_f) == 150
 
 
 def test_find_ancestral_path():
-
     ITEMS = [BHO(i) for i in range(5)]
     B201 = BHO(201, 2, 110)
     B202, B203, B204 = [BHO(i) for i in range(202, 205)]

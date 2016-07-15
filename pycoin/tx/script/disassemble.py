@@ -111,7 +111,7 @@ def annotation_f_for_scripts(input_script, output_script,
 
 
 def disassemble_scripts(input_script, output_script, signature_for_hash_type_f):
-    "yield pre_annotations, pc, opcode, instruction, post_annotations"
+    """yield pre_annotations, pc, opcode, instruction, post_annotations"""
 
     input_annotations_f, output_annotations_f = annotation_f_for_scripts(
         input_script, output_script, signature_for_hash_type_f)

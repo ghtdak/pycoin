@@ -79,7 +79,7 @@ def parse_as_public_pair(s):
                     if not is_public_pair_valid(generator_secp256k1, (v0, v1)):
                         sys.stderr.write("invalid (x, y) pair\n")
                         sys.exit(1)
-                    return (v0, v1)
+                    return v0, v1
 
 
 def create_output(item, key, subkey_path=None):

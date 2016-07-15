@@ -2,7 +2,6 @@ from pycoin.blockchain.BlockChain import BlockChain
 
 
 class FakeBlock(object):
-
     def __init__(self, n, previous_block_hash=None):
         if previous_block_hash is None:
             previous_block_hash = n - 1
@@ -129,7 +128,7 @@ def test_fork():
     # 0 <= 1 <= ... <= 5 <= 6
     # 3 <= 301 <= 302 <= 303 <= 304 <= 305
 
-    #parent_for_0 = "motherless"
+    # parent_for_0 = "motherless"
     BC = BlockChain(parent_for_0)
     ITEMS = dict((i, FakeBlock(i)) for i in range(7))
     ITEMS[0] = FakeBlock(0, parent_for_0)
@@ -145,7 +144,7 @@ def test_fork():
     # send them all except 302
     ops = BC.add_headers((ITEMS[i] for i in ITEMS.keys() if i != 302))
     assert ops == [("add", ITEMS[i], i) for i in range(7)]
-    assert set(BC.chain_finder.missing_parents()) == set([parent_for_0, 302])
+    assert set(BC.chain_finder.missing_parents()) == {parent_for_0, 302}
 
     # now send 302
     ops = BC.add_headers([ITEMS[302]])
@@ -154,7 +153,7 @@ def test_fork():
     expected = [("remove", ITEMS[i], i) for i in range(6, 3, -1)]
     expected += [("add", ITEMS[i], i + 4 - 301) for i in range(301, 306)]
     assert ops == expected
-    assert set(BC.chain_finder.missing_parents()) == set([parent_for_0])
+    assert set(BC.chain_finder.missing_parents()) == {parent_for_0}
 
 
 def test_callback():

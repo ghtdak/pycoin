@@ -132,7 +132,9 @@ class Tx(object):
         warnings.simplefilter('default', DeprecationWarning)
         return cls.from_hex(hex_string)
 
-    def __init__(self, version, txs_in, txs_out, lock_time=0, unspents=[]):
+    def __init__(self, version, txs_in, txs_out, lock_time=0, unspents=None):
+        if unspents is None:
+            unspents = []
         self.version = version
         self.txs_in = txs_in
         self.txs_out = txs_out
@@ -238,14 +240,14 @@ class Tx(object):
                 # This should probably be moved to a constant, but the
                 # likelihood of ever getting here is already really small
                 # and getting smaller
-                return (1 << 248)
+                return 1 << 248
 
             # Only lock in the txout payee at same index as txin; delete
             # any outputs after this one and set all outputs before this
             # one to "null" (where "null" means an empty script and a
             # value of -1)
             txs_out = [self.TxOut(0xffffffffffffffff, b'')
-                      ] * unsigned_txs_out_idx
+                       ] * unsigned_txs_out_idx
             txs_out.append(self.txs_out[unsigned_txs_out_idx])
 
             # Let the others update at will
@@ -353,8 +355,7 @@ class Tx(object):
         return [
             self.Spendable(tx_out.coin_value, tx_out.script, h, tx_out_index,
                            block_index_available)
-            for tx_out_index, tx_out in enumerate(self.txs_out)
-        ]
+            for tx_out_index, tx_out in enumerate(self.txs_out)]
 
     def is_coinbase(self):
         return len(self.txs_in) == 1 and self.txs_in[0].is_coinbase()
@@ -394,7 +395,7 @@ class Tx(object):
         # Check for duplicate inputs
         if [x for x in self.txs_in if self.txs_in.count(x) > 1]:
             raise ValidationFailureError("duplicate inputs")
-        if (self.is_coinbase()):
+        if self.is_coinbase():
             if not (2 <= len(self.txs_in[0].script) <= 100):
                 raise ValidationFailureError("bad coinbase script size")
         else:
@@ -459,8 +460,7 @@ class Tx(object):
             self.Spendable(tx_out.coin_value, tx_out.script,
                            tx_in.previous_hash, tx_in.previous_index)
             for tx_in_index, (tx_in, tx_out
-                             ) in enumerate(zip(self.txs_in, self.unspents))
-        ]
+                              ) in enumerate(zip(self.txs_in, self.unspents))]
 
     def stream_unspents(self, f):
         self.check_unspents()

@@ -268,7 +268,7 @@ class BIP32Node(Key):
         if path:
             invocations = path.split("/")
             for v in invocations:
-                is_hardened = v[-1] in ("'pH")
+                is_hardened = v[-1] in "'pH"
                 if is_hardened:
                     v = v[:-1]
                 v = int(v)

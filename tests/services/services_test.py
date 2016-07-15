@@ -16,13 +16,12 @@ tx_id_for_net = {
             "69916297f7adde13457b8244e2d704966097e9519ec8fd6f2e7af8c2a60f70f2"],
     "XTN": ["4586e67ee5adcdbc97ed3d2a026ee8703df2ed3553854c186c216e90cd761b69"],
     "DOGE":
-    ["ed7df4e7506ac8447b6983c8ad79da1af86cddda0ff012f7db83e664f61ef6cf"],
+        ["ed7df4e7506ac8447b6983c8ad79da1af86cddda0ff012f7db83e664f61ef6cf"],
     "XDT": ["19dd5c3423e606b5b5dd30b070688bdf9af27fa736e8f3aeb2b68d92a50e67ef"],
 }
 
 
 class ServicesTest(unittest.TestCase):
-
     def test_env(self):
         CS = "blockchain.info blockexplorer.com blockr.io chain.so insight:https://hostname/url"
         provider_list = providers.providers_for_config_string(CS, "BTC")
@@ -67,11 +66,11 @@ class ServicesTest(unittest.TestCase):
         pass
 
     def test_BlockchainInfo(self):
-        #self.check_provider_tx_for_tx_hash(BlockchainInfo, ["BTC"])
+        # self.check_provider_tx_for_tx_hash(BlockchainInfo, ["BTC"])
         pass
 
     def test_BlockCypherProvider(self):
-        #self.check_provider_tx_for_tx_hash(BlockCypherProvider, ["BTC", "XTN"])
+        # self.check_provider_tx_for_tx_hash(BlockCypherProvider, ["BTC", "XTN"])
         pass
 
     def test_BlockExplorerProvider(self):

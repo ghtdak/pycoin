@@ -52,7 +52,7 @@ def parse_as_public_pair(s):
                                                       (v0, v1)):
                         sys.stderr.write("invalid (x, y) pair\n")
                         sys.exit(1)
-                    return (v0, v1)
+                    return v0, v1
 
 
 def parse_as_address(s):

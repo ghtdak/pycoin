@@ -50,7 +50,7 @@ def bignum_type_for_library(library):
             return self.as_int()
 
         def to_int(self):
-            "Return this bignum's value as a Python integer."
+            """Return this bignum's value as a Python integer."""
             value, factor = 0, 1
             for w in self.datawords():
                 value += w * factor
@@ -60,7 +60,7 @@ def bignum_type_for_library(library):
             return value
 
         def datawords(self):
-            "Yield the words in the little-endian data array."
+            """Yield the words in the little-endian data array."""
             return (self.d[k] for k in range(self.top))
 
         def __repr__(self):

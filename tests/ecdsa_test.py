@@ -4,12 +4,12 @@ import hashlib
 import unittest
 
 from pycoin import intbytes
-from pycoin.ecdsa import generator_secp256k1, sign, verify, public_pair_for_secret_exponent
+from pycoin.ecdsa import generator_secp256k1, sign, verify, \
+    public_pair_for_secret_exponent
 from pycoin.ecdsa.ecdsa import deterministic_generate_k
 
 
 class ECDSATestCase(unittest.TestCase):
-
     def test_sign_verify(self):
 
         def do_test(secret_exponent, val_list):

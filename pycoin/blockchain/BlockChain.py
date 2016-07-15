@@ -27,8 +27,10 @@ class BlockChain(object):
 
     def __init__(self,
                  parent_hash=ZERO_HASH,
-                 unlocked_block_storage={},
+                 unlocked_block_storage=None,
                  did_lock_to_index_f=None):
+        if unlocked_block_storage is None:
+            unlocked_block_storage = {}
         self.parent_hash = parent_hash
         self.hash_to_index_lookup = {}
         self.weight_lookup = {}
@@ -75,7 +77,7 @@ class BlockChain(object):
         parent_hash = self.parent_hash if index <= 0 else self._longest_chain_cache[
             -index]
         weight = self.weight_lookup.get(the_hash)
-        return (the_hash, parent_hash, weight)
+        return the_hash, parent_hash, weight
 
     def last_block_hash(self):
         if self.length() == 0:
