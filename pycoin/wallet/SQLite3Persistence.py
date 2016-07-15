@@ -113,22 +113,19 @@ data text
 
     def _init_table_spendable(self):
         SQL = [
-            """create table if not exists Spendable (
-tx_hash text,
-tx_out_index integer,
-coin_value integer,
-script text,
-block_index_available integer,
-does_seem_spent boolean,
-block_index_spent integer,
-unique(tx_hash, tx_out_index)
-);""", "create index if not exists Spendable_cv on Spendable (coin_value);",
-            "create index if not exists Spendable_bia on Spendable (block_index_available);",
-            "create index if not exists Spendable_bis on Spendable (block_index_spent);"
-        ]
+            'create table if not exists Spendable ( tx_hash text, tx_out_index '
+            'integer, coin_value integer, script text, block_index_available '
+            'integer, does_seem_spent boolean, block_index_spent integer, '
+            'unique(tx_hash, tx_out_index));',
+            'create index if not exists Spendable_cv on Spendable '
+            '(coin_value);',
+            "create index if not exists Spendable_bia on Spendable "
+            '(block_index_available);',
+            'create index if not exists Spendable_bis on Spendable '
+            '(block_index_spent);']
 
         for sql in SQL:
-            c = self._exec_sql(sql)
+            self._exec_sql(sql)
         self.db.commit()
 
     def save_spendable(self, spendable):
@@ -176,10 +173,10 @@ unique(tx_hash, tx_out_index)
         # we fetch spendables "old enough"
         # we alternate between "biggest" and "smallest" spendables
         SQL = (
-            "select tx_hash, tx_out_index, coin_value, script, block_index_available, "
-            "does_seem_spent, block_index_spent from Spendable where "
-            "does_seem_spent = 0 and block_index_spent is null "
-            "%s order by coin_value %s")
+            "select tx_hash, tx_out_index, coin_value, script, "
+            "block_index_available, does_seem_spent, block_index_spent "
+            "from Spendable where does_seem_spent = 0 and block_index_spent "
+            "is null %s order by coin_value %s")
 
         if confirmations > 0:
             prior_to_block = last_block + 1 - confirmations
@@ -214,11 +211,13 @@ unique(tx_hash, tx_out_index)
 
     def invalidate_block_index_for_spendables(self, block_index):
         SQL1 = (
-            "update Spendable set block_index_available = null where block_index_available = ?"
+            "update Spendable set block_index_available = null where "
+            "block_index_available = ?"
         )
         c = self._exec_sql(SQL1, block_index)
 
         SQL2 = (
-            "update Spendable set block_index_spent = null where block_index_spent = ?"
+            "update Spendable set block_index_spent = null where "
+            "block_index_spent = ?"
         )
         c = self._exec_sql(SQL2, block_index)

@@ -11,11 +11,13 @@ from ..serialize.bitcoin_streamer import stream_bc_string
 from ..ecdsa import ellipticcurve, numbertheory
 
 from ..networks import address_prefix_for_netcode, network_name_for_netcode
-from ..encoding import public_pair_to_bitcoin_address, to_bytes_32, from_bytes_32, double_sha256
+from ..encoding import (public_pair_to_bitcoin_address, to_bytes_32,
+                        from_bytes_32, double_sha256)
 from ..key import Key
 
-# According to brainwallet, this is "inputs.io" format, but it seems practical
-# and is deployed in the wild. Core bitcoin doesn't offer a message wrapper like this.
+# According to brainwallet, this is "inputs.io" format, but it seems
+# practical and is deployed in the wild. Core bitcoin doesn't offer a message
+#  wrapper like this.
 signature_template = '''\
 -----BEGIN {net_name} SIGNED MESSAGE-----
 {msg}
@@ -27,13 +29,13 @@ signature_template = '''\
 
 def parse_signed_message(msg_in):
     """
-        Take an "armoured" message and split into the message body, signing address
-        and the base64 signature. Should work on all altcoin networks, and should
-        accept both Inputs.IO and Multibit formats but not Armory.
+    Take an "armoured" message and split into the message body, signing
+    address and the base64 signature. Should work on all altcoin networks,
+    and should accept both Inputs.IO and Multibit formats but not Armory.
 
-        Looks like RFC2550 <https://www.ietf.org/rfc/rfc2440.txt> was an "inspiration"
-        for this, so in case of confusion it's a reference, but I've never found
-        a real spec for this. Should be a BIP really.
+    Looks like RFC2550 <https://www.ietf.org/rfc/rfc2440.txt> was an
+    "inspiration" for this, so in case of confusion it's a reference,
+    but I've never found a real spec for this. Should be a BIP really.
     """
 
     # Convert to Unix line feeds from DOS style, iff we find them, but
@@ -58,7 +60,8 @@ def parse_signed_message(msg_in):
     except:
         raise ValueError("expected BEGIN SIGNATURE line", body)
 
-    # after message, expect something like an email/http headers, so split into lines
+    # after message, expect something like an email/http headers, so split
+    # into lines
     hdr = list(filter(None, [i.strip() for i in hdr.split('\n')]))
 
     if '-----END' not in hdr[-1]:
@@ -101,8 +104,8 @@ def sign_message(key,
                  use_uncompressed=None,
                  msg_hash=None):
     """
-        Return a signature, encoded in Base64, which can be verified by anyone using the
-        public key.
+    Return a signature, encoded in Base64, which can be verified by anyone
+    using the public key.
     """
     secret_exponent = key.secret_exponent()
     if not secret_exponent:
@@ -133,8 +136,10 @@ def sign_message(key,
     #
     # Also from key.cpp:
     #
-    # The header byte: 0x1B = first key with even y, 0x1C = first key with odd y,
-    #                  0x1D = second key with even y, 0x1E = second key with odd y,
+    # The header byte: 0x1B = first key with even y,
+    #                  0x1C = first key with odd y,
+    #                  0x1D = second key with even y,
+    #                  0x1E = second key with odd y,
     #                  add 0x04 for compressed keys.
 
     first = 27 + y_odd + (4 if is_compressed else 0)
@@ -187,9 +192,9 @@ def verify_message(key_or_address,
     # Calculate the specific public key used to sign this message.
     pair = _extract_public_pair(ecdsa.generator_secp256k1, recid, r, s, mhash)
 
-    # Check signing public pair is the one expected for the signature. It must be an
-    # exact match for this key's public pair... or else we are looking at a validly
-    # signed message, but signed by some other key.
+    # Check signing public pair is the one expected for the signature. It
+    # must be an exact match for this key's public pair... or else we are
+    # looking at a validly signed message, but signed by some other key.
     #
     pp = key.public_pair()
     if pp:
@@ -208,11 +213,13 @@ def verify_message(key_or_address,
 
 def msg_magic_for_netcode(netcode):
     """
-    We need the constant "strMessageMagic" in C++ source code, from file "main.cpp"
+    We need the constant "strMessageMagic" in C++ source code, from file
+    "main.cpp"
 
-    It is not shown as part of the signed message, but it is prefixed to the message
-    as part of calculating the hash of the message (for signature). It's also what
-    prevents a message signature from ever being a valid signature for a transaction.
+    It is not shown as part of the signed message, but it is prefixed to the
+    message as part of calculating the hash of the message (for signature).
+    It's also what prevents a message signature from ever being a valid
+    signature for a transaction.
 
     Each altcoin finds and changes this string... But just simple substitution.
     """
@@ -248,12 +255,14 @@ def _decode_signature(signature):
     r = from_bytes_32(sig[1:33])
     s = from_bytes_32(sig[33:33 + 32])
 
-    # first byte encodes a bits we need to know about the point used in signature
+    # first byte encodes a bits we need to know about the point used in
+    # signature
     if not (27 <= first < 35):
         raise ValueError("First byte out of range")
 
-    # NOTE: The first byte encodes the "recovery id", or "recid" which is a 3-bit values
-    # which selects compressed/not-compressed and one of 4 possible public pairs.
+    # NOTE: The first byte encodes the "recovery id", or "recid" which is a
+    # 3-bit values which selects compressed/not-compressed and one of 4
+    # possible public pairs.
     #
     first -= 27
     is_compressed = bool(first & 0x4)
@@ -297,8 +306,9 @@ def _extract_public_pair(generator, recid, r, s, value):
 
 def hash_for_signing(msg, netcode='BTC'):
     """
-    Return a hash of msg, according to odd bitcoin method: double SHA256 over a bitcoin
-    encoded stream of two strings: a fixed magic prefix and the actual message.
+    Return a hash of msg, according to odd bitcoin method: double SHA256 over
+    a bitcoin encoded stream of two strings: a fixed magic prefix and the
+    actual message.
     """
     magic = msg_magic_for_netcode(netcode)
 

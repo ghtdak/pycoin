@@ -90,7 +90,8 @@ class BlockHeader(object):
         return self.__hash
 
     def stream_header(self, f):
-        """Stream the block header in the standard way to the file-like object f."""
+        """Stream the block header in the standard way to the file-like
+        object f. """
         stream_struct("L##LLL", f, self.version, self.previous_block_hash,
                       self.merkle_root, self.timestamp, self.difficulty,
                       self.nonce)

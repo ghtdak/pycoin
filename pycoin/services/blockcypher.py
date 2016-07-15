@@ -29,7 +29,8 @@ class BlockcypherProvider(object):
         given bitcoin address.
         """
         spendables = []
-        url_append = "?unspentOnly=true&token=%s&includeScript=true" % self.api_key
+        url_append = ("?unspentOnly=true&token=%s&includeScript=true" %
+                      self.api_key)
         url = self.base_url("addrs/%s%s" % (address, url_append))
         result = json.loads(urlopen(url).read().decode("utf8"))
         for txn in result.get("txrefs", []):

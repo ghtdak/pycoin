@@ -16,8 +16,9 @@ from .tx_db import TxDb
 
 THREAD_LOCALS = threading.local()
 
-# PYCOIN_BTC_PROVIDERS="blockchain.info blockexplorer.com blockr.io blockcypher.com chain.so"
-# PYCOIN_BTC_PROVIDERS="insight:http(s?)://hostname/url bitcoinrpc://user:passwd@hostname:8333"
+# PYCOIN_BTC_PROVIDERS="blockchain.info blockexplorer.com blockr.io
+# blockcypher.com chain.so" PYCOIN_BTC_PROVIDERS="insight:http(
+# s?)://hostname/url bitcoinrpc://user:passwd@hostname:8333"
 
 
 def service_provider_methods(method_name, service_providers):
@@ -67,15 +68,15 @@ def get_tx_db(netcode):
 
 def message_about_tx_cache_env():
     if main_cache_dir() is None:
-        return "consider setting environment variable PYCOIN_CACHE_DIR=~/.pycoin_cache to"\
-               " cache transactions fetched via web services"
+        return ("consider setting environment variable PYCOIN_CACHE_DIR=~/"
+                ".pycoin_cache to cache transactions fetched via web services")
 
 
 def all_providers_message(method, netcode):
     if len(service_provider_methods(method, get_default_providers_for_netcode(
             netcode))) == 0:
-        return "no service providers found for %s; consider setting environment variable "\
-            "PYCOIN_%s_PROVIDERS" % (method, netcode)
+        return ("no service providers found for %s; consider setting "
+                "environment variable PYCOIN_%s_PROVIDERS" % (method, netcode))
 
 
 def message_about_spendables_for_address_env(netcode):
@@ -99,7 +100,8 @@ def insight_init(match, netcode):
 
 DESCRIPTOR_CRE_INIT_TUPLES = [
     (re.compile(
-        r"^bitcoinrpc://(?P<user>\S*):(?P<password>\S*)\@(?P<hostname>\S*)(:(?P<port>\d*))"),
+        r"^bitcoinrpc://(?P<user>\S*):(?P<password>\S*)\@(?P"
+        r"<hostname>\S*)(:(?P<port>\d*))"),
      bitcoin_rpc_init),
     (re.compile(r"^blockchain\.info$"),
      lambda m, netcode: BlockchainInfoProvider(netcode)),

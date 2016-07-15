@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Various utilities useful for converting one Bitcoin format to another, including some
-the human-transcribable format hashed_base58.
+"""Various utilities useful for converting one Bitcoin format to another,
+including some the human-transcribable format hashed_base58.
 
 
 The MIT License (MIT)
@@ -47,11 +46,9 @@ def ripemd160(data):
 try:
     ripemd160(b'').digest()
 except Exception:
-    # stupid Google App Engine hashlib doesn't support ripemd160 for some stupid reason
-    # import it from pycrypto. You need to add
-    # - name: pycrypto
-    #   version: "latest"
-    # to the "libraries" section of your app.yaml
+    # stupid Google App Engine hashlib doesn't support ripemd160 for some
+    # stupid reason import it from pycrypto. You need to add - name: pycrypto
+    #  version: "latest" to the "libraries" section of your app.yaml
     from Crypto.Hash.RIPEMD import RIPEMD160Hash as ripemd160
 
 
@@ -133,7 +130,8 @@ def hash160(data):
 
 
 def b2a_base58(s):
-    """Convert binary to base58 using BASE58_ALPHABET. Like Bitcoin addresses."""
+    """Convert binary to base58 using BASE58_ALPHABET. Like Bitcoin
+    addresses. """
     v, prefix = to_long(256, byte_to_int, s)
     s = from_long(v, prefix, BASE58_BASE, lambda v: BASE58_ALPHABET[v])
     return s.decode("utf8")
@@ -148,11 +146,12 @@ def a2b_base58(s):
 
 def b2a_hashed_base58(data):
     """
-    A "hashed_base58" structure is a base58 integer (which looks like a string)
-    with four bytes of hash data at the end. Bitcoin does this in several places,
-    including Bitcoin addresses.
+    A "hashed_base58" structure is a base58 integer (which looks like a
+    string) with four bytes of hash data at the end. Bitcoin does this in
+    several places, including Bitcoin addresses.
 
-    This function turns data (of type "bytes") into its hashed_base58 equivalent.
+    This function turns data (of type "bytes") into its hashed_base58
+    equivalent.
     """
     return b2a_base58(data + double_sha256(data)[:4])
 
@@ -190,16 +189,17 @@ def wif_to_tuple_of_prefix_secret_exponent_compressed(wif):
 
 def wif_to_tuple_of_secret_exponent_compressed(
         wif, allowable_wif_prefixes=None):
-    """Convert a WIF string to the corresponding secret exponent. Private key manipulation.
-    Returns a tuple: the secret exponent, as a bignum integer, and a boolean indicating if the
-    WIF corresponded to a compressed key or not.
+    """Convert a WIF string to the corresponding secret exponent. Private key
+    manipulation. Returns a tuple: the secret exponent, as a bignum integer,
+    and a boolean indicating if the WIF corresponded to a compressed key or
+    not.
 
-    Not that it matters, since we can use the secret exponent to generate both the compressed
-    and uncompressed Bitcoin address."""
+    Not that it matters, since we can use the secret exponent to generate
+    both the compressed and uncompressed Bitcoin address. """
     if allowable_wif_prefixes is None:
         allowable_wif_prefixes = [b'\x80']
-    actual_prefix, secret_exponent, is_compressed = wif_to_tuple_of_prefix_secret_exponent_compressed(
-        wif)
+    ww = wif_to_tuple_of_prefix_secret_exponent_compressed(wif)
+    actual_prefix, secret_exponent, is_compressed = ww
     if actual_prefix not in allowable_wif_prefixes:
         raise EncodingError("unexpected first byte of WIF %s" % wif)
     return secret_exponent, is_compressed
@@ -226,7 +226,8 @@ def is_valid_wif(wif, allowable_wif_prefixes=None):
 
 
 def secret_exponent_to_wif(secret_exp, compressed=True, wif_prefix=b'\x80'):
-    """Convert a secret exponent (correspdong to a private key) to WIF format."""
+    """Convert a secret exponent (correspdong to a private key) to WIF
+    format. """
     d = wif_prefix + to_bytes_32(secret_exp)
     if compressed:
         d += b'\01'
@@ -234,8 +235,8 @@ def secret_exponent_to_wif(secret_exp, compressed=True, wif_prefix=b'\x80'):
 
 
 def public_pair_to_sec(public_pair, compressed=True):
-    """Convert a public pair (a pair of bignums corresponding to a public key) to the
-    gross internal sec binary format used by OpenSSL."""
+    """Convert a public pair (a pair of bignums corresponding to a public
+    key) to the gross internal sec binary format used by OpenSSL. """
     x_str = to_bytes_32(public_pair[0])
     if compressed:
         return bytes_from_int((2 + (public_pair[1] & 1))) + x_str
@@ -276,7 +277,8 @@ def public_pair_to_hash160_sec(public_pair, compressed=True):
 
 
 def hash160_sec_to_bitcoin_address(hash160_sec, address_prefix=b'\0'):
-    """Convert the hash160 of a sec version of a public_pair to a Bitcoin address."""
+    """Convert the hash160 of a sec version of a public_pair to a Bitcoin
+    address. """
     return b2a_hashed_base58(address_prefix + hash160_sec)
 
 
@@ -310,7 +312,8 @@ def bitcoin_address_to_hash160_sec(bitcoin_address, address_prefix=b'\0'):
 def public_pair_to_bitcoin_address(public_pair,
                                    compressed=True,
                                    address_prefix=b'\0'):
-    """Convert a public_pair (corresponding to a public key) to a Bitcoin address."""
+    """Convert a public_pair (corresponding to a public key) to a Bitcoin
+    address. """
     return hash160_sec_to_bitcoin_address(
         public_pair_to_hash160_sec(public_pair,
                                    compressed=compressed),

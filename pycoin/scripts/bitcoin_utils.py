@@ -94,8 +94,8 @@ def main():
                         action='store_true')
     parser.add_argument(
         'item',
-        help='a WIF, secret exponent, X/Y public pair, SEC (as hex), hash160 (as hex), Bitcoin address',
-        nargs="+")
+        help='a WIF, secret exponent, X/Y public pair, SEC (as hex), '
+             'hash160 (as hex), Bitcoin address', nargs="+")
     args = parser.parse_args()
 
     for c in args.item:
@@ -119,10 +119,10 @@ def main():
         else:
             public_pair = parse_as_public_pair(c)
         if public_pair:
-            bitcoin_address_uncompressed = encoding.public_pair_to_bitcoin_address(
-                public_pair, compressed=False)
-            bitcoin_address_compressed = encoding.public_pair_to_bitcoin_address(
-                public_pair, compressed=True)
+            encoding.public_pair_to_bitcoin_address(public_pair,
+                                                    compressed=False)
+            encoding.public_pair_to_bitcoin_address(public_pair,
+                                                    compressed=True)
             print("public pair x:   %d" % public_pair[0])
             print("public pair y:   %d" % public_pair[1])
             print("  x as hex:      %x" % public_pair[0])

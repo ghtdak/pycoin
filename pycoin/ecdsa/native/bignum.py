@@ -1,6 +1,5 @@
-"""
-Arrange to access a shared-object version of the bignum library using Python ctypes.
-"""
+"""Arrange to access a shared-object version of the bignum library using
+Python ctypes. """
 
 import ctypes.util
 import struct

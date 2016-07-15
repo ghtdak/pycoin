@@ -79,32 +79,36 @@ def is_address_valid(address,
                      allowable_types=DEFAULT_ADDRESS_TYPES,
                      allowable_netcodes=DEFAULT_NETCODES):
     """
-    Accept an address, and a list of allowable address types (a subset of "address" and "pay_to_script"),
-    and allowable networks (defaulting to just Bitcoin mainnet), return the network that the address is
-    a part of, or None if it doesn't validate.
+    Accept an address, and a list of allowable address types (a subset of
+    "address" and "pay_to_script"), and allowable networks (defaulting to
+    just Bitcoin mainnet), return the network that the address is a part of,
+    or None if it doesn't validate.
     """
     return _check_against(address, allowable_types, allowable_netcodes)
 
 
 def is_wif_valid(wif, allowable_netcodes=DEFAULT_NETCODES):
     """
-    Accept a WIF, and a list of allowable networks (defaulting to just Bitcoin mainnet), return
-    the network that the wif is a part of, or None if it doesn't validate.
+    Accept a WIF, and a list of allowable networks (defaulting to just
+    Bitcoin mainnet), return the network that the wif is a part of, or None
+    if it doesn't validate.
     """
     return _check_against(wif, ["wif"], allowable_netcodes)
 
 
 def is_public_bip32_valid(hwif, allowable_netcodes=DEFAULT_NETCODES):
     """
-    Accept a text representation of a BIP32 public wallet, and a list of allowable networks (defaulting
-    to just Bitcoin mainnet), return the network that the wif is a part of, or None if it doesn't validate.
+    Accept a text representation of a BIP32 public wallet, and a list of
+    allowable networks (defaulting to just Bitcoin mainnet), return the
+    network that the wif is a part of, or None if it doesn't validate.
     """
     return _check_against(hwif, ["pub32"], allowable_netcodes)
 
 
 def is_private_bip32_valid(hwif, allowable_netcodes=DEFAULT_NETCODES):
     """
-    Accept a text representation of a BIP32 private wallet, and a list of allowable networks (defaulting
-    to just Bitcoin mainnet), return the network that the wif is a part of, or None if it doesn't validate.
+    Accept a text representation of a BIP32 private wallet, and a list of
+    allowable networks (defaulting to just Bitcoin mainnet), return the
+    network that the wif is a part of, or None if it doesn't validate.
     """
     return _check_against(hwif, ["prv32"], allowable_netcodes)

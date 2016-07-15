@@ -32,9 +32,10 @@ if NATIVE_LIBRARY:
     inverse_mod = NATIVE_LIBRARY.inverse_mod
 
 
-# from http://eli.thegreenplace.net/2009/03/07/computing-modular-square-roots-in-python/
-# with few fixes and suggestions from
-# http://codereview.stackexchange.com/questions/43210/tonelli-shanks-algorithm-implementation-of-prime-modular-square-root
+# from http://eli.thegreenplace.net/2009/03/07/computing-modular-square-roots
+# -in-python/ with few fixes and suggestions from
+# http://codereview.stackexchange.com/questions/43210/tonelli-shanks
+# -algorithm-implementation-of-prime-modular-square-root
 
 
 def modular_sqrt(a, p):

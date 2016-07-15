@@ -70,8 +70,8 @@ class Spendable(TxOut):
     @classmethod
     def from_text(cls, text):
         the_tuple = (text.split("/") + [0, 0, 0])[:7]
-        tx_hash_hex, tx_out_index_str, script_hex, coin_value, \
-            block_index_available, does_seem_spent, block_index_spent = the_tuple
+        (tx_hash_hex, tx_out_index_str, script_hex, coin_value,
+         block_index_available, does_seem_spent, block_index_spent) = the_tuple
         tx_hash = h2b_rev(tx_hash_hex)
         tx_out_index = int(tx_out_index_str)
         script = h2b(script_hex)

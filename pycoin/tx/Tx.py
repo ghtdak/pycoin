@@ -82,7 +82,8 @@ class Tx(object):
                     version=1,
                     lock_time=0):
         """
-        Create the special "first in block" transaction that includes the mining fees.
+        Create the special "first in block" transaction that includes the
+        mining fees.
         """
         tx_in = cls.TxIn.coinbase_tx_in(script=coinbase_bytes)
         COINBASE_SCRIPT_OUT = "%s OP_CHECKSIG"
@@ -179,8 +180,8 @@ class Tx(object):
         """
         Return the hash for this Tx object with solution scripts blanked.
         Useful for determining if two Txs might be equivalent modulo
-        malleability. (That is, even if tx1 is morphed into tx2 using the malleability
-        weakness, they will still have the same blanked hash.)
+        malleability. (That is, even if tx1 is morphed into tx2 using the
+        malleability weakness, they will still have the same blanked hash.)
         """
         s = io.BytesIO()
         self.stream(s, blank_solutions=True)
@@ -196,14 +197,16 @@ class Tx(object):
         remove references to the signature, since it's a signature
         of the hash before the signature is applied.
 
-        tx_out_script: the script the coins for unsigned_txs_out_idx are coming from
+        tx_out_script: the script the coins for unsigned_txs_out_idx are
+            coming from
         unsigned_txs_out_idx: where to put the tx_out_script
         hash_type: one of SIGHASH_NONE, SIGHASH_SINGLE, SIGHASH_ALL,
         optionally bitwise or'ed with SIGHASH_ANYONECANPAY
         """
 
         # In case concatenating two scripts ends up with two codeseparators,
-        # or an extra one at the end, this prevents all those possible incompatibilities.
+        # or an extra one at the end, this prevents all those possible
+        # incompatibilities.
         tx_out_script = tools.delete_subscript(
             tx_out_script, int_to_bytes(opcodes.OP_CODESEPARATOR))
 
@@ -255,7 +258,8 @@ class Tx(object):
                 if i != unsigned_txs_out_idx:
                     txs_in[i].sequence = 0
 
-        # Blank out other inputs completely, not recommended for open transactions
+        # Blank out other inputs completely, not recommended for open
+        # transactions
         if hash_type & self.SIGHASH_ANYONECANPAY:
             txs_in = [txs_in[unsigned_txs_out_idx]]
 
@@ -300,8 +304,8 @@ class Tx(object):
         else:
             script_to_hash = tx_out_script
 
-        # Leave out the signature from the hash, since a signature can't sign itself.
-        # The checksig op will also drop the signatures from its hash.
+        # Leave out the signature from the hash, since a signature can't sign
+        #  itself. The checksig op will also drop the signatures from its hash.
         def signature_for_hash_type_f(hash_type2, script):
             return self.signature_hash(script, tx_in_idx, hash_type2)
 
@@ -502,9 +506,9 @@ class Tx(object):
         """
         Sign a standard transaction.
         hash160_lookup:
-            A dictionary (or another object with .get) where keys are hash160 and
-            values are tuples (secret exponent, public_pair, is_compressed) or None
-            (in which case the script will obviously not be signed).
+            A dictionary (or another object with .get) where keys are hash160
+            and values are tuples (secret exponent, public_pair, is_compressed)
+            or None (in which case the script will obviously not be signed).
         """
         if hash_type is None:
             hash_type = self.SIGHASH_ALL

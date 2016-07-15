@@ -26,7 +26,8 @@ def b2h(b):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a private wallet key. WARNING: obsolete. Use ku instead.")
+        description="Generate a private wallet key. "
+                    "WARNING: obsolete. Use ku instead.")
 
     parser.add_argument('-a',
                         "--address",

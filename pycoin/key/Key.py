@@ -39,7 +39,8 @@ class Key(object):
         Include at most one of secret_exponent, public_pair or hash160.
 
         prefer_uncompressed:
-            whether or not to produce text outputs as compressed or uncompressed.
+            whether or not to produce text outputs as compressed or
+            uncompressed.
 
         is_pay_to_script:
             whether or not this key is for a pay-to-script style transaction
@@ -53,7 +54,8 @@ class Key(object):
 
         if [secret_exponent, public_pair, hash160].count(None) != 2:
             raise ValueError(
-                "exactly one of secret_exponent, public_pair, hash160 must be passed.")
+                "exactly one of secret_exponent, public_pair, "
+                "hash160 must be passed.")
         if prefer_uncompressed is None:
             prefer_uncompressed = not is_compressed
         self._prefer_uncompressed = prefer_uncompressed
@@ -69,8 +71,9 @@ class Key(object):
         self._netcode = netcode
 
         if self._public_pair is None and self._secret_exponent is not None:
-            if self._secret_exponent < 1 \
-                    or self._secret_exponent >= ecdsa.generator_secp256k1.order():
+            if (self._secret_exponent < 1 or
+                        self._secret_exponent >=
+                        ecdsa.generator_secp256k1.order()):
                 raise InvalidSecretExponentError()
             public_pair = ecdsa.public_pair_for_secret_exponent(
                 ecdsa.generator_secp256k1, self._secret_exponent)
@@ -78,15 +81,18 @@ class Key(object):
 
         if self._public_pair is not None \
                 and (None in self._public_pair or
-                     not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1, self._public_pair)):
+                     not ecdsa.is_public_pair_valid(ecdsa.generator_secp256k1,
+                                                    self._public_pair)):
             raise InvalidPublicPairError()
 
     @classmethod
     def from_text(cls, text, is_compressed=True):
         """
-        This function will accept a BIP0032 wallet string, a WIF, or a bitcoin address.
+        This function will accept a BIP0032 wallet string, a WIF,
+        or a bitcoin address.
 
-        The "is_compressed" parameter is ignored unless a public address is passed in.
+        The "is_compressed" parameter is ignored unless a public address is
+        passed in.
         """
 
         data = a2b_hashed_base58(text)
@@ -132,8 +138,8 @@ class Key(object):
 
     def wif(self, use_uncompressed=None):
         """
-        Return the WIF representation of this key, if available.
-        If use_uncompressed is not set, the preferred representation is returned.
+        Return the WIF representation of this key, if available. If
+        use_uncompressed is not set, the preferred representation is returned.
         """
         wif_prefix = wif_prefix_for_netcode(self._netcode)
         secret_exponent = self.secret_exponent()
@@ -158,8 +164,8 @@ class Key(object):
 
     def sec(self, use_uncompressed=None):
         """
-        Return the SEC representation of this key, if available.
-        If use_uncompressed is not set, the preferred representation is returned.
+        Return the SEC representation of this key, if available. If
+        use_uncompressed is not set, the preferred representation is returned.
         """
         public_pair = self.public_pair()
         if public_pair is None:
@@ -170,8 +176,8 @@ class Key(object):
 
     def sec_as_hex(self, use_uncompressed=None):
         """
-        Return the SEC representation of this key as hex text.
-        If use_uncompressed is not set, the preferred representation is returned.
+        Return the SEC representation of this key as hex text. If
+        use_uncompressed is not set, the preferred representation is returned.
         """
         sec = self.sec(use_uncompressed=use_uncompressed)
         if sec is None:
@@ -180,8 +186,8 @@ class Key(object):
 
     def hash160(self, use_uncompressed=None):
         """
-        Return the hash160 representation of this key, if available.
-        If use_uncompressed is not set, the preferred representation is returned.
+        Return the hash160 representation of this key, if available. If
+        use_uncompressed is not set, the preferred representation is returned.
         """
         use_uncompressed = self._use_uncompressed(use_uncompressed)
         if self.public_pair() is None:
@@ -203,7 +209,8 @@ class Key(object):
     def address(self, use_uncompressed=None):
         """
         Return the public address representation of this key, if available.
-        If use_uncompressed is not set, the preferred representation is returned.
+        If use_uncompressed is not set, the preferred representation is
+        returned.
         """
         address_prefix = address_prefix_for_netcode(self._netcode)
         hash160 = self.hash160(use_uncompressed=use_uncompressed)

@@ -74,8 +74,12 @@ class BlockChain(object):
 
         longest_chain = self._longest_local_block_chain()
         the_hash = longest_chain[-index - 1]
-        parent_hash = self.parent_hash if index <= 0 else self._longest_chain_cache[
-            -index]
+
+        if index <= 0:
+            parent_hash = self.parent_hash
+        else:
+            parent_hash = self._longest_chain_cache[-index]
+
         weight = self.weight_lookup.get(the_hash)
         return the_hash, parent_hash, weight
 
@@ -102,8 +106,12 @@ class BlockChain(object):
         excluded = set()
         for idx in range(index):
             the_hash = longest_chain[-idx - 1]
-            parent_hash = self.parent_hash if idx <= 0 else self._longest_chain_cache[
-                -idx]
+
+            if idx <= 0:
+                parent_hash = self.parent_hash
+            else:
+                parent_hash = self._longest_chain_cache[-idx]
+
             weight = self.weight_lookup.get(the_hash)
             item = (the_hash, parent_hash, weight)
             self._locked_chain.append(item)

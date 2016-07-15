@@ -69,8 +69,9 @@ def remove_sequence(string):
 
 
 def remove_integer(string, use_broken_open_ssl_mechanism=False):
-    # OpenSSL treats DER-encoded negative integers (that have their most significant
-    # bit set) as positive integers. Some apps depend upon this bug.
+    # OpenSSL treats DER-encoded negative integers (that have their most
+    # significant bit set) as positive integers. Some apps depend upon this
+    # bug.
     if not string.startswith(b"\x02"):
         raise UnexpectedDER("did not get expected integer 0x02")
     length, llen = read_length(string[1:])
@@ -115,7 +116,8 @@ def sigencode_der(r, s):
 
 
 def sigdecode_der(sig_der, use_broken_open_ssl_mechanism=True):
-    # if use_broken_open_ssl_mechanism is true, this is a non-standard implementation
+    # if use_broken_open_ssl_mechanism is true, this is a non-standard
+    # implementation
     rs_strings, empty = remove_sequence(sig_der)
     r, rest = remove_integer(
         rs_strings,

@@ -76,9 +76,10 @@ def create_tx(spendables, payables, fee="standard", lock_time=0, version=1):
         ["1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP"],
         fee=0)
 
-    This will move all available reported funds from 1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH
-    to 1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP, with no transaction fees (which means it might
-    take a while to confirm, possibly never).
+    This will move all available reported funds from
+    1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH to 1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP,
+    with no transaction fees (which means it might take a while to confirm,
+    possibly never).
     """
 
     def _fix_spendable(s):
@@ -128,7 +129,8 @@ def distribute_from_split_pool(tx, fee):
     # calculate fees
     if fee == 'standard':
         # TODO: improve this
-        # 1: the tx is not fully built out, so it will actually be larger than implied at this point
+        # 1: the tx is not fully built out, so it will actually be larger
+        #    than implied at this point
         # 2: recommended_fee_for_tx gives estimates that are too high
         fee = tx_fee.recommended_fee_for_tx(tx)
 
@@ -143,7 +145,8 @@ def distribute_from_split_pool(tx, fee):
         value_each, extra_count = divmod(remaining_coins, zero_count)
         if value_each < 1:
             raise ValueError(
-                "not enough to pay nonzero amounts to at least one of the unspecified outputs")
+                "not enough to pay nonzero amounts to at least one of the "
+                "unspecified outputs")
         for tx_out in tx.txs_out:
             if tx_out.coin_value == 0:
                 tx_out.coin_value = value_each + (1 if extra_count > 0 else 0)
@@ -165,8 +168,9 @@ def sign_tx(tx, wifs=None, secret_exponent_db=None, netcode='BTC', **kwargs):
         a bitcoin address => (secret_exponent, public_pair, is_compressed)
         tuple. This will be built automatically lazily with the list of WIFs.
         You can pass in an empty dictionary and as WIFs are processed, they
-        will be cached here. If you have multiple transactions to sign, each with
-        the same WIF list, passing a cache dictionary in may speed things up a bit.
+        will be cached here. If you have multiple transactions to sign, each
+        with the same WIF list, passing a cache dictionary in may speed things
+        up a bit.
 
     Returns the signed Tx transaction, or raises an exception.
 
@@ -214,9 +218,10 @@ def create_signed_tx(spendables,
         wifs=["KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn"],
         fee=0)
 
-    This will move all available reported funds from 1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH
-    to 1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP, with no transaction fees (which means it might
-    take a while to confirm, possibly never).
+    This will move all available reported funds from
+    1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH to 1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP,
+    with no transaction fees (which means it might take a while to confirm,
+    possibly never).
     """
 
     if wifs is None:

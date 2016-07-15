@@ -32,7 +32,8 @@ class ScriptPayToAddress(ScriptType):
     def script(self):
         if self._script is None:
             # create the script
-            STANDARD_SCRIPT_OUT = "OP_DUP OP_HASH160 %s OP_EQUALVERIFY OP_CHECKSIG"
+            STANDARD_SCRIPT_OUT = ("OP_DUP OP_HASH160 %s "
+                                   "OP_EQUALVERIFY OP_CHECKSIG")
             script_text = STANDARD_SCRIPT_OUT % b2h(self.hash160)
             self._script = tools.pycoin_compile(script_text)
         return self._script

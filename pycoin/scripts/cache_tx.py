@@ -16,7 +16,8 @@ def main():
     parser.add_argument(
         "tx_id_or_path",
         nargs="+",
-        help='The id of the transaction to fetch from web services or the path to it.')
+        help='The id of the transaction to fetch from web services or the '
+             'path to it.')
 
     args = parser.parse_args()
 

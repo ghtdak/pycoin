@@ -90,9 +90,11 @@ def subkey_secret_exponent_chain_code_pair(secret_exponent,
     i:
         the index for this node.
     is_hardened:
-        use "hardened key derivation". The public version of this node cannot calculate this child.
+        use "hardened key derivation". The public version of this node
+        cannot calculate this child.
     public_pair:
-        the public_pair for the given secret exponent. If you leave it None, it's calculated for you
+        the public_pair for the given secret exponent. If you leave it None,
+        it's calculated for you
         (but then it's slower)
 
     Returns a pair (new_secret_exponent, new_chain_code)

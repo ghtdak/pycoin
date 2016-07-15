@@ -1,6 +1,5 @@
-"""
-Some portions adapted from https://github.com/warner/python-ecdsa/ Copyright (c) 2010 Brian Warner
-who granted its use under this license:
+"""Some portions adapted from https://github.com/warner/python-ecdsa/
+Copyright (c) 2010 Brian Warner who granted its use under this license:
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

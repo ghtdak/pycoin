@@ -44,12 +44,15 @@ import hmac
 import itertools
 import struct
 
-from ..encoding import a2b_hashed_base58, b2a_hashed_base58, from_bytes_32, to_bytes_32
-from ..encoding import sec_to_public_pair, public_pair_to_hash160_sec, EncodingError
+from ..encoding import (a2b_hashed_base58, b2a_hashed_base58, from_bytes_32,
+                        to_bytes_32)
+from ..encoding import (sec_to_public_pair, public_pair_to_hash160_sec,
+                        EncodingError)
 from ..networks import prv32_prefix_for_netcode, pub32_prefix_for_netcode
 from .validate import netcode_and_type_for_data
 from .Key import Key
-from .bip32 import subkey_public_pair_chain_code_pair, subkey_secret_exponent_chain_code_pair
+from .bip32 import (subkey_public_pair_chain_code_pair,
+                    subkey_secret_exponent_chain_code_pair)
 
 
 class PublicPrivateMismatchError(Exception):
@@ -111,7 +114,8 @@ class BIP32Node(Key):
                  child_index=0,
                  secret_exponent=None,
                  public_pair=None):
-        """Don't use this. Use a classmethod to generate from a string instead."""
+        """Don't use this. Use a classmethod to generate from a string
+        instead. """
 
         if [secret_exponent, public_pair].count(None) != 1:
             raise ValueError(
@@ -215,7 +219,8 @@ class BIP32Node(Key):
             d["public_pair"], chain_code = subkey_public_pair_chain_code_pair(
                 self.public_pair(), self._chain_code, i)
         else:
-            d["secret_exponent"], chain_code = subkey_secret_exponent_chain_code_pair(
+            (d["secret_exponent"],
+             chain_code) = subkey_secret_exponent_chain_code_pair(
                 self.secret_exponent(), self._chain_code, i, is_hardened,
                 self.public_pair())
         d["chain_code"] = chain_code
@@ -304,10 +309,11 @@ class BIP32Node(Key):
             # examples:
             #   0/1H/0-4 => ['0/1H/0', '0/1H/1', '0/1H/2', '0/1H/3', '0/1H/4']
             #   0/2,5,9-11 => ['0/2', '0/5', '0/9', '0/10', '0/11']
-            #   3H/2/5/15-20p => ['3H/2/5/15p', '3H/2/5/16p', '3H/2/5/17p', '3H/2/5/18p',
-            #          '3H/2/5/19p', '3H/2/5/20p']
+            #   3H/2/5/15-20p => ['3H/2/5/15p', '3H/2/5/16p', '3H/2/5/17p',
+            #           '3H/2/5/18p', '3H/2/5/19p', '3H/2/5/20p']
             #   5-6/7-8p,15/1-2 => ['5/7H/1', '5/7H/2', '5/8H/1', '5/8H/2',
-            #         '5/15/1', '5/15/2', '6/7H/1', '6/7H/2', '6/8H/1', '6/8H/2', '6/15/1', '6/15/2']
+            #         '5/15/1', '5/15/2', '6/7H/1', '6/7H/2', '6/8H/1',
+            #           '6/8H/2', '6/15/1', '6/15/2']
 
             components = subkey_paths.split("/")
             iterators = [range_iterator(c) for c in components]

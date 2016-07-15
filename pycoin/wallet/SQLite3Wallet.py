@@ -58,8 +58,10 @@ class SQLite3Wallet(object):
                 if self.persistence.unspent_spendable_count(
                 ) < self._desired_spendable_count:
                     desired_change_output_count = len(spendables) + 1
-                    # TODO: be a little smarter about how many change outputs to create
-                    if change_amount > desired_change_output_count * self._min_extra_spendable_amount:
+                    # TODO: be a little smarter about how many change outputs
+                    #  to create
+                    if (change_amount > desired_change_output_count *
+                        self._min_extra_spendable_amount):
                         for i in range(desired_change_output_count):
                             change_address = self.keychain.get_change_address()
                             payables.append(change_address)

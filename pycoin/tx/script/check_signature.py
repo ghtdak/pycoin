@@ -33,7 +33,8 @@ from ...intbytes import byte_to_int
 from . import der
 from . import ScriptError
 
-from .flags import VERIFY_NULLDUMMY, VERIFY_STRICTENC, VERIFY_MINIMALDATA, VERIFY_DERSIG, VERIFY_LOW_S
+from .flags import (VERIFY_NULLDUMMY, VERIFY_STRICTENC, VERIFY_MINIMALDATA,
+                    VERIFY_DERSIG, VERIFY_LOW_S)
 
 from .microcode import VCH_TRUE, VCH_FALSE
 from .tools import bin_script, delete_subscript, int_from_script_bytes
@@ -63,7 +64,8 @@ def check_valid_signature(sig):
     if r_len > 1 and byte_to_int(sig[4]) == 0 and not (byte_to_int(sig[5]) &
                                                        0x80):
         raise ScriptError(
-            "R value can't have leading 0 byte unless doing so would make it negative")
+            "R value can't have leading 0 byte unless doing so "
+            "would make it negative")
     if byte_to_int(sig[r_len + 4]) != 2:
         raise ScriptError("S value region does not start with 0x02")
     if s_len == 0:
@@ -73,7 +75,8 @@ def check_valid_signature(sig):
     if s_len > 1 and byte_to_int(sig[r_len + 6]) == 0 and not (
             byte_to_int(sig[r_len + 7]) & 0x80):
         raise ScriptError(
-            "S value can't have leading 0 byte unless doing so would make it negative")
+            "S value can't have leading 0 byte unless doing so would "
+            "make it negative")
 
 
 def check_low_der_signature(sig_pair):
@@ -129,7 +132,8 @@ def op_checksig(stack, signature_for_hash_type_f, expected_hash_type,
         pair_blob = stack.pop()
         sig_blob = stack.pop()
         verify_strict = not not (flags & VERIFY_STRICTENC)
-        # if verify_strict flag is set, we fail the script immediately on bad encoding
+        # if verify_strict flag is set, we fail the script immediately on bad
+        #  encoding
         if verify_strict:
             check_public_key_encoding(pair_blob)
         sig_pair, signature_type = parse_signature_blob(sig_blob, flags)
@@ -167,11 +171,13 @@ def sig_blob_matches(sig_blobs,
     tmp_script: the script as of the last code separator
     signature_for_hash_type_f: signature_for_hash_type_f
     flags: verification flags to apply
-    exit_early: if True, we may exit early if one of the sig_blobs is incorrect or misplaced. Used
+    exit_early: if True, we may exit early if one of the sig_blobs
+                    is incorrect or misplaced. Used
                    for checking a supposedly validated transaction. A -1 indicates no match.
 
-    Returns a list of indices into public_pairs. If exit_early is True, it may return early.
-    If sig_blob_indices isn't long enough or contains a -1, the signature is not valid.
+    Returns a list of indices into public_pairs. If exit_early is True,
+    it may return early. If sig_blob_indices isn't long enough or contains a
+    -1, the signature is not valid.
     """
 
     strict_encoding = not not (flags & VERIFY_STRICTENC)
@@ -259,8 +265,8 @@ def op_checkmultisig(stack, signature_for_hash_type_f, expected_hash_type,
 
     sig_ok = VCH_FALSE
     if -1 not in sig_blob_indices and len(sig_blob_indices) == len(sig_blobs):
-        # bitcoin requires the signatures to be in the same order as the public keys
-        # so let's make sure the indices are strictly increasing
+        # bitcoin requires the signatures to be in the same order as the
+        # public keys so let's make sure the indices are strictly increasing
         for i in range(len(sig_blob_indices) - 1):
             if sig_blob_indices[i] >= sig_blob_indices[i + 1]:
                 break

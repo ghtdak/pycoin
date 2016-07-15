@@ -28,7 +28,8 @@ from pycoin.tx.TxOut import standard_tx_out_script
 from pycoin.tx.script.tools import opcode_list
 from pycoin.tx.script.check_signature import parse_signature_blob
 from pycoin.tx.script.der import UnexpectedDER
-from pycoin.tx.script.disassemble import disassemble_scripts, sighash_type_to_string
+from pycoin.tx.script.disassemble import (disassemble_scripts,
+                                          sighash_type_to_string)
 
 DEFAULT_VERSION = 1
 DEFAULT_LOCK_TIME = 0
@@ -37,7 +38,8 @@ LOCKTIME_THRESHOLD = 500000000
 
 def validate_bitcoind(tx, tx_db, bitcoind_url):
     try:
-        from pycoin.services.bitcoind import bitcoind_agrees_on_transaction_validity
+        from pycoin.services.bitcoind import \
+            bitcoind_agrees_on_transaction_validity
         if bitcoind_agrees_on_transaction_validity(bitcoind_url, tx):
             print("interop test passed for %s" % tx.id(), file=sys.stderr)
         else:
@@ -110,8 +112,9 @@ def dump_tx(tx, netcode, verbose_signature, disassembly_level, do_trace,
                 out_script = b''
                 if tx_out:
                     out_script = tx_out.script
-                for (pre_annotations, pc, opcode, instruction, post_annotations) in \
-                        disassemble_scripts(tx_in.script, out_script, signature_for_hash_type_f):
+                for (pre_annotations, pc, opcode, instruction,
+                     post_annotations) in disassemble_scripts(
+                    tx_in.script, out_script, signature_for_hash_type_f):
                     for l in pre_annotations:
                         print("           %s" % l)
                     print("    %4x: %02x  %s" % (pc, opcode, instruction))
@@ -153,8 +156,9 @@ def dump_tx(tx, netcode, verbose_signature, disassembly_level, do_trace,
         address = tx_out.bitcoin_address(netcode=netcode) or "(unknown)"
         print("%4d: %34s receives %12.5f mBTC" % (idx, address, amount_mbtc))
         if disassembly_level > 0:
-            for (pre_annotations, pc, opcode, instruction, post_annotations) in \
-                    disassemble_scripts(b'', tx_out.script, signature_for_hash_type_f):
+            for (pre_annotations, pc, opcode,
+                 instruction, post_annotations) in disassemble_scripts(
+                b'', tx_out.script, signature_for_hash_type_f):
                 for l in pre_annotations:
                     print("           %s" % l)
                 print("    %4x: %02x  %s" % (pc, opcode, instruction))
@@ -173,7 +177,8 @@ def check_fees(tx):
     actual_tx_fee = total_in - total_out
     recommended_tx_fee = tx_fee.recommended_fee_for_tx(tx)
     print(
-        "warning: transaction fees recommendations casually calculated and estimates may be incorrect",
+        "warning: transaction fees recommendations casually calculated and "
+        "estimates may be incorrect",
         file=sys.stderr)
     if actual_tx_fee > recommended_tx_fee:
         print("warning: transaction fee of %s exceeds expected value of %s mBTC"
@@ -263,19 +268,20 @@ def main():
         "--fetch-spendables",
         metavar="address",
         action="append",
-        help='Add all unspent spendables for the given bitcoin address. This information'
-        ' is fetched from web services.')
+        help='Add all unspent spendables for the given bitcoin address. '
+             'This information is fetched from web services.')
 
     parser.add_argument(
         '-f',
         "--private-key-file",
         metavar="path-to-private-keys",
         action="append",
-        help='file containing WIF or BIP0032 private keys. If file name ends with .gpg, '
-        '"gpg -d" will be invoked automatically. File is read one line at a time, and if '
-        'the file contains only one WIF per line, it will also be scanned for a bitcoin '
-        'address, and any addresses found will be assumed to be public keys for the given'
-        ' private key.',
+        help='file containing WIF or BIP0032 private keys. If file name ends '
+             'with .gpg, "gpg -d" will be invoked automatically. File is read '
+             'one line at a time, and if the file contains only one WIF per '
+             'line, it will also be scanned for a bitcoin address, and any '
+             'addresses found will be assumed to be public keys for the given '
+             'private key.',
         type=argparse.FileType('r'))
 
     parser.add_argument('-g',
@@ -298,9 +304,10 @@ def main():
     parser.add_argument(
         '-F',
         "--fee",
-        help='fee, in satoshis, to pay on transaction, or '
-        '"standard" to auto-calculate. This is only useful if the "split pool" '
-        'is used; otherwise, the fee is automatically set to the unclaimed funds.',
+        help='fee, in satoshis, to pay on transaction, or "standard" to '
+             'auto-calculate. This is only useful if the "split pool" is '
+             'used; otherwise, the fee is automatically set to the unclaimed '
+             'funds.',
         default="standard",
         metavar="transaction-fee",
         type=parse_fee)
@@ -321,7 +328,8 @@ def main():
     parser.add_argument(
         '-b',
         "--bitcoind-url",
-        help='URL to bitcoind instance to validate against (http://user:pass@host:port).')
+        help='URL to bitcoind instance to validate against ('
+             'http://user:pass@host:port).')
 
     parser.add_argument(
         '-o',
@@ -360,13 +368,14 @@ def main():
     parser.add_argument(
         "argument",
         nargs="+",
-        help='generic argument: can be a hex transaction id '
-        '(exactly 64 characters) to be fetched from cache or a web service;'
-        ' a transaction as a hex string; a path name to a transaction to be loaded;'
-        ' a spendable 4-tuple of the form tx_id/tx_out_idx/script_hex/satoshi_count '
-        'to be added to TxIn list; an address/satoshi_count to be added to the TxOut '
-        'list; an address to be added to the TxOut list and placed in the "split'
-        ' pool".')
+        help='generic argument: can be a hex transaction id (exactly 64 '
+             'characters) to be fetched from cache or a web service; a '
+             'transaction as a hex string; a path name to a transaction to be '
+             'loaded;  a spendable 4-tuple of the form '
+             'tx_id/tx_out_idx/script_hex/satoshi_count to be added to TxIn '
+             'list; an address/satoshi_count to be added to the TxOut list; '
+             'an address to be added to the TxOut list and placed in the '
+             '"split pool".')
 
     args = parser.parse_args()
 
@@ -548,7 +557,8 @@ def main():
     txs_in = []
     txs_out = []
     unspents = []
-    # we use a clever trick here to keep each tx_in corresponding with its tx_out
+    # we use a clever trick here to keep each tx_in corresponding with its
+    # tx_out
     for tx in txs:
         smaller = min(len(tx.txs_in), len(tx.txs_out))
         txs_in.extend(tx.txs_in[:smaller])
@@ -569,7 +579,8 @@ def main():
     lock_time = args.lock_time
     version = args.transaction_version
 
-    # if no lock_time is explicitly set, inherit from the first tx or use default
+    # if no lock_time is explicitly set, inherit from the first tx or use
+    # default
     if lock_time is None:
         if txs:
             lock_time = txs[0].lock_time
@@ -653,7 +664,8 @@ def main():
                 args.trace, args.pdb)
         if include_unspents:
             print(
-                "including unspents in hex dump since transaction not fully signed")
+                "including unspents in hex dump since transaction not "
+                "fully signed")
         print(tx_as_hex)
 
     if args.cache:

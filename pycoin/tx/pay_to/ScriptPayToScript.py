@@ -28,8 +28,8 @@ class ScriptPayToScript(ScriptType):
 
     def solve(self, **kwargs):
         """
-        p2sh_lookup:
-            dict-like structure that returns the underlying script for the given hash160
+        p2sh_lookup: dict-like structure that returns the underlying script
+        for the given hash160
         """
         from . import script_obj_from_script
         p2sh_lookup = kwargs.get("p2sh_lookup")

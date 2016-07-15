@@ -4,9 +4,11 @@ from .validate import netcode_and_type_for_text
 
 def key_from_text(text, is_compressed=True):
     """
-    This function will accept a BIP0032 wallet string, a WIF, or a bitcoin address.
+    This function will accept a BIP0032 wallet string, a WIF, or a bitcoin
+    address.
 
-    The "is_compressed" parameter is ignored unless a public address is passed in.
+    The "is_compressed" parameter is ignored unless a public address is
+    passed in.
     """
     # TODO: fix import loop
     from .BIP32Node import BIP32Node

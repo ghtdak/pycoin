@@ -76,8 +76,8 @@ def _message_fixups():
         return d
 
     alert_submessage_parser = _make_parser(
-        "version:L relayUntil:Q expiration:Q id:L cancel:L setCancel:[L] minVer:L "
-        "maxVer:L setSubVer:[S] priority:L comment:S statusBar:S reserved:S")
+        "version:L relayUntil:Q expiration:Q id:L cancel:L setCancel:[L] minVer"
+        ":L maxVer:L setSubVer:[S] priority:L comment:S statusBar:S reserved:S")
 
     def fixup_alert(d, f):
         d1 = alert_submessage_parser(io.BytesIO(d["payload"]))
@@ -140,8 +140,8 @@ def pack_from_data(message_name, **kwargs):
             for v in kwargs[name]:
                 if not isinstance(v, (tuple, list)):
                     v = [v]
-                bitcoin_streamer.BITCOIN_STREAMER.stream_struct(_type[1:-1], f, *
-                                                                v)
+                bitcoin_streamer.BITCOIN_STREAMER.stream_struct(
+                    _type[1:-1], f, *v)
         else:
             bitcoin_streamer.BITCOIN_STREAMER.stream_struct(_type, f,
                                                             kwargs[name])

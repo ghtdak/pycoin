@@ -9,11 +9,13 @@ import subprocess
 import sys
 
 from pycoin import encoding
-from pycoin.ecdsa import is_public_pair_valid, generator_secp256k1, public_pair_for_x, secp256k1
+from pycoin.ecdsa import (is_public_pair_valid, generator_secp256k1,
+                          public_pair_for_x, secp256k1)
 from pycoin.serialize import b2h, h2b
 from pycoin.key import Key
 from pycoin.key.BIP32Node import BIP32Node
-from pycoin.networks import full_network_name_for_netcode, network_name_for_netcode, NETWORK_NAMES
+from pycoin.networks import (full_network_name_for_netcode,
+                             network_name_for_netcode, NETWORK_NAMES)
 
 SEC_RE = re.compile(r"^(0[23][0-9a-fA-F]{64})|(04[0-9a-fA-F]{128})$")
 HASH160_RE = re.compile(r"^([0-9a-fA-F]{40})$")
@@ -230,20 +232,24 @@ def main():
         'item',
         nargs="+",
         help='a BIP0032 wallet key string;'
-        ' a WIF;'
-        ' a bitcoin address;'
-        ' an SEC (ie. a 66 hex chars starting with 02, 03 or a 130 hex chars starting with 04);'
-        ' the literal string "create" to create a new wallet key using strong entropy sources;'
-        ' P:wallet passphrase (NOT RECOMMENDED);'
-        ' H:wallet passphrase in hex (NOT RECOMMENDED);'
-        ' secret_exponent (in decimal or hex);'
-        ' x,y where x,y form a public pair (y is a number or one of the strings "even" or "odd");'
-        ' hash160 (as 40 hex characters)')
+             ' a WIF;'
+             ' a bitcoin address;'
+             ' an SEC (ie. a 66 hex chars starting with 02, 03 or a 130 hex '
+             'chars starting with 04);'
+             ' the literal string "create" to create a new wallet key using '
+             'strong entropy sources;'
+             ' P:wallet passphrase (NOT RECOMMENDED);'
+             ' H:wallet passphrase in hex (NOT RECOMMENDED);'
+             ' secret_exponent (in decimal or hex);'
+             ' x,y where x,y form a public pair (y is a number or one of the '
+             'strings "even" or "odd");'
+             ' hash160 (as 40 hex characters)')
 
     args = parser.parse_args()
 
     if args.override_network:
-        # force network arg to match override, but also will override decoded data below.
+        # force network arg to match override, but also will override decoded
+        #  data below.
         args.network = args.override_network
 
     def _create(_):
@@ -259,7 +265,8 @@ def main():
 
     PREFIX_TRANSFORMS = (
         ("P:", lambda s:
-            BIP32Node.from_master_secret(s.encode("utf8"), netcode=args.network)),
+            BIP32Node.from_master_secret(s.encode("utf8"),
+                                         netcode=args.network)),
         ("H:", lambda s:
             BIP32Node.from_master_secret(h2b(s), netcode=args.network)),
         ("create", _create),
@@ -300,9 +307,9 @@ def main():
             continue
 
         if args.override_network:
-            # Override the network value, so we can take the same xpubkey and view what
-            # the values would be on each other network type.
-            # XXX public interface for this is needed...
+            # Override the network value, so we can take the same xpubkey and
+            #  view what the values would be on each other network type. XXX
+            # public interface for this is needed...
             key._netcode = args.override_network
 
         for key in key.subkeys(args.subkey or ""):

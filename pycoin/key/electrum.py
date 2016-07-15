@@ -26,7 +26,8 @@ class ElectrumWallet(Key):
         if [initial_key, master_private_key, master_public_key].count(
                 None) != 2:
             raise ValueError(
-                "exactly one of initial_key, master_private_key, master_public_key must be non-None")
+                "exactly one of initial_key, master_private_key, "
+                "master_public_key must be non-None")
         self._initial_key = initial_key
         self._master_private_key = master_private_key
         self._master_public_key = master_public_key
@@ -55,9 +56,8 @@ class ElectrumWallet(Key):
 
     def subkey(self, path):
         """
-        path:
-            of the form "K" where K is an integer index, or "K/N" where N is usually
-            a 0 (deposit address) or 1 (change address)
+        path: of the form "K" where K is an integer index, or "K/N" where N
+        is usually a 0 (deposit address) or 1 (change address)
         """
         t = path.split("/")
         if len(t) == 2:
