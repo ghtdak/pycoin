@@ -9,11 +9,12 @@ class ScriptNulldata(ScriptType):
     TEMPLATE = tools.pycoin_compile("OP_RETURN OP_NULLDATA")
 
     def __init__(self, nulldata):
+        super().__init__()
         self.nulldata = nulldata
         self._script = None
 
     @classmethod
-    def from_script(cls, script):
+    def from_script(cls, script, netcode="BTC"):
         r = cls.match(script)
         if r:
             nulldata = r["NULLDATA_LIST"][0]

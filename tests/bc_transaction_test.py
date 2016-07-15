@@ -42,11 +42,10 @@ from pycoin.tx import Tx, TxIn, ValidationFailureError
 from pycoin.tx.Spendable import Spendable
 from pycoin.tx.script.opcodes import OPCODE_TO_INT
 from pycoin.tx.script.tools import pycoin_compile
+from pycoin.tx.script import flags
 
 TX_VALID_JSON = os.path.dirname(__file__) + '/data/tx_valid.json'
 TX_INVALID_JSON = os.path.dirname(__file__) + '/data/tx_invalid.json'
-
-from pycoin.tx.script import flags
 
 
 def parse_flags(flag_string):
@@ -96,9 +95,10 @@ def txs_from_json(path):
                                       tx_out_index=prevout[1])
                 spendable_db[(spendable.tx_hash,
                               spendable.tx_out_index)] = spendable
-            unspents = [spendable_db.get(
-                (tx_in.previous_hash, tx_in.previous_index), blank_spendable)
-                        for tx_in in tx.txs_in]
+            unspents = [
+                spendable_db.get(
+                    (tx_in.previous_hash, tx_in.previous_index), blank_spendable)
+                for tx_in in tx.txs_in]
             tx.set_unspents(unspents)
             yield (tx, flags, comments)
 
@@ -121,8 +121,8 @@ def make_f(tx, flags, comments, expect_ok=True):
             why = "bad sig count = %d" % bs
         if (why is not None) == expect_ok:
             why = why or "tx unexpectedly validated"
-            f = open("tx-%s-%s.bin" % (tx.id(), "ok"
-            if expect_ok else "bad"), "wb")
+            f = open("tx-%s-%s.bin" % (tx.id(), "ok" if expect_ok else "bad"),
+                     "wb")
             f.write(tx.as_bin(include_unspents=True))
             f.close()
             self.fail("fail on %s because of %s with hex %s: %s" %

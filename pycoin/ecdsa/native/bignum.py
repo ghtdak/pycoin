@@ -33,7 +33,8 @@ def bignum_type_for_library(library):
             ('flags', ctypes.c_int),
         ]
 
-        def __init__(self, n=0):
+        def __init__(self, n=0, *args, **kwargs):
+            super().__init__()
             negative = (n < 0)
             if negative:
                 n = -n

@@ -162,12 +162,8 @@ class Block(BlockHeader):
 
     def __init__(self, version, previous_block_hash, merkle_root, timestamp,
                  difficulty, nonce, txs):
-        self.version = version
-        self.previous_block_hash = previous_block_hash
-        self.merkle_root = merkle_root
-        self.timestamp = timestamp
-        self.difficulty = difficulty
-        self.nonce = nonce
+        super().__init__(version, previous_block_hash, merkle_root, timestamp,
+                         difficulty, nonce)
         self.txs = txs
 
     def as_blockheader(self):

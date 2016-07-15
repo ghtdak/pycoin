@@ -235,10 +235,10 @@ def test_chain_locking():
         assert BC.parent_hash == expected_parent
         assert BC.locked_length() == lock_start
         assert BC.length() == end
-        for i in range(start, end):
-            v = BC.tuple_for_index(i)
-            assert v[0] == i
-            assert v[1] == parent_for_0 if i == 0 else i
+        for i2 in range(start, end):
+            v = BC.tuple_for_index(i2)
+            assert v[0] == i2
+            assert v[1] == parent_for_0 if i2 == 0 else i2
         assert BC.index_for_hash(-1) is None
         assert BC.locked_length() == max(0, lock_start)
         BC.lock_to_index(end - 10)

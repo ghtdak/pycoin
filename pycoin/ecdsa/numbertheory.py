@@ -8,7 +8,7 @@ def inverse_mod(a, m):
     """Inverse of a mod m."""
 
     if a < 0 or m <= a:
-        a = a % m
+        a %= m
 
     # From Ferguson and Schneier, roughly:
 

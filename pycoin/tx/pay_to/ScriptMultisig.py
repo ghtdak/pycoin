@@ -18,12 +18,13 @@ from .ScriptType import ScriptType, DEFAULT_PLACEHOLDER_SIGNATURE
 class ScriptMultisig(ScriptType):
 
     def __init__(self, n, sec_keys):
+        super().__init__()
         self.n = n
         self.sec_keys = sec_keys
         self._script = None
 
     @classmethod
-    def from_script(cls, script):
+    def from_script(cls, script, netcode="BTC"):
         pc = 0
         if len(script) == 0:
             raise ValueError("blank script")

@@ -66,7 +66,7 @@ class BlockChain(object):
 
     def tuple_for_index(self, index):
         if index < 0:
-            index = self.length() + index
+            index += self.length()
         l = len(self._locked_chain)
         if index < l:
             return self._locked_chain[index]

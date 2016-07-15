@@ -133,7 +133,7 @@ class Point(object):
             assert x > 0
             result2 = 1
             while result2 <= x:
-                result2 = 2 * result2
+                result2 *= 2
             return result2 // 2
 
         e = other
@@ -162,7 +162,7 @@ class Point(object):
             if (e3 & i) == 0 and (e & i) != 0:
                 result = result + negative_self
             # print ". . . i = %d, result = %s" % ( i, result )
-            i = i // 2
+            i //= 2
 
         return result
 
@@ -192,7 +192,7 @@ class Point(object):
         p = self.__curve.p()
         a = self.__curve.a()
 
-        l = ((3 * self.__x * self.__x + a) * \
+        l = ((3 * self.__x * self.__x + a) *
              numbertheory.inverse_mod(2 * self.__y, p)) % p
 
         x3 = (l * l - 2 * self.__x) % p

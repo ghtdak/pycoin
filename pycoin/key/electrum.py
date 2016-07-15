@@ -20,10 +20,9 @@ def initial_key_to_master_key(initial_key):
 
 
 class ElectrumWallet(Key):
-    def __init__(self,
-                 initial_key=None,
-                 master_private_key=None,
+    def __init__(self, initial_key=None, master_private_key=None,
                  master_public_key=None):
+        super().__init__()
         if [initial_key, master_private_key, master_public_key].count(
                 None) != 2:
             raise ValueError(
@@ -43,9 +42,8 @@ class ElectrumWallet(Key):
         if self._master_public_key is None:
             self._public_pair = ecdsa.public_pair_for_secret_exponent(
                 ecdsa.generator_secp256k1, self.master_private_key())
-            self._master_public_key = to_bytes_32(self._public_pair[
-                                                      0]) + to_bytes_32(
-                self._public_pair[1])
+            self._master_public_key = to_bytes_32(
+                self._public_pair[0]) + to_bytes_32(self._public_pair[1])
         return self._master_public_key
 
     def public_pair(self):

@@ -16,6 +16,7 @@ class ScriptPayToPublicKey(ScriptType):
     TEMPLATE = tools.pycoin_compile("OP_PUBKEY OP_CHECKSIG")
 
     def __init__(self, sec):
+        super().__init__()
         self.sec = sec
         self._address = None
         self._script = None
@@ -29,7 +30,7 @@ class ScriptPayToPublicKey(ScriptType):
         return cls(sec)
 
     @classmethod
-    def from_script(cls, script):
+    def from_script(cls, script, netcode="BTC"):
         r = cls.match(script)
         if r:
             sec = r["PUBKEY_LIST"][0]

@@ -15,12 +15,13 @@ class ScriptPayToAddress(ScriptType):
         "OP_DUP OP_HASH160 OP_PUBKEYHASH OP_EQUALVERIFY OP_CHECKSIG")
 
     def __init__(self, hash160):
+        super().__init__()
         self.hash160 = hash160
         self._address = None
         self._script = None
 
     @classmethod
-    def from_script(cls, script):
+    def from_script(cls, script, netcode="BTC"):
         r = cls.match(script)
         if r:
             hash160 = r["PUBKEYHASH_LIST"][0]

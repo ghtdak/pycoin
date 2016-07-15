@@ -61,7 +61,7 @@ else:
             v <<= 8
             v += c
         if signed and byte_to_int(_bytes[0]) & 0x80:
-            v = v - (1 << (8 * len(_bytes)))
+            v -= 1 << (8 * len(_bytes))
         return v
 
 

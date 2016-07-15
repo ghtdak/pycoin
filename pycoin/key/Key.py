@@ -82,7 +82,7 @@ class Key(object):
             raise InvalidPublicPairError()
 
     @classmethod
-    def from_text(class_, text, is_compressed=True):
+    def from_text(cls, text, is_compressed=True):
         """
         This function will accept a BIP0032 wallet string, a WIF, or a bitcoin address.
 
@@ -112,14 +112,14 @@ class Key(object):
         raise EncodingError("unknown text: %s" % text)
 
     @classmethod
-    def from_sec(class_, sec, netcode="BTC"):
+    def from_sec(cls, sec, netcode="BTC"):
         """
         Create a key from an sec bytestream (which is an encoding of a public pair).
         """
         public_pair = sec_to_public_pair(sec)
-        return class_(public_pair=public_pair,
-                      is_compressed=is_sec_compressed(sec),
-                      netcode=netcode)
+        return cls(public_pair=public_pair,
+                   is_compressed=is_sec_compressed(sec),
+                   netcode=netcode)
 
     def is_private(self):
         return self.secret_exponent() is not None

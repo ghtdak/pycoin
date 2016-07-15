@@ -19,7 +19,7 @@ DEFAULT_PLACEHOLDER_SIGNATURE = generate_default_placeholder_signature()
 class ScriptType(object):
 
     def __init__(self):
-        raise NotImplemented()
+        pass
 
     @classmethod
     def subclasses(cls, skip_self=True):

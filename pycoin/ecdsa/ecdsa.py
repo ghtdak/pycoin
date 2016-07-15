@@ -79,7 +79,7 @@ def deterministic_generate_k(generator_order,
         k1 = intbytes.from_bytes(bytes(t))
 
         k1 >>= (len(t) * 8 - bit_length(n))
-        if k1 >= 1 and k1 < n:
+        if 1 <= k1 < n:
             return k1
 
         k = hmac.new(k, v + b'\x00', hash_f).digest()

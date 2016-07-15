@@ -53,10 +53,10 @@ class TxIn(object):
         self.sequence = sequence
 
     @classmethod
-    def coinbase_tx_in(class_, script):
-        tx = class_(previous_hash=ZERO,
-                    previous_index=4294967295,
-                    script=script)
+    def coinbase_tx_in(cls, script):
+        tx = cls(previous_hash=ZERO,
+                 previous_index=4294967295,
+                 script=script)
         return tx
 
     def stream(self, f, blank_solutions=False):
@@ -65,8 +65,8 @@ class TxIn(object):
                       script, self.sequence)
 
     @classmethod
-    def parse(self, f):
-        return self(*parse_struct("#LSL", f))
+    def parse(cls, f):
+        return cls(*parse_struct("#LSL", f))
 
     def is_coinbase(self):
         return self.previous_hash == ZERO

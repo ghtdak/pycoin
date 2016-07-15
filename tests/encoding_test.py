@@ -153,15 +153,15 @@ class EncodingTestCase(unittest.TestCase):
                 as_bitcoin_address)
             self.assertTrue(encoding.is_valid_bitcoin_address(
                 as_bitcoin_address))
-            bad_address = as_bitcoin_address[:17] + chr(ord(as_bitcoin_address[
-                                                                17]) + 1) + as_bitcoin_address[
-                                                                            18:]
+            bad_address = as_bitcoin_address[:17] + chr(
+                ord(as_bitcoin_address[17]) + 1) + as_bitcoin_address[18:]
             self.assertFalse(encoding.is_valid_bitcoin_address(bad_address))
 
         SEC_TEST_DATA = [
             ((
                  35826991941973211494003564265461426073026284918572421206325859877044495085994,
-                 25491041833361137486709012056693088297620945779048998614056404517283089805761),
+                 25491041833361137486709012056693088297620945779048998614056404517283089805761
+             ),
              "034f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
              True,
              "fc7250a211deddc70ee5a2738de5f07817351cef",
@@ -169,7 +169,8 @@ class EncodingTestCase(unittest.TestCase):
             ),
             ((
                  31855367722742370537280679280108010854876607759940877706949385967087672770343,
-                 46659058944867745027460438812818578793297503278458148978085384795486842595210),
+                 46659058944867745027460438812818578793297503278458148978085384795486842595210
+             ),
              "02466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
              True,
              "531260aa2a199e228c537dfa42c82bea2c7c1f4d",
@@ -177,7 +178,8 @@ class EncodingTestCase(unittest.TestCase):
             ),
             ((
                  27341391395138457474971175971081207666803680341783085051101294443585438462385,
-                 26772005640425216814694594224987412261034377630410179754457174380653265224672),
+                 26772005640425216814694594224987412261034377630410179754457174380653265224672
+             ),
              "023c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1",
              True,
              "3bc28d6d92d9073fb5e3adf481795eaf446bceed",
@@ -186,8 +188,8 @@ class EncodingTestCase(unittest.TestCase):
             ((
                  35826991941973211494003564265461426073026284918572421206325859877044495085994,
                  25491041833361137486709012056693088297620945779048998614056404517283089805761),
-             "044f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa" \
-             "385b6b1b8ead809ca67454d9683fcf2ba03456d6fe2c4abe2b07f0fbdbb2f1c1",
+             "044f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871a"
+             "a385b6b1b8ead809ca67454d9683fcf2ba03456d6fe2c4abe2b07f0fbdbb2f1c1",
              False,
              "e4e517ee07984a4000cd7b00cbcb545911c541c4",
              "1MsHWS1BnwMc3tLE8G35UXsS58fKipzB7a"
@@ -195,8 +197,8 @@ class EncodingTestCase(unittest.TestCase):
             ((
                  31855367722742370537280679280108010854876607759940877706949385967087672770343,
                  46659058944867745027460438812818578793297503278458148978085384795486842595210),
-             "04466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27" \
-             "6728176c3c6431f8eeda4538dc37c865e2784f3a9e77d044f33e407797e1278a",
+             "04466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f2"
+             "76728176c3c6431f8eeda4538dc37c865e2784f3a9e77d044f33e407797e1278a",
              False,
              "b256082b934fe782adbacaafeadfca64c52a5384",
              "1HFxLkPTtMZeo5mDpZn6CF9sh4h2ycknwr"
@@ -204,8 +206,8 @@ class EncodingTestCase(unittest.TestCase):
             ((
                  27341391395138457474971175971081207666803680341783085051101294443585438462385,
                  26772005640425216814694594224987412261034377630410179754457174380653265224672),
-             "043c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1" \
-             "3b306b0fe085665d8fc1b28ae1676cd3ad6e08eaeda225fe38d0da4de55703e0",
+             "043c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b"
+             "13b306b0fe085665d8fc1b28ae1676cd3ad6e08eaeda225fe38d0da4de55703e0",
              False,
              "edf6bbd7ba7aad222c2b28e6d8d5001178e3680c",
              "1NhEipumt9Pug6pwTqMNRXhBG84K39Ebbi"
@@ -218,7 +220,8 @@ class EncodingTestCase(unittest.TestCase):
 
     def test_sec(self):
         pair_blob = h2b(
-            '0679be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8')
+            '0679be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179'
+            '8483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8')
         public_pair = encoding.sec_to_public_pair(pair_blob, strict=False)
         try:
             public_pair = encoding.sec_to_public_pair(pair_blob, strict=True)

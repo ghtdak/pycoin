@@ -63,17 +63,17 @@ class BIP32Node(Key):
     """
 
     @classmethod
-    def from_master_secret(class_, master_secret, netcode='BTC'):
+    def from_master_secret(cls, master_secret, netcode='BTC'):
         """Generate a Wallet from a master password."""
         I64 = hmac.HMAC(key=b"Bitcoin seed",
                         msg=master_secret,
                         digestmod=hashlib.sha512).digest()
-        return class_(netcode=netcode,
-                      chain_code=I64[32:],
-                      secret_exponent=from_bytes_32(I64[:32]))
+        return cls(netcode=netcode,
+                   chain_code=I64[32:],
+                   secret_exponent=from_bytes_32(I64[:32]))
 
     @classmethod
-    def from_hwif(class_, b58_str, allow_subkey_suffix=True):
+    def from_hwif(cls, b58_str, allow_subkey_suffix=True):
         """Generate a Wallet from a base58 string in a standard way."""
         # TODO: support subkey suffixes
 
@@ -99,7 +99,7 @@ class BIP32Node(Key):
         else:
             d["public_pair"] = sec_to_public_pair(data[45:])
 
-        return class_(**d)
+        return cls(**d)
 
     from_wallet_key = from_hwif
 

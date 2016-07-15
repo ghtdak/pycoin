@@ -6,10 +6,11 @@ from .ScriptType import ScriptType
 class ScriptUnknown(ScriptType):
 
     def __init__(self, script):
+        super().__init__()
         self._script = script
 
     @classmethod
-    def from_script(cls, script):
+    def from_script(cls, script, netcode="BTC"):
         return cls(script)
 
     def script(self):

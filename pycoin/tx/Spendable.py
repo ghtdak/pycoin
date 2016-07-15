@@ -11,16 +11,10 @@ from .TxOut import TxOut
 class Spendable(TxOut):
     TxIn = TxIn
 
-    def __init__(self,
-                 coin_value,
-                 script,
-                 tx_hash,
-                 tx_out_index,
-                 block_index_available=0,
-                 does_seem_spent=False,
+    def __init__(self, coin_value, script, tx_hash, tx_out_index,
+                 block_index_available=0, does_seem_spent=False,
                  block_index_spent=0):
-        self.coin_value = int(coin_value)
-        self.script = script
+        super().__init__(coin_value, script)
         self.tx_hash = tx_hash
         self.tx_out_index = tx_out_index
         self.block_index_available = block_index_available
@@ -30,6 +24,7 @@ class Spendable(TxOut):
     def stream(self, f, as_spendable=False):
         super(Spendable, self).stream(f)
         if as_spendable:
+            # todo: previous_hash and previous_index unknown
             stream_struct("#LIbI", f, self.previous_hash, self.previous_index,
                           self.block_index_available,
                           bool(self.does_seem_spent), self.block_index_spent)

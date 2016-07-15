@@ -83,7 +83,7 @@ class ScriptsTest(unittest.TestCase):
         # gpg_dir = tempfile.mkdtemp()
         # import pdb; pdb.set_trace()
         # os.environ["GNUPGHOME"] = gpg_dir
-        ##f = open(os.path.join(gpg_dir, "gpg.conf"), "w")
+        # f = open(os.path.join(gpg_dir, "gpg.conf"), "w")
         # f.write("use-agent\n")
         # f.close()
         gpg_wif = tempfile.NamedTemporaryFile(suffix=".gpg")

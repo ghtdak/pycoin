@@ -13,9 +13,10 @@ from pycoin.tx.TxOut import standard_tx_out_script
 from pycoin.tx.tx_utils import create_signed_tx
 from pycoin.tx.Spendable import Spendable
 
-BITCOIN_ADDRESSES = [public_pair_to_bitcoin_address(
-    public_pair_for_secret_exponent(generator_secp256k1, i))
-                     for i in range(1, 21)]
+BITCOIN_ADDRESSES = [
+    public_pair_to_bitcoin_address(
+        public_pair_for_secret_exponent(generator_secp256k1, i))
+    for i in range(1, 21)]
 
 WIFS = [secret_exponent_to_wif(i) for i in range(1, 21)]
 
