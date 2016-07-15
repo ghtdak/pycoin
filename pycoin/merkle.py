@@ -38,7 +38,8 @@ def merkle(hashes, hash_f=double_sha256):
 
 
 def merkle_pair(hashes, hash_f):
-    """Take a list of hashes, and return the parent row in the tree of merkle hashes."""
+    """Take a list of hashes, and return the parent row in the tree of merkle
+    hashes. """
     if len(hashes) % 2 == 1:
         hashes = list(hashes)
         hashes.append(hashes[-1])

@@ -39,7 +39,8 @@ from .flags import (VERIFY_P2SH, VERIFY_DISCOURAGE_UPGRADABLE_NOPS,
                     VERIFY_MINIMALDATA, VERIFY_SIGPUSHONLY,
                     VERIFY_CHECKLOCKTIMEVERIFY, VERIFY_CLEANSTACK)
 from .microcode import MICROCODE_LOOKUP
-from .tools import get_opcode, bin_script, bool_from_script_bytes, int_from_script_bytes
+from .tools import (get_opcode, bin_script, bool_from_script_bytes,
+                    int_from_script_bytes)
 
 logger = logging.getLogger(__name__)
 
@@ -260,7 +261,8 @@ def eval_script(script,
                     raise ScriptError("nLockTime too soon")
                 continue
 
-            # BRAIN DAMAGE -- does it always get down here for each verify op? I think not
+            # BRAIN DAMAGE -- does it always get down here for each verify
+            # op? I think not
             if opcode in VERIFY_OPS:
                 v = stack.pop()
                 if not bool_from_script_bytes(v):

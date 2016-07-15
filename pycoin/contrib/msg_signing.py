@@ -53,7 +53,8 @@ def parse_signed_message(msg_in):
         raise ValueError("expecting text SIGNED MESSSAGE somewhere")
 
     try:
-        # - sometimes middle sep is BEGIN BITCOIN SIGNATURE, other times just BEGIN SIGNATURE
+        # - sometimes middle sep is BEGIN BITCOIN SIGNATURE, other times
+        # just BEGIN SIGNATURE
         # - choose the last instance, in case someone signs a signed message
         parts = re.split('\n-----BEGIN [A-Z ]*SIGNATURE-----\n', body)
         msg, hdr = ''.join(parts[:-1]), parts[-1]
@@ -201,8 +202,8 @@ def verify_message(key_or_address,
         # expect an exact match for public pair.
         return pp == pair
     else:
-        # Key() constructed from a hash of pubkey doesn't know the exact public pair, so
-        # must compare hashed addresses instead.
+        # Key() constructed from a hash of pubkey doesn't know the exact
+        # public pair, so must compare hashed addresses instead.
         addr = key.address()
         prefix = address_prefix_for_netcode(netcode)
         ta = public_pair_to_bitcoin_address(pair,

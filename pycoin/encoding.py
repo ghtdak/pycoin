@@ -265,14 +265,15 @@ def sec_to_public_pair(sec, strict=True):
 
 
 def is_sec_compressed(sec):
-    """Return a boolean indicating if the sec represents a compressed public key."""
+    """Return a boolean indicating if the sec represents a compressed public
+    key. """
     return sec[:1] in (b'\2', b'\3')
 
 
 def public_pair_to_hash160_sec(public_pair, compressed=True):
-    """Convert a public_pair (corresponding to a public key) to hash160_sec format.
-    This is a hash of the sec representation of a public key, and is used to generate
-    the corresponding Bitcoin address."""
+    """Convert a public_pair (corresponding to a public key) to hash160_sec
+    format. This is a hash of the sec representation of a public key, and is
+    used to generate the corresponding Bitcoin address. """
     return hash160(public_pair_to_sec(public_pair, compressed=compressed))
 
 
@@ -299,8 +300,9 @@ def bitcoin_address_to_hash160_sec_with_prefix(bitcoin_address):
 
 
 def bitcoin_address_to_hash160_sec(bitcoin_address, address_prefix=b'\0'):
-    """Convert a Bitcoin address back to the hash160_sec format of the public key.
-    Since we only know the hash of the public key, we can't get the full public key back."""
+    """Convert a Bitcoin address back to the hash160_sec format of the public
+    key. Since we only know the hash of the public key, we can't get the full
+    public key back. """
     hash160, actual_prefix = bitcoin_address_to_hash160_sec_with_prefix(
         bitcoin_address)
     if address_prefix == actual_prefix:

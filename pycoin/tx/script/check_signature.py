@@ -173,7 +173,8 @@ def sig_blob_matches(sig_blobs,
     flags: verification flags to apply
     exit_early: if True, we may exit early if one of the sig_blobs
                     is incorrect or misplaced. Used
-                   for checking a supposedly validated transaction. A -1 indicates no match.
+                   for checking a supposedly validated transaction. A -1
+                   indicates no match.
 
     Returns a list of indices into public_pairs. If exit_early is True,
     it may return early. If sig_blob_indices isn't long enough or contains a

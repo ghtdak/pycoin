@@ -237,7 +237,8 @@ def main():
         '-t',
         "--transaction-version",
         type=int,
-        help='Transaction version, either 1 (default) or 3 (not yet supported).')
+        help='Transaction version, either 1 (default) or '
+             '3 (not yet supported).')
 
     parser.add_argument('-l',
                         "--lock-time",

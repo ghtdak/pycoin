@@ -277,7 +277,8 @@ class Tx(object):
         hash160_lookup:
             An object with a get method that accepts a hash160 and returns the
             corresponding (secret exponent, public_pair, is_compressed) tuple or
-            None if it's unknown (in which case the script will obviously not be signed).
+            None if it's unknown (in which case the script will obviously
+            not be signed).
             A standard dictionary will do nicely here.
         tx_in_idx:
             the index of the tx_in we are currently signing

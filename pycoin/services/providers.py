@@ -35,8 +35,9 @@ def spendables_for_address(bitcoin_address, netcode, format=None):
     Set format to "text" or "dict" to transform return value
     from an object to a string or dict.
 
-    This is intended to be a convenience function. There is no way to know that
-    the list returned is a complete list of spendables for the address in question.
+    This is intended to be a convenience function. There is no way to know
+    that the list returned is a complete list of spendables for the address
+    in question.
 
     You can verify that they really do come from the existing transaction
     by calling tx_utils.validate_unspents.

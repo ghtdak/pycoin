@@ -71,9 +71,8 @@ class Key(object):
         self._netcode = netcode
 
         if self._public_pair is None and self._secret_exponent is not None:
-            if (self._secret_exponent < 1 or
-                        self._secret_exponent >=
-                        ecdsa.generator_secp256k1.order()):
+            if (self._secret_exponent < 1
+                or self._secret_exponent >= ecdsa.generator_secp256k1.order()):
                 raise InvalidSecretExponentError()
             public_pair = ecdsa.public_pair_for_secret_exponent(
                 ecdsa.generator_secp256k1, self._secret_exponent)
@@ -120,7 +119,8 @@ class Key(object):
     @classmethod
     def from_sec(cls, sec, netcode="BTC"):
         """
-        Create a key from an sec bytestream (which is an encoding of a public pair).
+        Create a key from an sec bytestream (which is an encoding of a public
+        pair).
         """
         public_pair = sec_to_public_pair(sec)
         return cls(public_pair=public_pair,
