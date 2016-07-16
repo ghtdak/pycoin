@@ -20,6 +20,7 @@ class InvalidSecretExponentError(ValueError):
 
 class Key(object):
 
+    # todo: this __init__() doesn't seem meant to be called by subclasses
     def __init__(self,
                  secret_exponent=None,
                  public_pair=None,

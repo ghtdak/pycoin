@@ -22,7 +22,10 @@ def initial_key_to_master_key(initial_key):
 class ElectrumWallet(Key):
     def __init__(self, initial_key=None, master_private_key=None,
                  master_public_key=None):
-        super().__init__()
+
+        # todo: seems like the superclass should be called
+        # super().__init__()
+
         if [initial_key, master_private_key, master_public_key].count(
                 None) != 2:
             raise ValueError(
